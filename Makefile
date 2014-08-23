@@ -2,8 +2,8 @@
 
 CC       = g++
 DEBUG    = -O0 -ggdb -pg
-//CFLAGS   = -Wall 
-CFLAGS   =
+CFLAGS   = -Wall 
+//CFLAGS   =
 CXXFLAGS = $(CFLAGS)
 LDFLAGS	 = -g
 

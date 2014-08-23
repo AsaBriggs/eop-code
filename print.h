@@ -136,7 +136,7 @@ struct print_visit
         b_pre(b_pre), b_in(b_in), b_post(b_post) { }
     void operator()(visit v, C c)
     {
-        if (v == pre && b_pre || v == in && b_in || v == post && b_post) {
+      if ( (v == pre && b_pre) || (v == in && b_in) || (v == post && b_post) ) {
             print(source(c));
             print(" ");
         }

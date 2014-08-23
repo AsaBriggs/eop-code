@@ -81,6 +81,7 @@ void concept_Regular(T& x)
 
     // Underlying type
     UnderlyingType(T) u;
+    (void)u;
 
     // Destructor
 }
@@ -225,6 +226,7 @@ void concept_Transformation(F f, Domain(F) x)
     y = f(x);
     typedef DistanceType(F) N;
     N n(1);
+    (void)n;
 }
 
 template<typename P>
@@ -545,7 +547,7 @@ void concept_Integer(I n)
     bool bn = negative(m);
     Assert(!(bp && bn));
     bool bz = zero(m);
-    Assert(bz && !(bn || bp) || !bz && (bn || bp));
+    Assert((bz && !(bn || bp)) || (!bz && (bn || bp)));
     bool b1 = one(m);
     Assert(!(bz && b1));
     Assert(!b1 || bp);
@@ -1237,6 +1239,7 @@ void algorithms_q_and_r_nonnegative_fibonacci()
 {
     typedef long Z;
     plus<T> plus_T;
+    (void)plus_T;
     typedef QuotientType(T) N;
     T max(1000);
     T a(0);
@@ -1561,7 +1564,7 @@ template<typename T>
 IndexType(polynomial<T>) operator<(const polynomial<T>& f, const polynomial<T>& g)
 {
     return degree(f) < degree(g) ||
-          degree(g) == degree(f) && f.coeff < g.coeff;
+      (degree(g) == degree(f) && f.coeff < g.coeff);
 }
 
 template<typename T>
