@@ -2831,7 +2831,7 @@ template<typename S>
 void extend_sequence_n(S& s, DistanceType(IteratorType(S)) n, const ValueType(S)& x)
 {
     typedef after<S> AP;
-    while (count_down(n)) AP ap = insert(AP(s, begin(s)), x);
+    while (count_down(n)) insert(AP(s, begin(s)), x);
 }
 
 template<typename I>
