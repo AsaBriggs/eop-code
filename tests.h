@@ -599,7 +599,7 @@ void test_ch_3()
     Assert(f21.m0 == 10946 && f21.m1 == 6765);
     Assert(fibonacci<N>(10) == N(55));
     Assert(fibonacci<N>(20) == N(6765));
-};
+}
 
 
 // Chapter 4. Linear orderings
@@ -2405,6 +2405,7 @@ void algorithms_bifurcate_coordinates()
     Assert(!empty(r_l));
     Assert(has_left_successor(r_l));
     C r_l_l = left_successor(r_l);
+    Assert(!empty(r_l_l));
 
     Assert(empty(begin(t0)));
     Assert(weight_recursive(begin(t0))         == N(0));
@@ -2422,7 +2423,7 @@ void algorithms_bifurcate_coordinates()
     proc = traverse_nonempty(begin(t), proc);
     Assert(proc.n_pre == N(15) && proc.n_in == N(15) && proc.n_post == N(15));
 
-    C c_r = begin(t3_45);
+    //C c_r = begin(t3_45);
 
     T s4(-4);
     T s3_45(-3, t4, T(-5));
