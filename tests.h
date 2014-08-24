@@ -599,6 +599,20 @@ void test_ch_3()
     Assert(f21.m0 == 10946 && f21.m1 == 6765);
     Assert(fibonacci<N>(10) == N(55));
     Assert(fibonacci<N>(20) == N(6765));
+    N n = 3;
+    N nMinus1 = 2;
+    fibonacci_next(n, nMinus1);
+    Assert(n == N(5));
+    Assert(nMinus1 == N(3));
+    fibonacci_next(n, nMinus1);
+    Assert(n == N(8));
+    Assert(nMinus1 == N(5));
+    fibonacci_previous(n, nMinus1);
+    Assert(n == N(5));
+    Assert(nMinus1 == N(3));
+    fibonacci_previous(n, nMinus1);
+    Assert(n == N(3));
+    Assert(nMinus1 == N(2));
 }
 
 

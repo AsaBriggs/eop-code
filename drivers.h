@@ -464,11 +464,16 @@ void run_quotient_remainder()
             print(slow_remainder(a, b)); print_eol();
         print("remainder_nonnegative_with_largest_doubling = ");
             print(remainder_nonnegative_with_largest_doubling(a, b)); print_eol();
+        print("            remainder_nonnegative_fibonacci = ");
+            print(remainder_nonnegative_fibonacci(a, b)); print_eol();
         print("                                  remainder = ");
             print(remainder(a, b, modulus<int>())); print_eol();
         pair<int, int> p;
         p = quotient_remainder(a, b, quo_rem<int>());
         print("                         quotient_remainder = ");
+            print(p.m0); print("   "); print(p.m1); print_eol();
+        p = quotient_remainder_nonnegative_fibonacci(a, b);
+        print("   quotient_remainder_nonnegative_fibonacci = ");
             print(p.m0); print("   "); print(p.m1); print_eol();
         p = quotient_remainder_nonnegative_iterative<int>(a, b);
         print("               quotient_remainder_iterative = ");
