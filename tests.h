@@ -837,126 +837,126 @@ void algorithm_select_2_5_stability_indices()
     P p2 = {'x', 2};
     P p3 = {'x', 3};
     P p4 = {'x', 4};
-    Assert(select_2_5<0,1,2,3,4>(p0,p1,p2,p3,p4,R()).m1 == p2.m1);
-    Assert(select_2_5<0,1,2,4,3>(p0,p1,p2,p4,p3,R()).m1 == p2.m1);
-    Assert(select_2_5<0,1,3,2,4>(p0,p1,p3,p2,p4,R()).m1 == p2.m1);
-    Assert(select_2_5<0,1,3,4,2>(p0,p1,p3,p4,p2,R()).m1 == p2.m1);
-    Assert(select_2_5<0,1,4,2,3>(p0,p1,p4,p2,p3,R()).m1 == p2.m1);
-    Assert(select_2_5<0,1,4,3,2>(p0,p1,p4,p3,p2,R()).m1 == p2.m1);
-    Assert(select_2_5<0,2,1,3,4>(p0,p2,p1,p3,p4,R()).m1 == p2.m1);
-    Assert(select_2_5<0,2,1,4,3>(p0,p2,p1,p4,p3,R()).m1 == p2.m1);
-    Assert(select_2_5<0,2,3,1,4>(p0,p2,p3,p1,p4,R()).m1 == p2.m1);
-    Assert(select_2_5<0,2,3,4,1>(p0,p2,p3,p4,p1,R()).m1 == p2.m1);
-    Assert(select_2_5<0,2,4,1,3>(p0,p2,p4,p1,p3,R()).m1 == p2.m1);
-    Assert(select_2_5<0,2,4,3,1>(p0,p2,p4,p3,p1,R()).m1 == p2.m1);
-    Assert(select_2_5<0,3,1,2,4>(p0,p3,p1,p2,p4,R()).m1 == p2.m1);
-    Assert(select_2_5<0,3,1,4,2>(p0,p3,p1,p4,p2,R()).m1 == p2.m1);
-    Assert(select_2_5<0,3,2,1,4>(p0,p3,p2,p1,p4,R()).m1 == p2.m1);
-    Assert(select_2_5<0,3,2,4,1>(p0,p3,p2,p4,p1,R()).m1 == p2.m1);
-    Assert(select_2_5<0,3,4,1,2>(p0,p3,p4,p1,p2,R()).m1 == p2.m1);
-    Assert(select_2_5<0,3,4,2,1>(p0,p3,p4,p2,p1,R()).m1 == p2.m1);
-    Assert(select_2_5<0,4,1,2,3>(p0,p4,p1,p2,p3,R()).m1 == p2.m1);
-    Assert(select_2_5<0,4,1,3,2>(p0,p4,p1,p3,p2,R()).m1 == p2.m1);
-    Assert(select_2_5<0,4,2,1,3>(p0,p4,p2,p1,p3,R()).m1 == p2.m1);
-    Assert(select_2_5<0,4,2,3,1>(p0,p4,p2,p3,p1,R()).m1 == p2.m1);
-    Assert(select_2_5<0,4,3,1,2>(p0,p4,p3,p1,p2,R()).m1 == p2.m1);
-    Assert(select_2_5<0,4,3,2,1>(p0,p4,p3,p2,p1,R()).m1 == p2.m1);
-    Assert(select_2_5<1,0,2,3,4>(p1,p0,p2,p3,p4,R()).m1 == p2.m1);
-    Assert(select_2_5<1,0,2,4,3>(p1,p0,p2,p4,p3,R()).m1 == p2.m1);
-    Assert(select_2_5<1,0,3,2,4>(p1,p0,p3,p2,p4,R()).m1 == p2.m1);
-    Assert(select_2_5<1,0,3,4,2>(p1,p0,p3,p4,p2,R()).m1 == p2.m1);
-    Assert(select_2_5<1,0,4,2,3>(p1,p0,p4,p2,p3,R()).m1 == p2.m1);
-    Assert(select_2_5<1,0,4,3,2>(p1,p0,p4,p3,p2,R()).m1 == p2.m1);
-    Assert(select_2_5<1,2,0,3,4>(p1,p2,p0,p3,p4,R()).m1 == p2.m1);
-    Assert(select_2_5<1,2,0,4,3>(p1,p2,p0,p4,p3,R()).m1 == p2.m1);
-    Assert(select_2_5<1,2,3,0,4>(p1,p2,p3,p0,p4,R()).m1 == p2.m1);
-    Assert(select_2_5<1,2,3,4,0>(p1,p2,p3,p4,p0,R()).m1 == p2.m1);
-    Assert(select_2_5<1,2,4,0,3>(p1,p2,p4,p0,p3,R()).m1 == p2.m1);
-    Assert(select_2_5<1,2,4,3,0>(p1,p2,p4,p3,p0,R()).m1 == p2.m1);
-    Assert(select_2_5<1,3,0,2,4>(p1,p3,p0,p2,p4,R()).m1 == p2.m1);
-    Assert(select_2_5<1,3,0,4,2>(p1,p3,p0,p4,p2,R()).m1 == p2.m1);
-    Assert(select_2_5<1,3,2,0,4>(p1,p3,p2,p0,p4,R()).m1 == p2.m1);
-    Assert(select_2_5<1,3,2,4,0>(p1,p3,p2,p4,p0,R()).m1 == p2.m1);
-    Assert(select_2_5<1,3,4,0,2>(p1,p3,p4,p0,p2,R()).m1 == p2.m1);
-    Assert(select_2_5<1,3,4,2,0>(p1,p3,p4,p2,p0,R()).m1 == p2.m1);
-    Assert(select_2_5<1,4,0,2,3>(p1,p4,p0,p2,p3,R()).m1 == p2.m1);
-    Assert(select_2_5<1,4,0,3,2>(p1,p4,p0,p3,p2,R()).m1 == p2.m1);
-    Assert(select_2_5<1,4,2,0,3>(p1,p4,p2,p0,p3,R()).m1 == p2.m1);
-    Assert(select_2_5<1,4,2,3,0>(p1,p4,p2,p3,p0,R()).m1 == p2.m1);
-    Assert(select_2_5<1,4,3,0,2>(p1,p4,p3,p0,p2,R()).m1 == p2.m1);
-    Assert(select_2_5<1,4,3,2,0>(p1,p4,p3,p2,p0,R()).m1 == p2.m1);
-    Assert(select_2_5<2,0,1,3,4>(p2,p0,p1,p3,p4,R()).m1 == p2.m1);
-    Assert(select_2_5<2,0,1,4,3>(p2,p0,p1,p4,p3,R()).m1 == p2.m1);
-    Assert(select_2_5<2,0,3,1,4>(p2,p0,p3,p1,p4,R()).m1 == p2.m1);
-    Assert(select_2_5<2,0,3,4,1>(p2,p0,p3,p4,p1,R()).m1 == p2.m1);
-    Assert(select_2_5<2,0,4,1,3>(p2,p0,p4,p1,p3,R()).m1 == p2.m1);
-    Assert(select_2_5<2,0,4,3,1>(p2,p0,p4,p3,p1,R()).m1 == p2.m1);
-    Assert(select_2_5<2,1,0,3,4>(p2,p1,p0,p3,p4,R()).m1 == p2.m1);
-    Assert(select_2_5<2,1,0,4,3>(p2,p1,p0,p4,p3,R()).m1 == p2.m1);
-    Assert(select_2_5<2,1,3,0,4>(p2,p1,p3,p0,p4,R()).m1 == p2.m1);
-    Assert(select_2_5<2,1,3,4,0>(p2,p1,p3,p4,p0,R()).m1 == p2.m1);
-    Assert(select_2_5<2,1,4,0,3>(p2,p1,p4,p0,p3,R()).m1 == p2.m1);
-    Assert(select_2_5<2,1,4,3,0>(p2,p1,p4,p3,p0,R()).m1 == p2.m1);
-    Assert(select_2_5<2,3,0,1,4>(p2,p3,p0,p1,p4,R()).m1 == p2.m1);
-    Assert(select_2_5<2,3,0,4,1>(p2,p3,p0,p4,p1,R()).m1 == p2.m1);
-    Assert(select_2_5<2,3,1,0,4>(p2,p3,p1,p0,p4,R()).m1 == p2.m1);
-    Assert(select_2_5<2,3,1,4,0>(p2,p3,p1,p4,p0,R()).m1 == p2.m1);
-    Assert(select_2_5<2,3,4,0,1>(p2,p3,p4,p0,p1,R()).m1 == p2.m1);
-    Assert(select_2_5<2,3,4,1,0>(p2,p3,p4,p1,p0,R()).m1 == p2.m1);
-    Assert(select_2_5<2,4,0,1,3>(p2,p4,p0,p1,p3,R()).m1 == p2.m1);
-    Assert(select_2_5<2,4,0,3,1>(p2,p4,p0,p3,p1,R()).m1 == p2.m1);
-    Assert(select_2_5<2,4,1,0,3>(p2,p4,p1,p0,p3,R()).m1 == p2.m1);
-    Assert(select_2_5<2,4,1,3,0>(p2,p4,p1,p3,p0,R()).m1 == p2.m1);
-    Assert(select_2_5<2,4,3,0,1>(p2,p4,p3,p0,p1,R()).m1 == p2.m1);
-    Assert(select_2_5<2,4,3,1,0>(p2,p4,p3,p1,p0,R()).m1 == p2.m1);
-    Assert(select_2_5<3,0,1,2,4>(p3,p0,p1,p2,p4,R()).m1 == p2.m1);
-    Assert(select_2_5<3,0,1,4,2>(p3,p0,p1,p4,p2,R()).m1 == p2.m1);
-    Assert(select_2_5<3,0,2,1,4>(p3,p0,p2,p1,p4,R()).m1 == p2.m1);
-    Assert(select_2_5<3,0,2,4,1>(p3,p0,p2,p4,p1,R()).m1 == p2.m1);
-    Assert(select_2_5<3,0,4,1,2>(p3,p0,p4,p1,p2,R()).m1 == p2.m1);
-    Assert(select_2_5<3,0,4,2,1>(p3,p0,p4,p2,p1,R()).m1 == p2.m1);
-    Assert(select_2_5<3,1,0,2,4>(p3,p1,p0,p2,p4,R()).m1 == p2.m1);
-    Assert(select_2_5<3,1,0,4,2>(p3,p1,p0,p4,p2,R()).m1 == p2.m1);
-    Assert(select_2_5<3,1,2,0,4>(p3,p1,p2,p0,p4,R()).m1 == p2.m1);
-    Assert(select_2_5<3,1,2,4,0>(p3,p1,p2,p4,p0,R()).m1 == p2.m1);
-    Assert(select_2_5<3,1,4,0,2>(p3,p1,p4,p0,p2,R()).m1 == p2.m1);
-    Assert(select_2_5<3,1,4,2,0>(p3,p1,p4,p2,p0,R()).m1 == p2.m1);
-    Assert(select_2_5<3,2,0,1,4>(p3,p2,p0,p1,p4,R()).m1 == p2.m1);
-    Assert(select_2_5<3,2,0,4,1>(p3,p2,p0,p4,p1,R()).m1 == p2.m1);
-    Assert(select_2_5<3,2,1,0,4>(p3,p2,p1,p0,p4,R()).m1 == p2.m1);
-    Assert(select_2_5<3,2,1,4,0>(p3,p2,p1,p4,p0,R()).m1 == p2.m1);
-    Assert(select_2_5<3,2,4,0,1>(p3,p2,p4,p0,p1,R()).m1 == p2.m1);
-    Assert(select_2_5<3,2,4,1,0>(p3,p2,p4,p1,p0,R()).m1 == p2.m1);
-    Assert(select_2_5<3,4,0,1,2>(p3,p4,p0,p1,p2,R()).m1 == p2.m1);
-    Assert(select_2_5<3,4,0,2,1>(p3,p4,p0,p2,p1,R()).m1 == p2.m1);
-    Assert(select_2_5<3,4,1,0,2>(p3,p4,p1,p0,p2,R()).m1 == p2.m1);
-    Assert(select_2_5<3,4,1,2,0>(p3,p4,p1,p2,p0,R()).m1 == p2.m1);
-    Assert(select_2_5<3,4,2,0,1>(p3,p4,p2,p0,p1,R()).m1 == p2.m1);
-    Assert(select_2_5<3,4,2,1,0>(p3,p4,p2,p1,p0,R()).m1 == p2.m1);
-    Assert(select_2_5<4,0,1,2,3>(p4,p0,p1,p2,p3,R()).m1 == p2.m1);
-    Assert(select_2_5<4,0,1,3,2>(p4,p0,p1,p3,p2,R()).m1 == p2.m1);
-    Assert(select_2_5<4,0,2,1,3>(p4,p0,p2,p1,p3,R()).m1 == p2.m1);
-    Assert(select_2_5<4,0,2,3,1>(p4,p0,p2,p3,p1,R()).m1 == p2.m1);
-    Assert(select_2_5<4,0,3,1,2>(p4,p0,p3,p1,p2,R()).m1 == p2.m1);
-    Assert(select_2_5<4,0,3,2,1>(p4,p0,p3,p2,p1,R()).m1 == p2.m1);
-    Assert(select_2_5<4,1,0,2,3>(p4,p1,p0,p2,p3,R()).m1 == p2.m1);
-    Assert(select_2_5<4,1,0,3,2>(p4,p1,p0,p3,p2,R()).m1 == p2.m1);
-    Assert(select_2_5<4,1,2,0,3>(p4,p1,p2,p0,p3,R()).m1 == p2.m1);
-    Assert(select_2_5<4,1,2,3,0>(p4,p1,p2,p3,p0,R()).m1 == p2.m1);
-    Assert(select_2_5<4,1,3,0,2>(p4,p1,p3,p0,p2,R()).m1 == p2.m1);
-    Assert(select_2_5<4,1,3,2,0>(p4,p1,p3,p2,p0,R()).m1 == p2.m1);
-    Assert(select_2_5<4,2,0,1,3>(p4,p2,p0,p1,p3,R()).m1 == p2.m1);
-    Assert(select_2_5<4,2,0,3,1>(p4,p2,p0,p3,p1,R()).m1 == p2.m1);
-    Assert(select_2_5<4,2,1,0,3>(p4,p2,p1,p0,p3,R()).m1 == p2.m1);
-    Assert(select_2_5<4,2,1,3,0>(p4,p2,p1,p3,p0,R()).m1 == p2.m1);
-    Assert(select_2_5<4,2,3,0,1>(p4,p2,p3,p0,p1,R()).m1 == p2.m1);
-    Assert(select_2_5<4,2,3,1,0>(p4,p2,p3,p1,p0,R()).m1 == p2.m1);
-    Assert(select_2_5<4,3,0,1,2>(p4,p3,p0,p1,p2,R()).m1 == p2.m1);
-    Assert(select_2_5<4,3,0,2,1>(p4,p3,p0,p2,p1,R()).m1 == p2.m1);
-    Assert(select_2_5<4,3,1,0,2>(p4,p3,p1,p0,p2,R()).m1 == p2.m1);
-    Assert(select_2_5<4,3,1,2,0>(p4,p3,p1,p2,p0,R()).m1 == p2.m1);
-    Assert(select_2_5<4,3,2,0,1>(p4,p3,p2,p0,p1,R()).m1 == p2.m1);
-    Assert(select_2_5<4,3,2,1,0>(p4,p3,p2,p1,p0,R()).m1 == p2.m1);
+    Assert((select_2_5<0,1,2,3,4>(p0,p1,p2,p3,p4,R()).m1 == p2.m1));
+    Assert((select_2_5<0,1,2,4,3>(p0,p1,p2,p4,p3,R()).m1 == p2.m1));
+    Assert((select_2_5<0,1,3,2,4>(p0,p1,p3,p2,p4,R()).m1 == p2.m1));
+    Assert((select_2_5<0,1,3,4,2>(p0,p1,p3,p4,p2,R()).m1 == p2.m1));
+    Assert((select_2_5<0,1,4,2,3>(p0,p1,p4,p2,p3,R()).m1 == p2.m1));
+    Assert((select_2_5<0,1,4,3,2>(p0,p1,p4,p3,p2,R()).m1 == p2.m1));
+    Assert((select_2_5<0,2,1,3,4>(p0,p2,p1,p3,p4,R()).m1 == p2.m1));
+    Assert((select_2_5<0,2,1,4,3>(p0,p2,p1,p4,p3,R()).m1 == p2.m1));
+    Assert((select_2_5<0,2,3,1,4>(p0,p2,p3,p1,p4,R()).m1 == p2.m1));
+    Assert((select_2_5<0,2,3,4,1>(p0,p2,p3,p4,p1,R()).m1 == p2.m1));
+    Assert((select_2_5<0,2,4,1,3>(p0,p2,p4,p1,p3,R()).m1 == p2.m1));
+    Assert((select_2_5<0,2,4,3,1>(p0,p2,p4,p3,p1,R()).m1 == p2.m1));
+    Assert((select_2_5<0,3,1,2,4>(p0,p3,p1,p2,p4,R()).m1 == p2.m1));
+    Assert((select_2_5<0,3,1,4,2>(p0,p3,p1,p4,p2,R()).m1 == p2.m1));
+    Assert((select_2_5<0,3,2,1,4>(p0,p3,p2,p1,p4,R()).m1 == p2.m1));
+    Assert((select_2_5<0,3,2,4,1>(p0,p3,p2,p4,p1,R()).m1 == p2.m1));
+    Assert((select_2_5<0,3,4,1,2>(p0,p3,p4,p1,p2,R()).m1 == p2.m1));
+    Assert((select_2_5<0,3,4,2,1>(p0,p3,p4,p2,p1,R()).m1 == p2.m1));
+    Assert((select_2_5<0,4,1,2,3>(p0,p4,p1,p2,p3,R()).m1 == p2.m1));
+    Assert((select_2_5<0,4,1,3,2>(p0,p4,p1,p3,p2,R()).m1 == p2.m1));
+    Assert((select_2_5<0,4,2,1,3>(p0,p4,p2,p1,p3,R()).m1 == p2.m1));
+    Assert((select_2_5<0,4,2,3,1>(p0,p4,p2,p3,p1,R()).m1 == p2.m1));
+    Assert((select_2_5<0,4,3,1,2>(p0,p4,p3,p1,p2,R()).m1 == p2.m1));
+    Assert((select_2_5<0,4,3,2,1>(p0,p4,p3,p2,p1,R()).m1 == p2.m1));
+    Assert((select_2_5<1,0,2,3,4>(p1,p0,p2,p3,p4,R()).m1 == p2.m1));
+    Assert((select_2_5<1,0,2,4,3>(p1,p0,p2,p4,p3,R()).m1 == p2.m1));
+    Assert((select_2_5<1,0,3,2,4>(p1,p0,p3,p2,p4,R()).m1 == p2.m1));
+    Assert((select_2_5<1,0,3,4,2>(p1,p0,p3,p4,p2,R()).m1 == p2.m1));
+    Assert((select_2_5<1,0,4,2,3>(p1,p0,p4,p2,p3,R()).m1 == p2.m1));
+    Assert((select_2_5<1,0,4,3,2>(p1,p0,p4,p3,p2,R()).m1 == p2.m1));
+    Assert((select_2_5<1,2,0,3,4>(p1,p2,p0,p3,p4,R()).m1 == p2.m1));
+    Assert((select_2_5<1,2,0,4,3>(p1,p2,p0,p4,p3,R()).m1 == p2.m1));
+    Assert((select_2_5<1,2,3,0,4>(p1,p2,p3,p0,p4,R()).m1 == p2.m1));
+    Assert((select_2_5<1,2,3,4,0>(p1,p2,p3,p4,p0,R()).m1 == p2.m1));
+    Assert((select_2_5<1,2,4,0,3>(p1,p2,p4,p0,p3,R()).m1 == p2.m1));
+    Assert((select_2_5<1,2,4,3,0>(p1,p2,p4,p3,p0,R()).m1 == p2.m1));
+    Assert((select_2_5<1,3,0,2,4>(p1,p3,p0,p2,p4,R()).m1 == p2.m1));
+    Assert((select_2_5<1,3,0,4,2>(p1,p3,p0,p4,p2,R()).m1 == p2.m1));
+    Assert((select_2_5<1,3,2,0,4>(p1,p3,p2,p0,p4,R()).m1 == p2.m1));
+    Assert((select_2_5<1,3,2,4,0>(p1,p3,p2,p4,p0,R()).m1 == p2.m1));
+    Assert((select_2_5<1,3,4,0,2>(p1,p3,p4,p0,p2,R()).m1 == p2.m1));
+    Assert((select_2_5<1,3,4,2,0>(p1,p3,p4,p2,p0,R()).m1 == p2.m1));
+    Assert((select_2_5<1,4,0,2,3>(p1,p4,p0,p2,p3,R()).m1 == p2.m1));
+    Assert((select_2_5<1,4,0,3,2>(p1,p4,p0,p3,p2,R()).m1 == p2.m1));
+    Assert((select_2_5<1,4,2,0,3>(p1,p4,p2,p0,p3,R()).m1 == p2.m1));
+    Assert((select_2_5<1,4,2,3,0>(p1,p4,p2,p3,p0,R()).m1 == p2.m1));
+    Assert((select_2_5<1,4,3,0,2>(p1,p4,p3,p0,p2,R()).m1 == p2.m1));
+    Assert((select_2_5<1,4,3,2,0>(p1,p4,p3,p2,p0,R()).m1 == p2.m1));
+    Assert((select_2_5<2,0,1,3,4>(p2,p0,p1,p3,p4,R()).m1 == p2.m1));
+    Assert((select_2_5<2,0,1,4,3>(p2,p0,p1,p4,p3,R()).m1 == p2.m1));
+    Assert((select_2_5<2,0,3,1,4>(p2,p0,p3,p1,p4,R()).m1 == p2.m1));
+    Assert((select_2_5<2,0,3,4,1>(p2,p0,p3,p4,p1,R()).m1 == p2.m1));
+    Assert((select_2_5<2,0,4,1,3>(p2,p0,p4,p1,p3,R()).m1 == p2.m1));
+    Assert((select_2_5<2,0,4,3,1>(p2,p0,p4,p3,p1,R()).m1 == p2.m1));
+    Assert((select_2_5<2,1,0,3,4>(p2,p1,p0,p3,p4,R()).m1 == p2.m1));
+    Assert((select_2_5<2,1,0,4,3>(p2,p1,p0,p4,p3,R()).m1 == p2.m1));
+    Assert((select_2_5<2,1,3,0,4>(p2,p1,p3,p0,p4,R()).m1 == p2.m1));
+    Assert((select_2_5<2,1,3,4,0>(p2,p1,p3,p4,p0,R()).m1 == p2.m1));
+    Assert((select_2_5<2,1,4,0,3>(p2,p1,p4,p0,p3,R()).m1 == p2.m1));
+    Assert((select_2_5<2,1,4,3,0>(p2,p1,p4,p3,p0,R()).m1 == p2.m1));
+    Assert((select_2_5<2,3,0,1,4>(p2,p3,p0,p1,p4,R()).m1 == p2.m1));
+    Assert((select_2_5<2,3,0,4,1>(p2,p3,p0,p4,p1,R()).m1 == p2.m1));
+    Assert((select_2_5<2,3,1,0,4>(p2,p3,p1,p0,p4,R()).m1 == p2.m1));
+    Assert((select_2_5<2,3,1,4,0>(p2,p3,p1,p4,p0,R()).m1 == p2.m1));
+    Assert((select_2_5<2,3,4,0,1>(p2,p3,p4,p0,p1,R()).m1 == p2.m1));
+    Assert((select_2_5<2,3,4,1,0>(p2,p3,p4,p1,p0,R()).m1 == p2.m1));
+    Assert((select_2_5<2,4,0,1,3>(p2,p4,p0,p1,p3,R()).m1 == p2.m1));
+    Assert((select_2_5<2,4,0,3,1>(p2,p4,p0,p3,p1,R()).m1 == p2.m1));
+    Assert((select_2_5<2,4,1,0,3>(p2,p4,p1,p0,p3,R()).m1 == p2.m1));
+    Assert((select_2_5<2,4,1,3,0>(p2,p4,p1,p3,p0,R()).m1 == p2.m1));
+    Assert((select_2_5<2,4,3,0,1>(p2,p4,p3,p0,p1,R()).m1 == p2.m1));
+    Assert((select_2_5<2,4,3,1,0>(p2,p4,p3,p1,p0,R()).m1 == p2.m1));
+    Assert((select_2_5<3,0,1,2,4>(p3,p0,p1,p2,p4,R()).m1 == p2.m1));
+    Assert((select_2_5<3,0,1,4,2>(p3,p0,p1,p4,p2,R()).m1 == p2.m1));
+    Assert((select_2_5<3,0,2,1,4>(p3,p0,p2,p1,p4,R()).m1 == p2.m1));
+    Assert((select_2_5<3,0,2,4,1>(p3,p0,p2,p4,p1,R()).m1 == p2.m1));
+    Assert((select_2_5<3,0,4,1,2>(p3,p0,p4,p1,p2,R()).m1 == p2.m1));
+    Assert((select_2_5<3,0,4,2,1>(p3,p0,p4,p2,p1,R()).m1 == p2.m1));
+    Assert((select_2_5<3,1,0,2,4>(p3,p1,p0,p2,p4,R()).m1 == p2.m1));
+    Assert((select_2_5<3,1,0,4,2>(p3,p1,p0,p4,p2,R()).m1 == p2.m1));
+    Assert((select_2_5<3,1,2,0,4>(p3,p1,p2,p0,p4,R()).m1 == p2.m1));
+    Assert((select_2_5<3,1,2,4,0>(p3,p1,p2,p4,p0,R()).m1 == p2.m1));
+    Assert((select_2_5<3,1,4,0,2>(p3,p1,p4,p0,p2,R()).m1 == p2.m1));
+    Assert((select_2_5<3,1,4,2,0>(p3,p1,p4,p2,p0,R()).m1 == p2.m1));
+    Assert((select_2_5<3,2,0,1,4>(p3,p2,p0,p1,p4,R()).m1 == p2.m1));
+    Assert((select_2_5<3,2,0,4,1>(p3,p2,p0,p4,p1,R()).m1 == p2.m1));
+    Assert((select_2_5<3,2,1,0,4>(p3,p2,p1,p0,p4,R()).m1 == p2.m1));
+    Assert((select_2_5<3,2,1,4,0>(p3,p2,p1,p4,p0,R()).m1 == p2.m1));
+    Assert((select_2_5<3,2,4,0,1>(p3,p2,p4,p0,p1,R()).m1 == p2.m1));
+    Assert((select_2_5<3,2,4,1,0>(p3,p2,p4,p1,p0,R()).m1 == p2.m1));
+    Assert((select_2_5<3,4,0,1,2>(p3,p4,p0,p1,p2,R()).m1 == p2.m1));
+    Assert((select_2_5<3,4,0,2,1>(p3,p4,p0,p2,p1,R()).m1 == p2.m1));
+    Assert((select_2_5<3,4,1,0,2>(p3,p4,p1,p0,p2,R()).m1 == p2.m1));
+    Assert((select_2_5<3,4,1,2,0>(p3,p4,p1,p2,p0,R()).m1 == p2.m1));
+    Assert((select_2_5<3,4,2,0,1>(p3,p4,p2,p0,p1,R()).m1 == p2.m1));
+    Assert((select_2_5<3,4,2,1,0>(p3,p4,p2,p1,p0,R()).m1 == p2.m1));
+    Assert((select_2_5<4,0,1,2,3>(p4,p0,p1,p2,p3,R()).m1 == p2.m1));
+    Assert((select_2_5<4,0,1,3,2>(p4,p0,p1,p3,p2,R()).m1 == p2.m1));
+    Assert((select_2_5<4,0,2,1,3>(p4,p0,p2,p1,p3,R()).m1 == p2.m1));
+    Assert((select_2_5<4,0,2,3,1>(p4,p0,p2,p3,p1,R()).m1 == p2.m1));
+    Assert((select_2_5<4,0,3,1,2>(p4,p0,p3,p1,p2,R()).m1 == p2.m1));
+    Assert((select_2_5<4,0,3,2,1>(p4,p0,p3,p2,p1,R()).m1 == p2.m1));
+    Assert((select_2_5<4,1,0,2,3>(p4,p1,p0,p2,p3,R()).m1 == p2.m1));
+    Assert((select_2_5<4,1,0,3,2>(p4,p1,p0,p3,p2,R()).m1 == p2.m1));
+    Assert((select_2_5<4,1,2,0,3>(p4,p1,p2,p0,p3,R()).m1 == p2.m1));
+    Assert((select_2_5<4,1,2,3,0>(p4,p1,p2,p3,p0,R()).m1 == p2.m1));
+    Assert((select_2_5<4,1,3,0,2>(p4,p1,p3,p0,p2,R()).m1 == p2.m1));
+    Assert((select_2_5<4,1,3,2,0>(p4,p1,p3,p2,p0,R()).m1 == p2.m1));
+    Assert((select_2_5<4,2,0,1,3>(p4,p2,p0,p1,p3,R()).m1 == p2.m1));
+    Assert((select_2_5<4,2,0,3,1>(p4,p2,p0,p3,p1,R()).m1 == p2.m1));
+    Assert((select_2_5<4,2,1,0,3>(p4,p2,p1,p0,p3,R()).m1 == p2.m1));
+    Assert((select_2_5<4,2,1,3,0>(p4,p2,p1,p3,p0,R()).m1 == p2.m1));
+    Assert((select_2_5<4,2,3,0,1>(p4,p2,p3,p0,p1,R()).m1 == p2.m1));
+    Assert((select_2_5<4,2,3,1,0>(p4,p2,p3,p1,p0,R()).m1 == p2.m1));
+    Assert((select_2_5<4,3,0,1,2>(p4,p3,p0,p1,p2,R()).m1 == p2.m1));
+    Assert((select_2_5<4,3,0,2,1>(p4,p3,p0,p2,p1,R()).m1 == p2.m1));
+    Assert((select_2_5<4,3,1,0,2>(p4,p3,p1,p0,p2,R()).m1 == p2.m1));
+    Assert((select_2_5<4,3,1,2,0>(p4,p3,p1,p2,p0,R()).m1 == p2.m1));
+    Assert((select_2_5<4,3,2,0,1>(p4,p3,p2,p0,p1,R()).m1 == p2.m1));
+    Assert((select_2_5<4,3,2,1,0>(p4,p3,p2,p1,p0,R()).m1 == p2.m1));
 }
 
 void algorithm_median_5()
@@ -968,12 +968,12 @@ void algorithm_median_5()
     int i4 = 4;
     int i5 = 5;
     // ...
-    Assert(&select_2_5_ab_cd<0, 1, 2, 3, 4, less<int> >(
-        i4, i5, i2, i3, i1, less<int>()) == &i3);
-    Assert(&select_2_5_ab<0, 1, 2, 3, 4, less<int> >(
-        i4, i5, i2, i3, i1, less<int>()) == &i3);
-    Assert(&select_2_5<0, 1, 2, 3, 4, less<int> >(
-        i4, i5, i2, i3, i1, less<int>()) == &i3);
+    Assert((&select_2_5_ab_cd<0, 1, 2, 3, 4, less<int> >(
+        i4, i5, i2, i3, i1, less<int>()) == &i3));
+    Assert((&select_2_5_ab<0, 1, 2, 3, 4, less<int> >(
+        i4, i5, i2, i3, i1, less<int>()) == &i3));
+    Assert((&select_2_5<0, 1, 2, 3, 4, less<int> >(
+        i4, i5, i2, i3, i1, less<int>()) == &i3));
     //
     int p[5] = {1, 2, 3, 4, 5};
     do {
@@ -1053,10 +1053,10 @@ void test_ch_4()
     int_pair p1 = {1, 1};
     int_pair p2 = {1, 2};
     typedef less_first<int, int> R;
-    Assert(select_0_2<1, 2, R>(p1, p2, R()) == p1);
-    Assert(select_0_2<1, 2, R>(p2, p1, R()) == p2);
-    Assert(select_1_2<1, 2, R>(p1, p2, R()) == p2);
-    Assert(select_1_2<1, 2, R>(p2, p1, R()) == p1);
+    Assert((select_0_2<1, 2, R>(p1, p2, R()) == p1));
+    Assert((select_0_2<1, 2, R>(p2, p1, R()) == p2));
+    Assert((select_1_2<1, 2, R>(p1, p2, R()) == p2));
+    Assert((select_1_2<1, 2, R>(p2, p1, R()) == p1));
 
     Assert(&select_0_3(a, b, c, less<int>()) == &a);
     Assert(&select_0_3(a, c, b, less<int>()) == &a);
@@ -1262,9 +1262,9 @@ void algorithms_q_and_r_nonnegative_fibonacci()
         while (b < max) {
             T r = remainder_nonnegative_fibonacci(a, b);
             pair<N, T> qr = quotient_remainder_nonnegative_fibonacci(a, b);
-//            Assert(Z(r) == Z(a) % Z(b));
+            //Assert(Z(r) == Z(a) % Z(b));
             Assert(qr.m1 == r);
-//             Assert(Z(qr.m0) == Z(a) / Z(b));
+            //Assert(Z(qr.m0) == Z(a) / Z(b));
             Assert(power(b, qr.m0, plus_T, T(0)) + r == a);
             b = successor(b);
         }
@@ -1957,12 +1957,12 @@ void test_ch_5()
     Assert(fast_subtractive_gcd(Q(0, 4), Q(1, 2)) == Q(1, 2));
 
     // gcd for EuclideanSemiring
-    Assert(gcd<int>(1000, 990) == 10);
-    Assert(gcd<int>(1000, 0) == 1000);
-    Assert(gcd<int>(0, 990) == 990);
-    Assert(gcd<unsigned>(1000u, 990u) == 10u);
-    Assert(gcd<unsigned>(1000u, 0u) == 1000u);
-    Assert(gcd<unsigned>(0u, 990u) == 990u);
+    Assert(gcd(1000, 990) == 10);
+    Assert(gcd(1000, 0) == 1000);
+    Assert(gcd(0, 990) == 990);
+    Assert(gcd(1000u, 990u) == 10u);
+    Assert(gcd(1000u, 0u) == 1000u);
+    Assert(gcd(0u, 990u) == 990u);
     {
         typedef polynomial< rational<int> > Q_X;
         Q_X a = shift_left(Q_X(1), 2) - Q_X(1); // x^2 - 1
@@ -1981,18 +1981,18 @@ void test_ch_5()
     }
 
     // gcd for EuclideanSemimodule
-    Assert(gcd<int, int>(1000, 990) == 10);
-    Assert(gcd<int, int>(1000, 0) == 1000);
-    Assert(gcd<int, int>(0, 990) == 990);
-    Assert(gcd<unsigned, unsigned>(1000u, 990u) == 10u);
-    Assert(gcd<unsigned, unsigned>(1000u, 0u) == 1000u);
-    Assert(gcd<unsigned, unsigned>(0u, 990u) == 990u);
-    Assert(gcd<double, long int>(0.75, 0.5) == 0.25);
-    Assert(gcd<double, long int>(0.75, 0.0) == 0.75);
-    Assert(gcd<double, long int>(0.0, 0.5) == 0.5);
-    Assert(gcd<Q, Q>(Q(3, 4), Q(1, 2)) == Q(1, 4));
-    Assert(gcd<Q, Q>(Q(3, 4), Q(0, 2)) == Q(3, 4));
-    Assert(gcd<Q, Q>(Q(0, 4), Q(1, 2)) == Q(1, 2));
+    Assert(gcd(1000, 990) == 10);
+    Assert(gcd(1000, 0) == 1000);
+    Assert(gcd(0, 990) == 990);
+    Assert(gcd(1000u, 990u) == 10u);
+    Assert(gcd(1000u, 0u) == 1000u);
+    Assert(gcd(0u, 990u) == 990u);
+    Assert(gcd(0.75, 0.5) == 0.25);
+    Assert(gcd(0.75, 0.0) == 0.75);
+    Assert(gcd(0.0, 0.5) == 0.5);
+    Assert(gcd(Q(3, 4), Q(1, 2)) == Q(1, 4));
+    Assert(gcd(Q(3, 4), Q(0, 2)) == Q(3, 4));
+    Assert(gcd(Q(0, 4), Q(1, 2)) == Q(1, 2));
 
     algorithms_signed_q_and_r<int>();
     algorithms_signed_q_and_r<long>();
@@ -2363,8 +2363,8 @@ void algorithms_lexicographical()
     Assert(lexicographical_equal(f_a, l_a, begin(la), end(la)));
     Assert(!lexicographical_equal(f_b, l_b, begin(la), end(la)));
 
-    Assert(size(la) == 6 &&
-        lexicographical_equal_k<6, I, IteratorType(slist<Z>)>()(f_a, begin(la)));
+    Assert((size(la) == 6 &&
+	    lexicographical_equal_k<6, I, IteratorType(slist<Z>)>()(f_a, begin(la))));
 
     typedef DistanceType(I) NP;
     Assert( lexicographical_compare(f_a, f_a, f_a, l_a, less<Z>()));
@@ -2385,8 +2385,8 @@ void algorithms_lexicographical()
     Assert(!lexicographical_less(f_a, f_a + NP(6), f_a, l_a));
     Assert(!lexicographical_less(f_a, l_a, f_a, f_a + NP(4)));
 
-    Assert(!lexicographical_less_k<6, I, I>()(f_a, f_b));
-    Assert(lexicographical_less_k<6, I, I>()(f_b, f_a));
+    Assert((!lexicographical_less_k<6, I, I>()(f_a, f_b)));
+    Assert((lexicographical_less_k<6, I, I>()(f_b, f_a)));
 
 }
 

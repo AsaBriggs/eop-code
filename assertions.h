@@ -25,7 +25,7 @@
 #include <cassert> // assert
 #include <cstdio> // fprintf, stderr
 #include <cstdlib> // abort
-
+/*
 void Assert(bool b)
 {
     assert(b); // if debug mode
@@ -34,5 +34,14 @@ void Assert(bool b)
         abort(); 
     }
 }
+*/
+#define Assert( test ) do { \
+  assert ( (test) ) ; \
+  if ( !(test) ) { \
+      fprintf(stderr, "Assert failed\n"); \
+      fprintf(stderr, "%s", #test); \
+      abort(); \
+  } \
+} while (0)
 
 #endif // EOP_ASSERTIONS
