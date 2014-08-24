@@ -90,9 +90,15 @@ struct pair
 {
     T0 m0;
     T1 m1;
-    pair() {} // default constructor
-    pair(const T0& m0, const T1& m1) : m0(m0), m1(m1) { }
 };
+
+template<typename T0, typename T1>
+    requires(Regular(T0) && Regular(T1))
+inline pair<T0, T1> make_pair(const T0& m0, const T1& m1)
+{
+  pair<T0, T1> tmp = { m0, m1 };
+  return tmp ;
+}
 
 template<typename T0, typename T1>
     requires(Regular(T0) && Regular(T1))
@@ -562,7 +568,7 @@ template<typename I>
 pair<I, I> fibonacci_matrix_multiply(const pair<I, I>& x,
                                      const pair<I, I>& y)
 {
-    return pair<I, I>(
+    return make_pair(
         x.m0 * (y.m1 + y.m0) + x.m1 * y.m0,
         x.m0 * y.m0 + x.m1 * y.m1);
 }
@@ -573,7 +579,7 @@ I fibonacci(I n)
 {
     // Precondition: $n \geq 0$
     if (n == I(0)) return I(0);
-    return power(pair<I, I>(I(1), I(0)),
+    return power(make_pair(I(1), I(0)),
                  n,
                  fibonacci_matrix_multiply<I>).m0;
 }
@@ -1273,13 +1279,13 @@ quotient_remainder_nonnegative(T a, T b)
 {
     // Precondition: $a \geq 0 \wedge b > 0$
     typedef QuotientType(T) N;
-    if (a < b) return pair<N, T>(N(0), a);
-    if (a - b < b) return pair<N, T>(N(1), a - b);
+    if (a < b) return make_pair(N(0), a);
+    if (a - b < b) return make_pair(N(1), a - b);
     pair<N, T> q = quotient_remainder_nonnegative(a, b + b);
     N m = twice(q.m0);
     a = q.m1;
-    if (a < b) return pair<N, T>(m, a);
-    else       return pair<N, T>(successor(m), a - b);
+    if (a < b) return make_pair(m, a);
+    else       return make_pair(successor(m), a - b);
 }
 
 template<typename T>
@@ -1289,7 +1295,7 @@ quotient_remainder_nonnegative_iterative(T a, T b)
 {
     // Precondition: $a \geq 0 \wedge b > 0$
     typedef QuotientType(T) N;
-    if (a < b) return pair<N, T>(N(0), a);
+    if (a < b) return make_pair(N(0), a);
     T c = largest_doubling(a, b);
     a = a - c;
     N n(1);
@@ -1301,7 +1307,7 @@ quotient_remainder_nonnegative_iterative(T a, T b)
             n = successor(n);
         }
     }
-    return pair<N, T>(n, a);
+    return make_pair(n, a);
 }
 
 template<typename Op>
@@ -1710,7 +1716,7 @@ pair<Proc, I> for_each_n(I f, DistanceType(I) n, Proc proc)
         proc(source(f));
         f = successor(f);
     }
-    return pair<Proc, I>(proc, f);
+    return make_pair(proc, f);
 }
 
 template<typename I>
@@ -1723,7 +1729,7 @@ pair<I, DistanceType(I)> find_n(I f, DistanceType(I) n,
         n = predecessor(n);
         f = successor(f);
     }
-    return pair<I, DistanceType(I)>(f, n);
+    return make_pair(f, n);
 }
 
 
@@ -1766,7 +1772,7 @@ pair<I0, I1> find_mismatch(I0 f0, I0 l0, I1 f1, I1 l1, R r)
         f0 = successor(f0);
         f1 = successor(f1);
     }
-    return pair<I0, I1>(f0, f1);
+    return make_pair(f0, f1);
 }
 
 template<typename I, typename R>
@@ -2642,7 +2648,7 @@ s2: if (f == l)                              goto s4;
 s3: if (f == l)                              goto s4; 
     if (p(f)) {         advance_tail(t1, f); goto s3; }  
     else      {         link_to_tail(t0, f); goto s2; }
-s4: return pair<P, P>(P(h0, t0), P(h1, t1));
+s4: return make_pair(make_pair(h0, t0), make_pair(h1, t1));
 }
 
 // Exercise 8.1: Explain the postcondition of split_linked
@@ -2754,7 +2760,7 @@ pair<I, I> merge_linked_nonempty(I f0, I l0, I f1, I l1,
     triple<I, I, I> t = combine_linked_nonempty(f0, l0, f1, l1,
                                                 rs, set_link);
     set_link(find_last(t.m1, t.m2), l1);
-    return pair<I, I>(t.m0, l1);
+    return make_pair(t.m0, l1);
 }
 
 template<typename I, typename S, typename R>
@@ -2768,7 +2774,7 @@ pair<I, I> sort_linked_nonempty_n(I f, DistanceType(I) n,
     //                n > 0 \wedge \func{weak\_ordering}(r)$
     typedef DistanceType(I) N;
     typedef pair<I, I> P;
-    if (n == N(1)) return P(f, successor(f));
+    if (n == N(1)) return make_pair(f, successor(f));
     N h = half_nonnegative(n);
     P p0 = sort_linked_nonempty_n(f, h, r, set_link);
     P p1 = sort_linked_nonempty_n(p0.m1, n - h, r, set_link);
@@ -2950,7 +2956,7 @@ pair<I, O> copy_bounded(I f_i, I l_i, O f_o, O l_o)
 {
     // Precondition: $\property{not\_overlapped\_forward}(f_i, l_i, f_o, l_o)$
     while (f_i != l_i && f_o != l_o) copy_step(f_i, f_o);
-    return pair<I, O>(f_i, f_o);
+    return make_pair(f_i, f_o);
 }
 
 template<typename N>
@@ -2972,7 +2978,7 @@ pair<I, O> copy_n(I f_i, N n, O f_o)
 {
     // Precondition: $\property{not\_overlapped\_forward}(f_i, f_i+n, f_o, f_o+n)$
     while (count_down(n)) copy_step(f_i, f_o);
-    return pair<I, O>(f_i, f_o);
+    return make_pair(f_i, f_o);
 }
 
 template<typename I>
@@ -3015,7 +3021,7 @@ template<typename I, typename O>
 pair<I, O> copy_backward_n(I l_i, DistanceType(I) n, O l_o)
 {
     while (count_down(n)) copy_backward_step(l_i, l_o);
-    return pair<I, O>(l_i, l_o);
+    return make_pair(l_i, l_o);
 }
 
 template<typename I, typename O>
@@ -3107,7 +3113,7 @@ pair<O_f, O_t> split_copy(I f_i, I l_i, O_f f_f, O_t f_t,
     while (f_i != l_i)
         if (p(f_i)) copy_step(f_i, f_t);
         else        copy_step(f_i, f_f);
-    return pair<O_f, O_t>(f_f, f_t);
+    return make_pair(f_f, f_t);
 }
 
 template<typename I, typename O_f, typename O_t, typename P>
@@ -3123,7 +3129,7 @@ pair<O_f, O_t> split_copy_n(I f_i, DistanceType(I) n_i, O_f f_f, O_t f_t, P p)
     while (count_down(n_i))
         if (p(f_i)) copy_step(f_i, f_t);
         else        copy_step(f_i, f_f);
-    return pair<O_f, O_t>(f_f, f_t);
+    return make_pair(f_f, f_t);
 }
 
 template<typename I, typename O_f, typename O_t, typename P>
@@ -3371,7 +3377,7 @@ pair<I0, I1> swap_ranges_bounded(I0 f0, I0 l0, I1 f1, I1 l1)
     // Precondition: $\property{mutable\_bounded\_range}(f_0, l_0)$
     // Precondition: $\property{mutable\_bounded\_range}(f_1, l_1)$
     while (f0 != l0 && f1 != l1) swap_step(f0, f1);
-    return pair<I0, I1>(f0, f1);
+    return make_pair(f0, f1);
 }
 
 template<typename I0, typename I1, typename N>
@@ -3384,7 +3390,7 @@ pair<I0, I1> swap_ranges_n(I0 f0, I1 f1, N n)
     // Precondition: $\property{mutable\_counted\_range}(f_0, n)$
     // Precondition: $\property{mutable\_counted\_range}(f_1, n)$
     while (count_down(n)) swap_step(f0, f1);
-    return pair<I0, I1>(f0, f1);
+    return make_pair(f0, f1);
 }
 
 template<typename I0, typename I1>
@@ -3423,7 +3429,7 @@ pair<I0, I1>reverse_swap_ranges_bounded(I0 f0, I0 l0,
     // Precondition:  $\property{mutable\_bounded\_range}(f_1, l_1)$
     while (f0 != l0 && f1 != l1)
         reverse_swap_step(l0, f1);
-    return pair<I0, I1>(l0, f1);
+    return make_pair(l0, f1);
 }
 
 template<typename I0, typename I1, typename N>
@@ -3436,7 +3442,7 @@ pair<I0, I1> reverse_swap_ranges_n(I0 l0, I1 f1, N n)
     // Precondition: $\property{mutable\_counted\_range}(l_0-n, n)$
     // Precondition: $\property{mutable\_counted\_range}(f_1, n)$
     while (count_down(n)) reverse_swap_step(l0, f1);
-    return pair<I0, I1>(l0, f1);
+    return make_pair(l0, f1);
 }
 
 
@@ -4142,7 +4148,7 @@ pair<I, I> partition_stable_singleton(I f, P p)
     // Precondition: $\property{readable\_bounded\_range}(f, \func{successor}(f))$
     I l = successor(f);
     if (!p(source(f))) f = l;
-    return pair<I, I>(f, l);
+    return make_pair(f, l);
 }
 
 template<typename I>
@@ -4152,7 +4158,7 @@ pair<I, I> combine_ranges(const pair<I, I>& x,
 {
     // Precondition: $\property{mutable\_bounded\_range}(x.m0, y.m0)$
     // Precondition: $x.m1 \in [x.m0, y.m0]$
-    return pair<I, I>(rotate(x.m0, x.m1, y.m0), y.m1);
+    return make_pair(rotate(x.m0, x.m1, y.m0), y.m1);
 }
 
 template<typename I, typename P>
@@ -4175,7 +4181,7 @@ template<typename I, typename P>
 pair<I, I> partition_stable_n(I f, DistanceType(I) n, P p)
 {
     // Precondition: $\property{mutable\_counted\_range}(f, n)$
-    if (zero(n)) return pair<I, I>(f, f);
+    if (zero(n)) return make_pair(f, f);
     return partition_stable_n_nonempty(f, n, p);
 }
 
@@ -4319,7 +4325,7 @@ I partition_stable_iterative(I f, I l, P p)
         f, l,
         combine_ranges<I>,
         partition_trivial<I, P>(p),
-        pair<I, I>(f, f)
+        make_pair(f, f)
       ).m0;
 } 
 
@@ -5195,7 +5201,7 @@ pair<P, I> insert_range(P p, counted_range<I> w)
 {
     pair< I, insert_iterator<P> > io =
         copy_n(begin(w), size(w), insert_iterator<P>(p));
-    return pair<P, I>(io.m1.p, io.m0);
+    return make_pair(io.m1.p, io.m0);
 }
 
 template<typename S, typename W>
@@ -6814,7 +6820,7 @@ pair<I, I> advanced_partition_stable_n(I f, DistanceType(I) n, P p)
     typedef underlying_iterator<I> U;
     pair<U, U> tmp = partition_stable_n(U(f), n,
                                         underlying_predicate<P>(p));
-    return pair<I, I>(original(tmp.m0), original(tmp.m1));
+    return make_pair(original(tmp.m0), original(tmp.m1));
 }
 
 template<typename I, typename R>

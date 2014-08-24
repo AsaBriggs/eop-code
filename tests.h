@@ -113,8 +113,8 @@ void type_pair(const T0& x00, const T0& x01, const T1& x10, const T1& x11)
     typedef pair<T0, T1> P01;
 
     // Pair constructor
-    P01 p0(x00, x10);
-    P01 p1(x01, x11);
+    P01 p0 = {x00, x10};
+    P01 p1 = {x01, x11};
 
     // Regular
     concept_Regular(p0);
@@ -157,7 +157,7 @@ void test_tuples()
     type_pair<int, char>(0, 0, 'a', 'z');
 
     char a[] = {'a', 'Z'};
-    type_pair<P, pointer(char)>(P(0, 'a'), P(1, 'Z'), &(a[0]), &(a[1]));
+    type_pair<P, pointer(char)>(make_pair(0, 'a'), make_pair(1, 'Z'), &(a[0]), &(a[1]));
 
     array<int> a0;
     array<int> a1(3, 3, 0);
@@ -591,10 +591,11 @@ void test_ch_3()
     typedef pair<N, N> Fib;
 
     concept_Integer(N(7));
-    concept_BinaryOperation(fibonacci_matrix_multiply<N>, Fib(N(1), N(0)));
+    Fib tmp = {N(1), N(0)};
+    concept_BinaryOperation(fibonacci_matrix_multiply<N>, tmp);
 
-    Fib f10(55, 34);
-    Fib f11(89, 55);
+    Fib f10 = {N(55), N(34)};
+    Fib f11 = {N(89), N(55)};
     Fib f21 = fibonacci_matrix_multiply(f10, f11);
     Assert(f21.m0 == 10946 && f21.m1 == 6765);
     Assert(fibonacci<N>(10) == N(55));
@@ -781,7 +782,11 @@ void algorithm_select_1_4()
 {
     print("    select_1_4\n");
     typedef pair<int, int> T;
-    T t[] = {T(1, 1), T(2, 2), T(2, 3), T(3, 4)};
+    T t_1_1 = {1, 1};
+    T t_2_2 = {2, 2};
+    T t_2_3 = {2, 3};
+    T t_3_4 = {3, 4};
+    T t[] = {t_1_1, t_2_2, t_2_3, t_3_4};
     pointer(T) l = t + sizeof(t) / sizeof(T);
     do {
         if (verbose) {
@@ -802,7 +807,11 @@ void algorithm_select_1_4_stability_indices()
 {
     print("    select_1_4 with stability indices\n");
     typedef pair<int, int> T;
-    T t[] = {T(1, 1), T(2, 2), T(2, 3), T(3, 4)};
+    T t_1_1 = {1, 1};
+    T t_2_2 = {2, 2};
+    T t_2_3 = {2, 3};
+    T t_3_4 = {3, 4};
+    T t[] = {t_1_1, t_2_2, t_2_3, t_3_4};
     pointer(T) l = t + sizeof(t) / sizeof(T);
     do {
         if (verbose) {
@@ -824,11 +833,11 @@ void algorithm_select_2_5_stability_indices()
     print("    select_2_5 with stability indices\n");
     typedef pair<char, int> P;
     typedef less_first<char, int> R;
-    P p0('x', 0);
-    P p1('x', 1);
-    P p2('x', 2);
-    P p3('x', 3);
-    P p4('x', 4);
+    P p0 = {'x', 0};
+    P p1 = {'x', 1};
+    P p2 = {'x', 2};
+    P p3 = {'x', 3};
+    P p4 = {'x', 4};
     Assert(select_2_5<0,1,2,3,4>(p0,p1,p2,p3,p4,R()).m1 == p2.m1);
     Assert(select_2_5<0,1,2,4,3>(p0,p1,p2,p4,p3,R()).m1 == p2.m1);
     Assert(select_2_5<0,1,3,2,4>(p0,p1,p3,p2,p4,R()).m1 == p2.m1);
@@ -1013,9 +1022,13 @@ void test_ch_4()
     F fst;
     typedef pair<int, double> PID;
     key_ordering< F, less<int> > ko(fst, less<int>());
-    Assert(ko(PID(1, 2.0), PID(2, 1.0)));
-    Assert(!ko(PID(1, 2.0), PID(1, 1.0)));
-    Assert(!ko(PID(1, 1.0), PID(1, 2.0)));
+    PID key_1_2p0 = {1, 2.0};
+    PID key_2_1p0 = {2, 1.0};
+    PID key_1_1p0 = {1, 1.0};
+    Assert(ko(key_1_2p0, key_2_1p0));
+    Assert(!ko(key_1_2p0, key_1_2p0));
+    Assert(!ko(key_1_2p0, key_1_1p0));
+    Assert(!ko(key_1_1p0, key_1_2p0));
 
     // clusters: != > <= >= -- see concept_TotallyOrdered
 
@@ -1038,8 +1051,8 @@ void test_ch_4()
     Assert(select_1_2(a, c, less<int>()) == c);
     Assert(select_1_2(c, a, less<int>()) == c);
 
-    int_pair p1(1, 1);
-    int_pair p2(1, 2);
+    int_pair p1 = {1, 1};
+    int_pair p2 = {1, 2};
     typedef less_first<int, int> R;
     Assert(select_0_2<1, 2, R>(p1, p2, R()) == p1);
     Assert(select_0_2<1, 2, R>(p2, p1, R()) == p2);
@@ -1094,10 +1107,12 @@ void test_ch_4()
 
     {
         typedef pair<char, int> P;
-        Assert(min<P>(P('a', 3), P('a', 4)) == P('a', 3));
-        Assert(min<P>(P('a', 4), P('a', 3)) == P('a', 3));
-        Assert(max<P>(P('a', 3), P('a', 4)) == P('a', 4));
-        Assert(max<P>(P('a', 4), P('a', 3)) == P('a', 4));
+        P a_3 = {'a', 3};
+        P a_4 = {'a', 4};
+        Assert(min<P>(a_3, a_4) == a_3);
+        Assert(min<P>(a_4, a_3) == a_3);
+        Assert(max<P>(a_3, a_4) == a_4);
+        Assert(max<P>(a_4, a_3) == a_4);
     }
 
 }
@@ -1797,7 +1812,7 @@ quotient_remainder(const polynomial<T>& f, const polynomial<T>&g) {
         q = q + q_i;
         r = r - q_i * g;
     }
-    return pair< polynomial<T>, polynomial<T> >(q, r);
+    return make_pair(q, r);
     // Postcondition: f = q * g + r /\ degree(r) < degree(g)
 }
 
@@ -4161,8 +4176,8 @@ void type_array_k()
         typedef pair<int, char> P;
         array_k<3, P> a0;
         array_k<3, P> a1;
-        a0[0] = P(0, 'a'); a1[0] = P(1, 'Z'); // establish a0 < a1
-        P x(2, '0');
+        a0[0] = make_pair(0, 'a'); a1[0] = make_pair(1, 'Z'); // establish a0 < a1
+        P x = {2, '0'};
         concept_ConstantSizeSequence(a0, a1, x);
     }
     {
@@ -4390,8 +4405,8 @@ void type_array()
         typedef pair<int, char> P;
         array<P> a0(3, 3, P());
         array<P> a1(3, 3, P());
-        a0[0] = P(0, 'a'); a1[0] = P(1, 'Z'); // establish a0 < a1
-        P x(2, '0');
+        a0[0] = make_pair(0, 'a'); a1[0] = make_pair(1, 'Z'); // establish a0 < a1
+        P x = {2, '0'};
         type_single_extent_array(a0, a1, x);
     }
     {
