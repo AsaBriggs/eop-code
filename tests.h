@@ -4485,8 +4485,8 @@ void type_underlying_iterator_array(T0& x)
     T t(2, 2, x);
     I f(begin(t));
     I l(end(t));
-    UI uf(f);
-    UI ul(l);
+    UI uf = {f};
+    UI ul = {l};
     Assert(uf != ul);
     Assert(predecessor(successor(uf)) == uf);
     Assert(ul - uf == l - f);
@@ -4524,7 +4524,7 @@ void algorithm_underlying_predicate(T& x0, T& x1, P p)
     // Precondition: !p(x0) && p(x1)
     Assert(!p(x0) && p(x1));
 
-    underlying_predicate<P> up(p);
+    underlying_predicate<P> up = {p};
     Assert(!up(underlying_ref(x0)) && up(underlying_ref(x1)));
 }
 
@@ -4536,7 +4536,7 @@ void algorithm_underlying_relation(T& x0, T& x1, R r)
     typedef UnderlyingType(T) U;
     Assert(r(x0, x1) && !r(x1, x0));
 
-    underlying_relation<R> ur(r);
+    underlying_relation<R> ur = {r};
     U& ux0(underlying_ref(x0));
     U& ux1(underlying_ref(x1));
     Assert(ur(ux0, ux1) && !ur(ux1, ux0));

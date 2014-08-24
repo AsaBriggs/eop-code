@@ -6782,9 +6782,15 @@ template<typename I>
 struct underlying_iterator
 {
     I i;
-    underlying_iterator() { }
-    underlying_iterator(const I& x) : i(x) { }
 };
+
+template<typename I>
+  requires(Iterator(I))   
+inline underlying_iterator<I> make_underlying_iterator(const I& i)
+{
+    underlying_iterator<I> tmp = {i};
+    return tmp ;
+}
 
 template<typename I>
     requires(Iterator(I))
@@ -6811,21 +6817,21 @@ template<typename I>
     requires(Iterator(I))
 underlying_iterator<I> successor(const underlying_iterator<I>& x)
 {
-  return successor(x.i);
+  return make_underlying_iterator(successor(x.i));
 }
 
 template<typename I>
     requires(Iterator(I))
 underlying_iterator<I> predecessor(const underlying_iterator<I>& x)
 {
-  return predecessor(x.i);
+  return make_underlying_iterator(predecessor(x.i));
 }
 
 template<typename I>
     requires(Iterator(I))
 underlying_iterator<I> operator+(underlying_iterator<I> x, DistanceType(I) n)
 {
-    return underlying_iterator<I>(x.i + n);
+    return make_underlying_iterator(x.i + n);
 }
 
 template<typename I>
@@ -6839,7 +6845,7 @@ template<typename I>
     requires(Iterator(I))
 underlying_iterator<I> operator-(underlying_iterator<I> x, DistanceType(I) n)
 {
-    return underlying_iterator<I>(x.i - n);
+    return make_underlying_iterator(x.i - n);
 }
 
 template<typename I>
@@ -6930,12 +6936,19 @@ struct underlying_predicate
 {
     typedef UnderlyingType(Domain(P)) U;
     P p;
-    underlying_predicate(P p) : p(p) { }
     bool operator()(const U& x)
     {
         return p(original_ref<Domain(P)>(x));
     }
 };
+
+template<typename P>
+    requires(Predicate(P))
+inline underlying_predicate<P> make_underlying_predicate(const P& p)
+{
+    underlying_predicate<P> tmp = {p};
+    return tmp;
+}
 
 template<typename P>
     requires(Predicate(P))
@@ -6950,12 +6963,19 @@ struct underlying_relation
 {
     typedef UnderlyingType(Domain(R)) U;
     R r;
-    underlying_relation(R r) : r(r) { }
     bool operator()(const U& x, const U& y)
     {
         return r(original_ref<Domain(R)>(x), original_ref<Domain(R)>(y));
     }
 };
+
+template<typename R>
+    requires(Relation(R))
+inline underlying_relation<R> make_underlying_relation(const R& r)
+{
+    underlying_relation<R> tmp = {r};
+    return tmp;
+}
 
 template<typename R>
     requires(Relation(R))
@@ -6970,8 +6990,8 @@ template<typename I, typename P>
 pair<I, I> advanced_partition_stable_n(I f, DistanceType(I) n, P p)
 {
     typedef underlying_iterator<I> U;
-    pair<U, U> tmp = partition_stable_n(U(f), n,
-                                        underlying_predicate<P>(p));
+    pair<U, U> tmp = partition_stable_n(make_underlying_iterator(f), n,
+                                        make_underlying_predicate(p));
     return make_pair(original(tmp.m0), original(tmp.m1));
 }
 
@@ -6982,9 +7002,9 @@ I advanced_sort_n(I f, DistanceType(I) n, R r)
 {
     // Precondition: $\property{mutable\_counted\_range}(f, n) \wedge \property{weak\_ordering}(r)$
     temporary_buffer<UnderlyingType(ValueType(I))> b(half_nonnegative(n));
-    return original(sort_n_adaptive(underlying_iterator<I>(f), n,
+    return original(sort_n_adaptive(make_underlying_iterator(f), n,
                                     begin(b), size(b),
-                                    underlying_relation<R>(r)));
+                                    make_underlying_relation(r)));
 }
 
 template<typename T, typename R>
