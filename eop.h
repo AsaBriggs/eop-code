@@ -584,6 +584,24 @@ I fibonacci(I n)
                  fibonacci_matrix_multiply<I>).m0;
 }
 
+template<typename I>
+    requires(Integer(I))
+void fibonacci_next(I& n, I& nMinus1)
+{
+  I tmp = n + nMinus1;
+  nMinus1 = n;
+  n = tmp;
+}
+
+template<typename I>
+    requires(Integer(I))
+void fibonacci_previous(I& n, I& nMinus1)
+{
+  I tmp = n - nMinus1;
+  n = nMinus1;
+  nMinus1 = tmp;
+}
+
 
 // 
 //  Chapter 4. Linear orderings
@@ -1131,15 +1149,11 @@ T remainder_nonnegative_fibonacci(T a, T b)
     if (a < b) return a;
     T c = b;
     do {
-        T tmp = c;
-        c = b + c;
-        b = tmp;
+      fibonacci_next(c, b);
     } while (a >= c);
     do {
         if (a >= b) a = a - b;
-        T tmp = c - b;
-        c = b;
-        b = tmp;
+        fibonacci_previous(c, b);
     } while (b < c);
     return a;
 }
@@ -1286,6 +1300,40 @@ quotient_remainder_nonnegative(T a, T b)
     a = q.m1;
     if (a < b) return make_pair(m, a);
     else       return make_pair(successor(m), a - b);
+}
+
+/* The next function is due to:
+    Robert W. Floyd and Donald E. Knuth.
+    Addition machines.
+    \emph{SIAM Journal on Computing},
+    Volume 19, Number 2, 1990, pages 329--340.
+*/
+
+template<typename T>
+    requires(ArchimedeanMonoid(T))
+pair<QuotientType(T), T>
+quotient_remainder_nonnegative_fibonacci(T a, T b)
+{
+    // Precondition: $a \geq 0 \wedge b > 0$
+    typedef QuotientType(T) N;
+    if (a < b) return make_pair(N(0), a);
+    T c = b;
+    N nMinus1 = N(0);
+    N n = N(1);
+    do {
+        fibonacci_next(c, b);
+        fibonacci_next(n, nMinus1);
+    } while (a >= c);
+    N quotient = N(0);
+    do {
+        if (a >= b) {
+            a = a - b;
+            quotient = quotient + n;
+        }
+        fibonacci_previous(n, nMinus1);
+        fibonacci_previous(c, b);
+    } while (b < c);
+    return make_pair(quotient, a);
 }
 
 template<typename T>

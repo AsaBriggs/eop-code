@@ -1261,19 +1261,19 @@ void algorithms_q_and_r_nonnegative_fibonacci()
         T b(1);
         while (b < max) {
             T r = remainder_nonnegative_fibonacci(a, b);
-//             pair<N, T> qr = quotient_remainder_nonnegative_fibonacci(a, b);
-             Assert(Z(r) == Z(a) % Z(b));
-//             Assert(qr.m1 == r);
+            pair<N, T> qr = quotient_remainder_nonnegative_fibonacci(a, b);
+//            Assert(Z(r) == Z(a) % Z(b));
+            Assert(qr.m1 == r);
 //             Assert(Z(qr.m0) == Z(a) / Z(b));
-//             Assert(power(b, qr.m0, plus_T, T(0)) + r == a);
-             b = successor(b);
+            Assert(power(b, qr.m0, plus_T, T(0)) + r == a);
+            b = successor(b);
         }
         a = successor(a);
     }
 }
 
 template<typename T>
-    requires(ArchimedeanMonoid(T)) // + numerals, successor
+    requires(HalvableMonoid(T)) // + numerals, successor
 void algorithms_q_and_r_nonnegative_iterative()
 {
     typedef long Z;
@@ -1914,7 +1914,7 @@ void test_ch_5()
 
     algorithms_q_and_r_nonnegative_fibonacci<int>();
     algorithms_q_and_r_nonnegative_fibonacci<long>();
-//    algorithms_q_and_r_nonnegative_fibonacci<Q>();
+    algorithms_q_and_r_nonnegative_fibonacci<Q>();
 
     algorithms_q_and_r_nonnegative_iterative<int>();
     algorithms_q_and_r_nonnegative_iterative<long>();
