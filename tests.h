@@ -997,11 +997,11 @@ void test_ch_4()
 
     // Test derived relations
     less<int> lt;
-    complement< less< int > > ge(lt);
-    converse< less< int > > gt(lt);
-    complement_of_converse< less< int > > le(lt);
-    symmetric_complement< less< int> > eq(lt);
-    complement< symmetric_complement< less< int> > > ne(eq);
+    complement< less< int > > ge = make_complement(lt);
+    converse< less< int > > gt = make_converse(lt);
+    complement_of_converse< less< int > > le = make_complement_of_converse(lt);
+    symmetric_complement< less< int> > eq = make_symmetric_complement(lt);
+    complement< symmetric_complement< less< int> > > ne = make_complement(eq);
 
     property_total_ordering(lt, 0, 1, 2);
     property_reflexive_total_ordering(ge, 2, 1, 0);
@@ -2110,7 +2110,7 @@ void test_ch_6()
 
         Assert(find_if(begin(l), end(l), negative<Z>) == end(l));
         Assert(find_if(begin(l), end(l),
-                       lower_bound_predicate< less<Z> >(3, less<Z>())) == begin(l) + N(3));
+                       make_lower_bound_predicate(3, less<Z>())) == begin(l) + N(3));
 
         Assert(find_if_not(begin(lb), end(lb), positive<Z>) == end(lb));
         Assert(find_if_not(begin(l), end(l), positive<Z>) == begin(l));
@@ -2176,9 +2176,9 @@ void test_ch_6()
 
 
         Assert(find_if(
-            begin(l), end(l), lower_bound_predicate< less<Z> >(3, less<Z>())) != end(l));
+            begin(l), end(l), make_lower_bound_predicate(3, less<Z>())) != end(l));
         Assert(find_if_unguarded(
-            begin(l), lower_bound_predicate< less<Z> >(3, less<Z>())) == begin(l) + N(3));
+            begin(l), make_lower_bound_predicate(3, less<Z>())) == begin(l) + N(3));
 
         Assert(find_if_not(begin(l), end(l), positive<Z>) != end(l));
         Assert(find_if_not_unguarded(begin(l), positive<Z>) == begin(l));
@@ -2218,10 +2218,10 @@ void test_ch_6()
         Assert(!strictly_increasing_range(begin(lc), end(lc), less<Z>()));
 
         Assert(relation_preserving(
-            begin(l), end(l), complement_of_converse< less<Z> >(less<Z>())));
+            begin(l), end(l), make_complement_of_converse(less<Z>())));
         {
             less<Z> lt;
-            complement_of_converse< less<Z> > leq(lt);
+            complement_of_converse< less<Z> > leq = {lt};
             Assert(leq(Z(0), Z(0)));
             Assert(leq(Z(0), Z(1)));
             Assert(!leq(Z(1), Z(0)));
@@ -2244,9 +2244,9 @@ void test_ch_6()
         Assert(partitioned(begin(lb), end(lb), even<Z>));
         Assert(partitioned(begin(lb), end(lb), odd<Z>));
         Assert(partitioned(
-            begin(l), end(l), lower_bound_predicate< less<Z> >(3, less<Z>())));
+            begin(l), end(l), make_lower_bound_predicate(3, less<Z>())));
         Assert(partitioned(
-            begin(l), end(l), upper_bound_predicate< less<Z> >(3, less<Z>())));
+            begin(l), end(l), make_upper_bound_predicate(3, less<Z>())));
         {
             Z g[] = {0, 2, 4, 1, 3, 5};
             slist<Z> lg(counted_range<Z*>(g, sizeof(g)/sizeof(Z)));
@@ -2257,13 +2257,13 @@ void test_ch_6()
         Assert(partition_point_n(begin(lb), size(lb), zero<Z>) == end(lb));
         Assert(partition_point_n(begin(lb), size(lb), odd<Z>) == begin(lb));
         Assert(partition_point_n(
-            begin(l), size(l), lower_bound_predicate< less<Z> >(3, less<Z>())) ==
+            begin(l), size(l), make_lower_bound_predicate(3, less<Z>())) ==
             begin(l) + N(3));
 
         Assert(partition_point(begin(lb), end(lb), zero<Z>) == end(lb));
         Assert(partition_point(begin(lb), end(lb), odd<Z>) == begin(lb));
         Assert(partition_point(
-            begin(l), end(l), lower_bound_predicate< less<Z> >(3, less<Z>())) ==
+            begin(l), end(l), make_lower_bound_predicate(3, less<Z>())) ==
             begin(l) + N(3));
 
         { // bidirectional iterators
@@ -2374,7 +2374,7 @@ void algorithms_lexicographical()
     Assert(!lexicographical_compare(f_a, l_a, f_a, f_a + NP(4), less<Z>()));
 
     less<Z> lt;
-    comparator_3_way< less<Z> > comp(lt);
+    comparator_3_way< less<Z> > comp = {lt};
     Assert(lexicographical_compare_3way(f_a, l_a, f_b, l_b, comp) == -1);
     Assert(lexicographical_compare_3way(f_a, l_a, f_a, l_a, comp) ==  0);
     Assert(lexicographical_compare_3way(f_b, l_b, f_a, l_a, comp) ==  1);
@@ -3015,7 +3015,7 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
     // test copy_select
     {
         iota(n, f0);
-        predicate_source< I0, bool (*)(const T&) > es(even<T>);
+        predicate_source< I0, bool (*)(const T&) > es = {even<T>};
         I1 m1 = copy_select(f0, l0, f1, es);
         Assert(m1 - f1 == count_if(f0, l0, even<T>));
         Assert(all(f1, m1, even<T>));
@@ -3034,7 +3034,7 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
         iota(n, f0);
         I0 f_f = f0;
         I1 f_t = f1;
-        predicate_source< I0, bool (*)(const T&) > es(even<T>);
+        predicate_source< I0, bool (*)(const T&) > es = {even<T>};
         N0 n_f = count_if(f0, l0, odd<T>);
         N1 n_t = count_if(f0, l0, even<T>);
         pair<I0, I1> pft = split_copy(f0, l0, f_f, f_t, es);
@@ -3049,7 +3049,7 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
         iota(n, f0);
         I0 f_f = f0;
         I1 f_t = f1;
-        predicate_source< I0, bool (*)(const T&) > es(even<T>);
+        predicate_source< I0, bool (*)(const T&) > es = {even<T>};
         N0 n_f = count_if(f0, l0, odd<T>);
         N1 n_t = count_if(f0, l0, even<T>);
         pair<I0, I1> pft = split_copy_n(f0, n, f_f, f_t, es);
@@ -3092,7 +3092,7 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
         I0 m0 = iota(n_over_2, f0);
         iota(n - n_over_2, m0);
         less<ValueType(I0)> lt;
-        relation_source< I0, I0, less<ValueType(I0)> > lts(lt);
+        relation_source< I0, I0, less<ValueType(I0)> > lts = {lt};
         I1 m1 = combine_copy(f0, m0, m0, l0, f1, lts);
         Assert(m1 - f1 == n);
         Assert(increasing_range(f1, m1, less<T>()));
@@ -3103,7 +3103,7 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
         I0 m0 = iota(n_over_2, f0);
         iota(n - n_over_2, m0);
         less<ValueType(I0)> lt;
-        relation_source< I0, I0, less<ValueType(I0)> > lts(lt);
+        relation_source< I0, I0, less<ValueType(I0)> > lts = {lt};
         triple<I0, I0, I1> t = combine_copy_n(f0, m0 - f0, m0, l0 - m0, f1, lts);
         Assert(t.m0 == m0 && t.m1 == l0 && t.m2 - f1 == n);
         Assert(increasing_range(f1, t.m2, less<T>()));
@@ -3222,7 +3222,7 @@ void algorithms_copy_backward(I0 f0, I0 l0, I1 f1, I1 l1)
         I0 m0 = iota(n_over_2, f0);
         iota(n - n_over_2, m0);
         less<ValueType(I0)> lt;
-        relation_source< I0, I0, less<ValueType(I0)> > lts(lt);
+        relation_source< I0, I0, less<ValueType(I0)> > lts = {lt};
         I1 m1 = combine_copy_backward(f0, m0, m0, l0, l1, lts);
         Assert(l1 - m1 == n);
         Assert(increasing_range(m1, l1, less<T>()));
@@ -3233,7 +3233,7 @@ void algorithms_copy_backward(I0 f0, I0 l0, I1 f1, I1 l1)
         I0 m0 = iota(n_over_2, f0);
         iota(n - n_over_2, m0);
         less<ValueType(I0)> lt;
-        relation_source< I0, I0, less<ValueType(I0)> > lts(lt);
+        relation_source< I0, I0, less<ValueType(I0)> > lts = {lt};
         triple<I0, I0, I1> t = combine_copy_backward_n(m0, m0 - f0, l0, l0 - m0, l1, lts);
         Assert(t.m0 == f0 && t.m1 == m0 && l1 - t.m2 == n);
         Assert(increasing_range(t.m2, l1, less<T>()));
@@ -4016,7 +4016,7 @@ void algorithms_sort(S& s)
     I m;
 
     less<int> ls;
-    converse< less<int> > greater(ls);
+    converse< less<int> > greater = {ls};
     {
         iota(n, f);
             int n_b = half_nonnegative(n);

@@ -333,8 +333,7 @@ void run_idempotent_power()
         int n, m;
         read(n); read(m);
         if (n == 0 && m == 0) return;
-        multiplies_transformation< M > g(n, M(m));
-        int p = collision_point(n, g, always_defined<int>);
+        int p = collision_point(n, make_multiplies_transformation(n, M(m)), always_defined<int>);
         print("idempotent_power()("); print(n); print(", multiplication modulo ");
             print(m); print(") == ");
         	print(p); print_eol();

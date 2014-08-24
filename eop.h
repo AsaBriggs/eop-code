@@ -96,7 +96,7 @@ template<typename T0, typename T1>
     requires(Regular(T0) && Regular(T1))
 inline pair<T0, T1> make_pair(const T0& m0, const T1& m1)
 {
-  pair<T0, T1> tmp = { m0, m1 };
+  pair<T0, T1> tmp = {m0, m1};
   return tmp ;
 }
 
@@ -136,7 +136,7 @@ struct triple
 
 template<typename T0, typename T1, typename T2>
     requires(Regular(T0) && Regular(T1) && Regular(T2))
-triple<T0, T1, T2> make_triple( T0 const& x, T1 const& y, T2 const& z)
+inline triple<T0, T1, T2> make_triple( T0 const& x, T1 const& y, T2 const& z)
 {
   triple<T0, T1, T2> tmp = {x, y, z};
   return tmp;
@@ -624,12 +624,19 @@ template<typename R>
 struct complement
 {
     R r;
-    complement(R r) : r(r) { }
     bool operator()(const Domain(R)& x, const Domain(R)& y)
     {
         return !r(x, y);
     }
 };
+
+template<typename R>
+    requires(Relation(R))
+inline complement<R> make_complement(const R& r)
+{
+    complement<R> tmp = {r};
+    return tmp;
+}
 
 template<typename R>
     requires(Relation(R))
@@ -643,12 +650,19 @@ template<typename R>
 struct converse
 {
     R r;
-    converse(R r) : r(r) { }
     bool operator()(const Domain(R)& x, const Domain(R)& y)
     {
         return r(y, x);
     }
 };
+
+template<typename R>
+    requires(Relation(R))
+inline converse<R> make_converse(const R& r)
+{
+    converse<R> tmp = {r};
+    return tmp ;
+}
 
 template<typename R>
     requires(Relation(R))
@@ -663,12 +677,19 @@ struct complement_of_converse
 {
     typedef Domain(R) T;
     R r;
-    complement_of_converse(const R& r) : r(r) { }
     bool operator()(const T& a, const T& b)
     {
         return !r(b, a);
     }
 };
+
+template<typename R>
+    requires(Relation(R))
+inline complement_of_converse<R> make_complement_of_converse(const R& r)
+{
+    complement_of_converse<R> tmp = {r};
+    return tmp ;
+}
 
 template<typename R>
     requires(Relation(R))
@@ -682,12 +703,19 @@ template<typename R>
 struct symmetric_complement
 {
     R r;
-    symmetric_complement(R r) : r(r) { } 
     bool operator()(const Domain(R)& a, const Domain(R)& b)
     {
         return !r(a, b) && !r(b, a);
     }
 };
+
+template<typename R>
+   requires(Relation(R))
+inline symmetric_complement<R> make_symmetric_complement(const R& r)
+{
+    symmetric_complement<R> tmp = {r};
+    return tmp;
+}
 
 template<typename R>
     requires(Relation(R))
@@ -1058,12 +1086,19 @@ struct multiplies_transformation
 {
     Domain(Op) x;
     Op op;
-    multiplies_transformation(Domain(Op) x, Op op) : x(x), op(op) { }
     Domain(Op) operator()(const Domain(Op)& y)
     {
         return op(x, y);
     }
 };
+
+template<typename Op>
+    requires(SemigroupOperation(Op)) // ***** or MultiplicativeSemigroup ?????
+inline multiplies_transformation<Op> make_multiplies_transformation(const Domain(Op)& x, const Op& op)
+{
+    multiplies_transformation<Op> tmp = {x, op};
+    return tmp;
+}
 
 template<typename Op>
     requires(SemigroupOperation(Op))
@@ -1873,7 +1908,7 @@ bool increasing_range(I f, I l, R r)
     // $\func{readable\_bounded\_range}(f, l) \wedge \func{weak\_ordering}(r)$
     return relation_preserving(
         f, l,
-        complement_of_converse<R>(r));
+        make_complement_of_converse(r));
 }
 
 template<typename I, typename P>
@@ -1940,9 +1975,16 @@ struct lower_bound_predicate
     typedef Domain(R) T;
     const T& a;
     R r;
-    lower_bound_predicate(const T& a, R r) : a(a), r(r) { }
     bool operator()(const T& x) { return !r(x, a); }
 };
+
+template<typename R>
+    requires(Relation(R))
+inline lower_bound_predicate<R> make_lower_bound_predicate(const Domain(R)& a, const R& r)
+{
+    lower_bound_predicate<R> tmp = {a, r};
+    return tmp;
+}
 
 template<typename I, typename R>
     requires(Readable(I) && ForwardIterator(I) &&
@@ -1952,8 +1994,7 @@ I lower_bound_n(I f, DistanceType(I) n,
 {
     // Precondition:
     // $\property{weak\_ordering(r)} \wedge \property{increasing\_counted\_range}(f, n, r)$
-    lower_bound_predicate<R> p(a, r);
-    return partition_point_n(f, n, p);
+    return partition_point_n(f, n, make_lower_bound_predicate(a, r));
 } 
 
 template<typename R>
@@ -1963,9 +2004,16 @@ struct upper_bound_predicate
     typedef Domain(R) T;
     const T& a;
     R r;
-    upper_bound_predicate(const T& a, R r) : a(a), r(r) { }
     bool operator()(const T& x) { return r(a, x); }
 };
+
+template<typename R>
+    requires(Relation(R))
+inline upper_bound_predicate<R> make_upper_bound_predicate(const Domain(R)& a, const R& r)
+{
+    upper_bound_predicate<R> tmp = {a, r};
+    return tmp;
+}
 
 template<typename I, typename R>
     requires(Readable(I) && ForwardIterator(I) &&
@@ -1975,8 +2023,7 @@ I upper_bound_n(I f, DistanceType(I) n,
 {
     // Precondition:
     // $\property{weak\_ordering(r)} \wedge \property{increasing\_counted\_range}(f, n, r)$
-    upper_bound_predicate<R> p(a, r);
-    return partition_point_n(f, n, p);
+    return partition_point_n(f, n, make_upper_bound_predicate(a, r));
 } 
 
 
@@ -2451,11 +2498,6 @@ struct comparator_3_way
 {
     typedef Domain(R) T;
     R r;
-    comparator_3_way(R r) : r(r)
-    {
-        // Precondition: $\property{weak\_ordering}(r)$
-        // Postcondition: three_way_compare(comparator_3_way(r))
-    }
     int operator()(const T& a, const T& b)
     {
         if (r(a, b)) return 1;
@@ -2463,6 +2505,14 @@ struct comparator_3_way
         return 0;
     }
 };
+
+template<typename R>
+    requires(Relation(R))
+inline comparator_3_way<R> make_comparator_3_way(const R& r)
+{
+    comparator_3_way<R> tmp = {r};
+    return tmp;
+}
 
 template<typename I0, typename I1, typename F>
     requires(Readable(I0) && Iterator(I0) &&
@@ -2655,7 +2705,6 @@ struct linker_to_tail
 {
     typedef IteratorType(S) I;
     S set_link;
-    linker_to_tail(const S& set_link) : set_link(set_link) { }
     void operator()(I& t, I& f)
     {
         // Precondition: $\func{successor}(f)\text{ is defined}$
@@ -2663,6 +2712,14 @@ struct linker_to_tail
         advance_tail(t, f);
     }
 };
+
+template<typename S>
+    requires(ForwardLinker(S))
+inline linker_to_tail<S> make_linker_to_tail(const S& s)
+{
+    linker_to_tail<S> tmp = {s};
+    return tmp;
+}
 
 template<typename I>
     requires(ForwardIterator(I))
@@ -2684,7 +2741,7 @@ split_linked(I f, I l, Pred p, S set_link)
 {
     // Precondition: $\property{bounded\_range}(f, l)$
     typedef pair<I, I> P;
-    linker_to_tail<S> link_to_tail(set_link);
+    linker_to_tail<S> link_to_tail = {set_link};
     I h0 = l; I t0 = l;
     I h1 = l; I t1 = l; 
     if (f == l)                              goto s4; 
@@ -2718,7 +2775,7 @@ combine_linked_nonempty(I f0, I l0, I f1, I l1, R r, S set_link)
     //                \property{bounded\_range}(f1, l1)$
     // Precondition: $f0 \neq l0 \wedge f1 \neq l1 \wedge
     //                \property{disjoint}(f0, l0, f1, l1)$
-    linker_to_tail<S> link_to_tail(set_link);
+    linker_to_tail<S> link_to_tail = {set_link};
     I h; I t;
     if (r(f1, f0)) { h = f1; advance_tail(t, f1); goto s1; }
     else           { h = f0; advance_tail(t, f0); goto s0; }
@@ -2735,12 +2792,12 @@ s3: set_link(t, f0); return make_triple(h, t, l0);
 // Exercise 8.2: combine_linked
 
 
-template<typename I, typename S>
-    requires(ForwardLinker(S) && I == IteratorType(S))
+template<typename S>
+    requires(ForwardLinker(S))
 struct linker_to_head
 {
+    typedef IteratorType(S) I;
     S set_link;
-    linker_to_head(const S& set_link) : set_link(set_link) { }
     void operator()(I& h, I& f)
     {
         // Precondition: $\func{successor}(f)$ is defined
@@ -2751,12 +2808,20 @@ struct linker_to_head
     }
 };
 
+template<typename S>
+    requires(ForwardLinker(S))
+inline linker_to_head<S> make_linker_to_head(const S& s)
+{
+    linker_to_head<S> tmp = {s};
+    return tmp ;
+}
+
 template<typename I, typename S>
     requires(ForwardLinker(S) && I == IteratorType(S))
 I reverse_append(I f, I l, I h, S set_link)
 {
     // Precondition: $\property{bounded\_range}(f, l) \wedge h \notin [f, l)$
-    linker_to_head<I, S> link_to_head(set_link);
+    linker_to_head<S> link_to_head = {set_link};
     while (f != l) link_to_head(h, f);
     return h;
 }
@@ -2767,12 +2832,20 @@ template<typename I, typename P>
 struct predicate_source
 {
     P p;
-    predicate_source(const P& p) : p(p) { }
     bool operator()(I i)
     {
         return p(source(i));
     }
 };
+
+template<typename I, typename P>
+    requires(Readable(I) && 
+        Predicate(P) && ValueType(I) == Domain(P))
+inline predicate_source<I, P> make_predicate_source(const P& p)
+{
+    predicate_source<I, P> tmp = {p};
+    return tmp;
+}
 
 template<typename I, typename S, typename P>
     requires(ForwardLinker(S) && I == IteratorType(S) &&
@@ -2781,7 +2854,7 @@ pair< pair<I, I>, pair<I, I> >
 partition_linked(I f, I l, P p, S set_link)
 {
     // Precondition: $\property{bounded\_range}(f, l)$
-    predicate_source<I, P> ps(p);
+    predicate_source<I, P> ps = {p};
     return split_linked(f, l, ps, set_link);
 }
 
@@ -2792,12 +2865,21 @@ template<typename I0, typename I1, typename R>
 struct relation_source
 {
     R r;
-    relation_source(const R& r) : r(r) { }
     bool operator()(I0 i0, I1 i1)
     {
         return r(source(i0), source(i1));
     }
 };
+
+template<typename I0, typename I1, typename R>
+    requires(Readable(I0) && Readable(I1) &&
+        ValueType(I0) == ValueType(I1) &&
+        Relation(R) && ValueType(I0) == Domain(R))
+inline relation_source<I0, I1, R> make_relation_source(const R& r)
+{
+    relation_source<I0, I1, R> tmp = {r};
+    return tmp;
+}
 
 template<typename I, typename S, typename R>
     requires(Readable(I) &&
@@ -2809,7 +2891,7 @@ pair<I, I> merge_linked_nonempty(I f0, I l0, I f1, I l1,
     // Precondition: $f0 \neq l0 \wedge f1 \neq l1$
     // Precondition: $\property{increasing\_range}(f0, l0, r)$
     // Precondition: $\property{increasing\_range}(f1, l1, r)$
-    relation_source<I, I, R> rs(r);
+    relation_source<I, I, R> rs = {r};
     triple<I, I, I> t = combine_linked_nonempty(f0, l0, f1, l1,
                                                 rs, set_link);
     set_link(find_last(t.m1, t.m2), l1);
@@ -2886,10 +2968,16 @@ template<typename T, typename N>
 struct counter
 {
     N n;
-    counter() : n(0) { }
-    counter(N n) : n(n) { }
     void operator()(const T&) { n = successor(n); }
 };
+
+template<typename T, typename N>
+    requires(Integer(N))
+inline counter<T, N> make_counter(const N& n)
+{
+    counter<T, N> tmp = {n};
+    return tmp;
+}
 
 template<typename C>
     requires(EmptyLinkedBifurcateCoordinate(C))
@@ -2897,7 +2985,7 @@ WeightType(C) weight_rotating(C c)
 {
     // Precondition: $\property{tree}(c)$
     typedef WeightType(C) N;
-    return traverse_rotating(c, counter<C, N>()).n / N(3);
+    return traverse_rotating(c, make_counter<C>(N(0))).n / N(3);
 }
 
 template<typename N, typename Proc>
@@ -3148,7 +3236,7 @@ template<typename I, typename O, typename P>
 O copy_if(I f_i, I l_i, O f_t, P p)
 {
     // Precondition: same as for $\func{copy\_select}$
-    predicate_source<I, P> ps(p);
+    predicate_source<I, P> ps = {p};
     return copy_select(f_i, l_i, f_t, ps);
 }
 
@@ -3196,7 +3284,7 @@ pair<O_f, O_t> partition_copy(I f_i, I l_i, O_f f_f, O_t f_t,
                               P p)
 {
     // Precondition: same as $\func{split\_copy}$
-    predicate_source<I, P> ps(p);
+    predicate_source<I, P> ps = {p};
     return split_copy(f_i, l_i, f_f, f_t, ps);
 }
 
@@ -3212,7 +3300,7 @@ pair<O_f, O_t> partition_copy_n(I f_i, DistanceType(I) n,
                                 P p)
 {
     // Precondition: see $\func{partition_copy}$
-    predicate_source<I, P> ps(p);
+    predicate_source<I, P> ps = {p};
     return split_copy_n(f_i, n, f_f, f_t, ps);
 }
 
@@ -3329,7 +3417,7 @@ O merge_copy(I0 f_i0, I0 l_i0, I1 f_i1, I1 l_i1, O f_o, R r)
     // \hspace*{1em} $\property{weak\_ordering}(r) \wedge {}$
     // \hspace*{1em} $\func{increasing\_range}(f_{i_0}, l_{i_0}, r) \wedge
     //                \property{increasing\_range}(f_{i_1}, l_{i_1}, r)$
-    relation_source<I1, I0, R> rs(r);
+    relation_source<I1, I0, R> rs = {r};
     return combine_copy(f_i0, l_i0, f_i1, l_i1, f_o, rs); 
 }
 
@@ -3346,7 +3434,7 @@ triple<I0, I1, O> merge_copy_n(I0 f_i0, DistanceType(I0) n_i0,
                                O o, R r)
 {
     // Precondition: see $\func{merge\_copy}$
-    relation_source<I1, I0, R> rs(r);
+    relation_source<I1, I0, R> rs = {r};
     return combine_copy_n(f_i0, n_i0, f_i1, n_i1, o, rs);
 }
 
@@ -3365,7 +3453,7 @@ O merge_copy_backward(I0 f_i0, I0 l_i0, I1 f_i1, I1 l_i1, O l_o,
     //               $\property{weak\_ordering}(r) \wedge {}$
     //               $\func{increasing\_range}(f_{i_0}, l_{i_0}, r) \wedge
     //                \property{increasing\_range}(f_{i_1}, l_{i_1}, r)$
-    relation_source<I1, I0, R> rs(r);
+    relation_source<I1, I0, R> rs = {r};
     return combine_copy_backward(f_i0, l_i0, f_i1, l_i1, l_o,
                                  rs);
 }
@@ -3380,7 +3468,7 @@ template<typename I0, typename I1, typename O, typename R>
 triple<I0, I1, O> merge_copy_backward_n(I0 l_i0, DistanceType(I0) n_i0,
                            I1 l_i1, DistanceType(I1) n_i1, O l_o, R r) {
     // Precondition: see $\func{merge\_copy\_backward}$
-    relation_source<I1, I0, R> rs(r);
+    relation_source<I1, I0, R> rs = {r};
     return combine_copy_backward_n(l_i0, n_i0, l_i1, n_i1, l_o, rs);
 }
 
@@ -4255,12 +4343,20 @@ template<typename I, typename P>
 struct partition_trivial 
 {
     P p;
-    partition_trivial(const P & p) : p(p) {}
     pair<I, I> operator()(I i)
     {
         return partition_stable_singleton<I, P>(i, p);
     }
 };
+
+template<typename I, typename P>
+    requires(ForwardIterator(I) &&
+        UnaryPredicate(P) && ValueType(I) == Domain(P))
+inline partition_trivial<I, P> make_partition_trivial(const P& p)
+{
+    partition_trivial<I, P> tmp = {p};
+    return tmp ;
+}
 
 template<typename I, typename P>
     requires(ForwardIterator(I) && UnaryPredicate(P) && ValueType(I) == Domain(P))
@@ -4315,13 +4411,20 @@ template<typename Op>
 struct transpose_operation
 {
     Op op;
-    transpose_operation(Op op) : op(op) { }
     typedef Domain(Op) T;
     T operator()(const T& x, const T& y)
     {
         return op(y, x);
     }
 };
+
+template<typename Op>
+    requires(BinaryOperation(Op))
+inline transpose_operation<Op> make_transpose_operation(const Op& op)
+{
+    transpose_operation<Op> tmp = {op};
+    return tmp;
+}
 
 template<typename Op>
     requires(BinaryOperation(Op))
@@ -4345,8 +4448,7 @@ Domain(Op) reduce_balanced(I f, I l, Op op, F fun,
         c(fun(f));
         f = successor(f);
     }
-    transpose_operation<Op> t_op(op);
-    return reduce_nonzeroes(c.f, c.l, t_op, z);
+    return reduce_nonzeroes(c.f, c.l, make_transpose_operation(op), z);
 }  
 
 template<typename I, typename Op>
@@ -4361,8 +4463,7 @@ Domain(Op) reduce_balanced(I f, I l, Op op, const Domain(Op)& z)
         c(source(f));
         f = successor(f);
     }
-    transpose_operation<Op> t_op(op);
-    return reduce_nonzeroes(c.f, c.l, t_op, z);
+    return reduce_nonzeroes(c.f, c.l, make_transpose_operation(op), z);
 }
 
 
@@ -4375,7 +4476,7 @@ I partition_stable_iterative(I f, I l, P p)
     return reduce_balanced(
         f, l,
         combine_ranges<I>,
-        partition_trivial<I, P>(p),
+        make_partition_trivial<I>(p),
         make_pair(f, f)
       ).m0;
 } 
@@ -6159,7 +6260,7 @@ bool operator<(const stree<T>& x, const stree<T>& y)
     less<T> lt;
     return 1 == bifurcate_compare_nonempty(
         begin(x), begin(y),
-        comparator_3_way< less<T> >(lt));
+        make_comparator_3_way(lt));
 }
 
 template<typename T, typename Proc>
