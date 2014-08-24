@@ -442,8 +442,7 @@ struct quo_rem
     typedef QuotientType(T) I;
     pair<I, T> operator()(const T& a, const T& b)
     {
-        pair<I, T> tmp = {a / b, a % b};
-        return tmp;
+        return make_pair(I(a / b), T(a % b));
     }
 };
 

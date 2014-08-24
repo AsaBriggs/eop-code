@@ -591,8 +591,7 @@ void test_ch_3()
     typedef pair<N, N> Fib;
 
     concept_Integer(N(7));
-    Fib tmp = {N(1), N(0)};
-    concept_BinaryOperation(fibonacci_matrix_multiply<N>, tmp);
+    concept_BinaryOperation(fibonacci_matrix_multiply<N>, make_pair(N(1), N(0)));
 
     Fib f10 = {N(55), N(34)};
     Fib f11 = {N(89), N(55)};
