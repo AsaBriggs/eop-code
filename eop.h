@@ -132,9 +132,15 @@ struct triple
     T0 m0;
     T1 m1;
     T2 m2;
-    triple() { }
-    triple(T0 m0, T1 m1, T2 m2) : m0(m0), m1(m1), m2(m2) { }
 };
+
+template<typename T0, typename T1, typename T2>
+    requires(Regular(T0) && Regular(T1) && Regular(T2))
+triple<T0, T1, T2> make_triple( T0 const& x, T1 const& y, T2 const& z)
+{
+  triple<T0, T1, T2> tmp = {x, y, z};
+  return tmp;
+}
 
 template<typename T0, typename T1, typename T2>
     requires(Regular(T0) && Regular(T1) && Regular(T2))
@@ -328,9 +334,9 @@ orbit_structure_nonterminating_orbit(const Domain(F)& x, F f)
 {
     typedef DistanceType(F) N;
     Domain(F) y = connection_point_nonterminating_orbit(x, f);
-    return triple<N, N, Domain(F)>(distance(x, y, f),
-                                   distance(f(y), y, f),
-                                   y);
+    return make_triple(distance(x, y, f),
+                       distance(f(y), y, f),
+                       y);
 }
 
 template<typename F, typename P>
@@ -347,7 +353,7 @@ orbit_structure(const Domain(F)& x, F f, P p)
     if (p(y)) n = distance(f(y), y, f);
     // Terminating: $m = h - 1 \wedge n = 0$
     // Otherwise:   $m = h \wedge n = c - 1$
-    return triple<N, N, Domain(F)>(m, n, y);
+    return make_triple(m, n, y);
 }
 
 
@@ -2712,7 +2718,6 @@ combine_linked_nonempty(I f0, I l0, I f1, I l1, R r, S set_link)
     //                \property{bounded\_range}(f1, l1)$
     // Precondition: $f0 \neq l0 \wedge f1 \neq l1 \wedge
     //                \property{disjoint}(f0, l0, f1, l1)$
-    typedef triple<I, I, I> T;
     linker_to_tail<S> link_to_tail(set_link);
     I h; I t;
     if (r(f1, f0)) { h = f1; advance_tail(t, f1); goto s1; }
@@ -2723,8 +2728,8 @@ s0: if (f0 == l0)                                 goto s2;
 s1: if (f1 == l1)                                 goto s3;
     if (r(f1, f0)) {         advance_tail(t, f1); goto s1; }
     else           {         link_to_tail(t, f0); goto s0; }
-s2: set_link(t, f1); return T(h, t, l1);
-s3: set_link(t, f0); return T(h, t, l0);
+s2: set_link(t, f1); return make_triple(h, t, l1);
+s3: set_link(t, f0); return make_triple(h, t, l0);
 }
 
 // Exercise 8.2: combine_linked
@@ -3240,15 +3245,14 @@ triple<I0, I1, O> combine_copy_n(I0 f_i0, DistanceType(I0) n_i0,
                                  I1 f_i1, DistanceType(I1) n_i1,
                                  O f_o, R r) {
     // Precondition: see $\func{combine_copy}$
-    typedef triple<I0, I1, O> Triple;
     while (true) {
         if (zero(n_i0)) {
             pair<I1, O> p = copy_n(f_i1, n_i1, f_o);
-            return Triple(f_i0, p.m0, p.m1);
+            return make_triple(f_i0, p.m0, p.m1);
         }
         if (zero(n_i1)) {
             pair<I0, O> p = copy_n(f_i0, n_i0, f_o);
-            return Triple(p.m0, f_i1, p.m1);
+            return make_triple(p.m0, f_i1, p.m1);
         }
         if (r(f_i1, f_i0)) {
             copy_step(f_i1, f_o);
@@ -3292,15 +3296,14 @@ template<typename I0, typename I1, typename O, typename R>
 triple<I0, I1, O> combine_copy_backward_n(I0 l_i0, DistanceType(I0) n_i0,
                            I1 l_i1, DistanceType(I1) n_i1, O l_o, R r) {
     // Precondition: see $\func{combine\_copy\_backward}$
-    typedef triple<I0, I1, O> Triple;
     while (true) {
         if (zero(n_i0)) {
             pair<I1, O> p = copy_backward_n(l_i1, n_i1, l_o);
-            return Triple(l_i0, p.m0, p.m1);
+            return make_triple(l_i0, p.m0, p.m1);
         }
         if (zero(n_i1)) {
             pair<I0, O> p = copy_backward_n(l_i0, n_i0, l_o);
-            return Triple(p.m0, l_i1, p.m1);
+            return make_triple(p.m0, l_i1, p.m1);
         }
         if (r(predecessor(l_i1), predecessor(l_i0))) {
             copy_backward_step(l_i0, l_o);

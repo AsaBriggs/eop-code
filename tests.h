@@ -135,8 +135,8 @@ void type_triple(const T0& x00, const T0& x01,
     typedef triple<T0, T1, T2> T;
 
     // Triple constructor
-    T t0(x00, x10, x20);  // triple constructor
-    T t1(x01, x11, x21);
+    T t0 = {x00, x10, x20};  // triple constructor
+    T t1 = {x01, x11, x21};
 
     // Regular
     concept_Regular(t0);
