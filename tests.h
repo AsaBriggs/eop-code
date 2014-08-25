@@ -77,6 +77,13 @@ void check_compile_time_and()
     expect_false(and_<false_type, true_type, true_type>::type ());
 
     expect_true(and_<true_type, true_type, true_type>::type ());
+
+
+    expect_false(and_<false_type, false_type>::type ());
+
+    expect_false(and_<true_type, false_type>::type ());
+    expect_false(and_<false_type, true_type>::type ());
+    expect_true(and_<true_type, true_type>::type ());
 }
 
 void check_compile_time_or()
@@ -92,6 +99,14 @@ void check_compile_time_or()
     expect_true(or_<false_type, false_type, true_type>::type ());
 
     expect_false(or_<false_type, false_type, false_type>::type ());
+
+
+    expect_true(or_<true_type, true_type>::type ());
+
+    expect_true(or_<true_type, false_type>::type ());
+    expect_true(or_<false_type, true_type>::type ());
+
+    expect_false(or_<false_type, false_type>::type ());
 }
 
 void check_compile_time_logic()
