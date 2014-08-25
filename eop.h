@@ -6771,7 +6771,7 @@ void erase_all(array<T>& x)
 
 template<typename T>
     requires(Regular(T))
-void swap_basic(T& x, T& y)
+inline void swap_basic(T& x, T& y)
 {
     T tmp = x;
     x = y;
@@ -6780,27 +6780,44 @@ void swap_basic(T& x, T& y)
 
 template<typename T>
     requires(Regular(T))
-UnderlyingType(T)& underlying_ref(T& x)
+inline UnderlyingType(T)& underlying_ref(T& x)
 {
     return reinterpret_cast<UnderlyingType(T)&>(x);
 }
 
 template<typename T>
     requires(Regular(T))
-const UnderlyingType(T)& underlying_ref(const T& x)
+inline const UnderlyingType(T)& underlying_ref(const T& x)
 {
-    return reinterpret_cast<UnderlyingType(T)&>(const_cast<T&>(x));
+    return reinterpret_cast<const UnderlyingType(T)&>(x);
 }
 
 template<typename T>
     requires(Regular(T))
-void swap(T& x, T& y)
+inline void swap(T& x, T& y)
+{
+    swap_basic(underlying_ref(x), underlying_ref(y));
+}
+
+template<typename T>
+    requires(Regular(T))
+inline void rotate_right(T& x, T& y, T& z)
+{
+    UnderlyingType(T) tmp = underlying_ref(z);
+    underlying_ref(z)     = underlying_ref(y);
+    underlying_ref(y)     = underlying_ref(x);
+    underlying_ref(x)     = tmp;
+}
+
+template<typename T>
+    requires(Regular(T))
+inline void rotate_left(T& x, T& y, T& z)
 {
     UnderlyingType(T) tmp = underlying_ref(x);
     underlying_ref(x)     = underlying_ref(y);
-    underlying_ref(y)     = tmp;
+    underlying_ref(y)     = underlying_ref(z);
+    underlying_ref(z)     = tmp;
 }
-
 
 // Exercise 12.9:
 

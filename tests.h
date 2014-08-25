@@ -4598,10 +4598,32 @@ void test_ch_12()
     print("    underlying type\n");
 
     {
-        int i = 1;
-        int j = 2;
-        swap_basic(i, j);
-        Assert(i == 2 && j == 1);
+        {
+            int i = 1;
+            int j = 2;
+            swap_basic(i, j);
+            Assert(i == 2 && j == 1);
+        }
+        {
+            int i = 1;
+            int j = 2;
+            swap(i, j);
+            Assert(i == 2 && j == 1);
+        }
+        {
+            int i = 1;
+            int j = 2;
+            int k = 3;
+            rotate_left(i, j, k);
+            Assert(i == 2 && j == 3 && k == 1);
+        }
+        {
+            int i = 1;
+            int j = 2;
+            int k = 3;
+            rotate_right(i, j, k);
+            Assert(i == 3 && j == 1 && k == 2);
+        }
         const int N = 10;
         array<int> a0(N, N, 0);
         array<int> a1(N, N, 1);
