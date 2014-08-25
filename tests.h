@@ -54,6 +54,52 @@ void toggle_verbose()
     print_eol();
 }
 
+// Get a compilation error if we expect_false and pass in true_type, and expect_true and pass in false_type
+void expect_false(false_type){}
+void expect_true(true_type){}
+
+void check_compile_time_not()
+{
+    expect_false(not_<true_type>::type ());
+    expect_true(not_<false_type>::type ());
+}
+
+void check_compile_time_and()
+{
+    expect_false(and_<false_type, false_type, false_type>::type ());
+
+    expect_false(and_<false_type, false_type, true_type>::type ());
+    expect_false(and_<false_type, true_type, false_type>::type ());
+    expect_false(and_<true_type, false_type, false_type>::type ());
+
+    expect_false(and_<true_type, true_type, false_type>::type ());
+    expect_false(and_<true_type, false_type, true_type>::type ());
+    expect_false(and_<false_type, true_type, true_type>::type ());
+
+    expect_true(and_<true_type, true_type, true_type>::type ());
+}
+
+void check_compile_time_or()
+{
+    expect_true(or_<true_type, true_type, true_type>::type ());
+
+    expect_true(or_<true_type, true_type, false_type>::type ());
+    expect_true(or_<true_type, false_type, true_type>::type ());
+    expect_true(or_<false_type, true_type, true_type>::type ());
+
+    expect_true(or_<true_type, false_type, false_type>::type ());
+    expect_true(or_<false_type, true_type, false_type>::type ());
+    expect_true(or_<false_type, false_type, true_type>::type ());
+
+    expect_false(or_<false_type, false_type, false_type>::type ());
+}
+
+void check_compile_time_logic()
+{
+    check_compile_time_not();
+    check_compile_time_and();
+    check_compile_time_or();
+}
 
 // Chapter 1. Foundations
 
@@ -4664,6 +4710,7 @@ void run_tests()
     verify_conservation<int> vl(list_node_count);
     verify_conservation<int> vst(stree_node_count);
     verify_conservation<int> vt(tree_node_count);
+    check_compile_time_logic();
 
     test_ch_1();
     test_ch_2();

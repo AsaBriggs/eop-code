@@ -321,8 +321,63 @@ struct base_type;
 
 // BooleanType has the following two models:
 
-struct true_type {};
-struct false_type {};
+struct true_type { typedef true_type type; };
+struct false_type { typedef false_type type; };
+
+
+template<typename V>
+struct not_impl;
+
+template<>
+struct not_impl<false_type> : true_type {};
+
+template<>
+struct not_impl<true_type> : false_type {};
+
+template<typename V>
+struct not_
+{
+  typedef typename not_impl<typename V::type>::type type;
+};
+
+
+template<typename V0, typename V1, typename V2>
+struct or_impl;
+
+template<>
+struct or_impl<false_type, false_type, false_type> : false_type {};
+
+template<typename V1, typename V2>
+struct or_impl<true_type, V1, V2> : true_type {};
+
+template<typename V1, typename V2>
+struct or_impl<false_type, V1, V2> : or_impl<typename V1::type, V2, false_type> {};
+
+template<typename V0, typename V1, typename V2=false_type>
+struct or_
+{
+  typedef typename or_impl<typename V0::type, V1, V2>::type type ;
+};
+
+
+template<typename V0, typename V1, typename V2>
+struct and_impl;
+
+template<>
+struct and_impl<true_type, true_type, true_type> : true_type {};
+
+template<typename V1, typename V2>
+struct and_impl<false_type, V1, V2> : false_type {};
+
+template<typename V1, typename V2>
+struct and_impl<true_type, V1, V2> : and_impl<typename V1::type, V2, true_type> {};
+
+template<typename V0, typename V1, typename V2=true_type>
+struct and_
+{
+  typedef typename and_impl<typename V0::type, V1, V2>::type type ;
+};
+
 
 // NeedsConstruction : Regular -> BooleanType
 // NeedsDestruction  : Regular -> BooleanType
