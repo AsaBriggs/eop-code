@@ -4433,6 +4433,38 @@ struct input_type< transpose_operation<Op>, 0 >
     typedef Domain(Op) type;
 };
 
+template<typename I>
+    requires(Iterator(I))
+struct apply_source
+{
+    ValueType(I) operator()(I f) const
+    {
+        return source(f);
+    }
+};
+
+template<typename I>
+    requires(Iterator(I))
+inline apply_source<I> make_apply_source()
+{
+    apply_source<I> tmp = {};
+    return tmp ;
+}
+
+template<typename I>
+    requires(Iterator(I))
+struct input_type< apply_source<I>, 0 >
+{
+    typedef I type;
+};
+
+template<typename I>
+    requires(Iterator(I))
+struct codomain_type< apply_source<I> >
+{
+    typedef ValueType(I) type;
+};
+
 template<typename I, typename Op, typename F>
     requires(Iterator(I) && BinaryOperation(Op) && 
         UnaryFunction(F) && I == Domain(F) &&
@@ -4454,16 +4486,11 @@ Domain(Op) reduce_balanced(I f, I l, Op op, F fun,
 template<typename I, typename Op>
     requires(ReadableIterator(I) && BinaryOperation(Op) && 
         ValueType(I) == Domain(Op))
-Domain(Op) reduce_balanced(I f, I l, Op op, const Domain(Op)& z)
+inline Domain(Op) reduce_balanced(I f, I l, Op op, const Domain(Op)& z)
 {
-    // Precondition: $\property{readable\_bounded\_range}(f, l) \wedge l-f < 2^{33}$
+    // Precondition: $\property{readable\_bounded\_range}(f, l) \wedge l-f < 2^{64}$
     // Precondition: $\property{partially\_associative}(op)$
-    counter_machine<Op> c(op, z);
-    while (f != l) {
-        c(source(f));
-        f = successor(f);
-    }
-    return reduce_nonzeroes(c.f, c.l, make_transpose_operation(op), z);
+    return reduce_balanced(f, l, op, make_apply_source<I>(), z);
 }
 
 
