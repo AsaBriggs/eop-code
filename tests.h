@@ -239,12 +239,12 @@ template<typename T>
     requires(MultiplicativeSemigroup(T))
 struct times
 {
-    T operator()(const T& a, const T& b) { return a * b; }
-};
+    typedef T input_type_0;
+    typedef T input_type_1;
+    typedef T codomain_type;
 
-template<typename T>
-    requires(MultiplicativeSemigroup(T))
-struct input_type<times<T>, 0> { typedef T type; };
+    T operator()(T const& a, T const& b) { return a * b; }
+};
 
 void test_ch_1()
 {
@@ -304,24 +304,13 @@ void concept_UnaryPredicate(P p, Domain(P) x)
 template<typename T>
     requires(MultiplicativeSemigroup(T))
 struct sq {
-    T operator()(const T& x)
+    typedef T input_type_0;
+    typedef T codomain_type;
+
+    T operator()(T const& x)
     {
         return x * x;
     }
-};
-
-template<typename T>
-    requires(MultiplicativeSemigroup(T))
-struct input_type< sq<T>, 0 >
-{
-    typedef T type;
-};
-
-template<typename T>
-    requires(MultiplicativeSemigroup(T))
-struct codomain_type< sq<T> >
-{
-    typedef T type;
 };
 
 template<typename T>
@@ -335,6 +324,9 @@ template<typename I, typename N>
     requires(Integer(I) && Integer(N) && DistanceType(I) = N)
 struct gen_orbit_predicate // definition space predicate
 {
+    typedef I input_type_0;
+    typedef bool codomain_type;
+
     I x_0;
     N h;
     N c;
@@ -351,15 +343,11 @@ struct gen_orbit_predicate // definition space predicate
 
 template<typename I, typename N>
     requires(Integer(I) && Integer(N) && DistanceType(I) = N)
-struct input_type<gen_orbit_predicate<I, N>, 0>
-{
-    typedef I type;
-};
-
-template<typename I, typename N>
-    requires(Integer(I) && Integer(N) && DistanceType(I) = N)
 struct gen_orbit // transformation
 {
+    typedef I input_type_0;
+    typedef I codomain_type;
+
     gen_orbit_predicate<I, N> p;
     gen_orbit(I x_0, N h, N c) : p(x_0, h, c)
     {
@@ -373,20 +361,6 @@ struct gen_orbit // transformation
         if (x == p.x_0 + I(p.h) + I(p.c)) x = p.x_0 + I(p.h);
         return x; 
     }
-};
-
-template<typename I, typename N>
-    requires(Integer(I) && Integer(N) && DistanceType(I) = N)
-struct input_type<gen_orbit<I, N>, 0>
-{
-    typedef I type;
-};
-
-template<typename I, typename N>
-    requires(Integer(I) && Integer(N) && DistanceType(I) = N)
-struct codomain_type< gen_orbit<I, N> >
-{
-    typedef I type;
 };
 
 template<typename I, typename N>
@@ -448,24 +422,13 @@ void algorithms_orbit(Domain(F) x, DistanceType(F) h, DistanceType(F) c)
 template<typename N>
     requires(Integer(N))
 struct hf {
-    N operator()(const N& x)
+    typedef N input_type_0;
+    typedef N codomain_type;
+
+    N operator()(N const& x)
     {
         return x / N(2);
     }
-};
-
-template<typename N>
-    requires(Integer(N))
-struct input_type< hf<N>, 0 >
-{
-    typedef N type;
-};
-
-template<typename N>
-    requires(Integer(N))
-struct codomain_type< hf<N> >
-{
-    typedef N type;
 };
 
 template<typename N>
@@ -737,24 +700,25 @@ template<typename T, typename U>
     requires(Regular(T) && Regular(U))
 struct first
 {
-    T operator()(const pair<T, U>& x)
+    typedef pair<T, U> input_type_0;
+    typedef T codomain_type;
+
+    T operator()(pair<T, U> const& x)
     {
         return x.m0;
     }
-};
-
-template<typename T, typename U>
-    requires(Regular(T) && Regular(U))
-struct input_type< first<T, U>, 0 >
-{
-    typedef pair<T, U> type;
 };
 
 template <typename T0, typename T1>
     requires(TotallyOrdered(T0))
 struct less_first
 {
-    bool operator()(const pair<T0, T1>& p0, const pair<T0, T1>& p1)
+    typedef pair<T0, T1> T;
+    typedef T input_type_0;
+    typedef T input_type_1;
+    typedef bool codomain_type;
+
+    bool operator()(T const& p0, T const& p1) const
     {
         return p0.m0 < p1.m0;
     }
@@ -762,45 +726,32 @@ struct less_first
 
 template <typename T0, typename T1>
     requires(TotallyOrdered(T0))
-struct input_type< less_first<T0, T1>, 0 >
-{
-    typedef pair<T0, T1> type;
-};
-
-template <typename T0, typename T1>
-    requires(TotallyOrdered(T0))
 struct less_second
 {
-    bool operator()(const pair<T0, T1>& p0, const pair<T0, T1>& p1)
+    typedef pair<T0, T1> T;
+    typedef T input_type_0;
+    typedef T input_type_1;
+    typedef bool codomain_type;
+
+    bool operator()(T const& p0, T const& p1) const
     {
         return p0.m1 < p1.m1;
     }
-};
-
-template <typename T0, typename T1>
-    requires(TotallyOrdered(T0))
-struct input_type< less_second<T0, T1>, 0 >
-{
-    typedef pair<T0, T1> type;
 };
 
 template<typename T0, typename T1>
     requires(Regular(T0))
 struct eq_first
 {
+    typedef pair<T0, T1> input_type_0;
+    typedef bool codomain_type;
+
     T0 x0;
     eq_first(T0 x0) : x0(x0) { }
-    bool operator()(const pair<T0, T1>& x)
+    bool operator()(pair<T0, T1> const& x)
     {
         return x.m0 == x0;
     }
-};
-
-template <typename T0, typename T1>
-    requires(Regular(T0))
-struct input_type< eq_first<T0, T1>, 0 >
-{
-    typedef pair<T0, T1> type;
 };
 
 template<typename I, typename R>
@@ -834,22 +785,19 @@ template<typename F, typename R>
         Codomain(F) == Domain(R))
 struct key_ordering
 {
+    typedef Domain(F) T;
+    typedef T input_type_0;
+    typedef T input_type_1;
+    typedef bool codomain_type;
+
     F f;
     R r;
     key_ordering(F f, R r) : f(f), r(r) { }
-    bool operator()(const Domain(F)& x,
-                    const Domain(F)& y)
+    bool operator()(T const& x,
+                    T const& y)
     {
         return r(f(x), f(y));
     }
-};
-
-template<typename F, typename R>
-    requires(Function(F) && Arity(F) == 1 &&
-        Relation(R) && Codomain(F) == Domain(R))
-struct input_type< key_ordering<F, R>, 0 >
-{
-    typedef Domain(F) type;
 };
 
 void algorithm_select_1_4()
@@ -1534,18 +1482,14 @@ template<typename T>
     requires(ArchimedeanGroup(T))
 struct ag_quotient_remainder
 {
-    pair<QuotientType(T), T> operator()(T a, T b)
+    typedef T input_type_0;
+    typedef T input_type_1;
+    typedef pair<QuotientType(T), T> codomain_type;
+    codomain_type operator()(T a, T b)
     {
         Assert(a >= T(0) && b > T(0));
         return quotient_remainder_nonnegative(a, b);
     }
-};
-
-template<typename T>
-    requires(ArchimedeanGroup(T))
-struct input_type< ag_quotient_remainder<T>, 0 >
-{
-    typedef T type;
 };
 
 template<typename T>
@@ -2120,31 +2064,23 @@ template<typename Op>
 struct accumulate
 {
     typedef Domain(Op) T;
+    typedef T input_type_0;
+    typedef void codomain_type;
+
     Op op;
     T sum;
     accumulate(Op op, const T& x) : op(op), sum(x) { }
-    void operator()(const T& x) { sum = op(sum, x); }
-};
-
-template<typename Op>
-    requires(BinaryOperation)
-struct input_type< accumulate<Op>, 0 >
-{
-    typedef Domain(Op) type;
+    void operator()(T const& x) { sum = op(sum, x); }
 };
 
 template<typename T>
     requires(Regular(T))
 struct identity
 {
-    T operator()(const T& x) { return x; }
-};
+    typedef T input_type_0;
+    typedef T codomain_type;
 
-template<typename T>
-    requires(Regular(T))
-struct input_type<identity<T>, 0>
-{
-    typedef T type;
+    T operator()(T const& x) { return x; }
 };
 
 void test_ch_6()
@@ -2406,6 +2342,10 @@ template<typename C>
     requires(BifurcateCoordinate(C))
 struct count_visits
 {
+    typedef visit input_type_0;
+    typedef C input_type_1;
+    typedef void codomain_type;
+
     int n_pre, n_in, n_post;
     count_visits() : n_pre(0), n_in(0), n_post(0) { }
     void operator()(visit v, C)
@@ -2803,17 +2743,13 @@ template<typename C>
     requires(Readable(C) && AdditiveMonoid(ValueType(C)))
 struct sum_source
 {
+    typedef C input_type_0;
+    typedef void codomain_type;
+
     typedef ValueType(C) T;
     T sum;
     sum_source() : sum(T(0)) { }
     void operator()(C c) { sum = sum + source(c); }
-};
-
-template<typename C>
-    requires(Readable(C) && AdditiveMonoid(ValueType(C)))
-struct input_type< sum_source<C>, 0 >
-{
-    typedef C type;
 };
 
 template<typename Z>
@@ -2942,16 +2878,12 @@ template<typename T>
     requires(Regular(T))
 struct equal_to_x
 {
-    T x;
-    equal_to_x(const T& x) : x(x) { }
-    bool operator()(const T& y) { return x == y; }
-};
+    typedef T input_type_0;
+    typedef bool codomain_type;
 
-template<typename T>
-    requires(Regular(T))
-struct input_type< equal_to_x<T>, 0 >
-{
-    typedef T type;
+    T x;
+    equal_to_x(T const& x) : x(x) { }
+    bool operator()(T const& y) { return x == y; }
 };
 
 template<typename I0, typename I1>
@@ -3506,6 +3438,9 @@ template<typename I>
     requires(RandomAccessIterator(I))
 struct successor_cyclic
 {
+    typedef I input_type_0;
+    typedef I codomain_type;
+
     I f;
     I l;
     successor_cyclic(I f, I l) : f(f), l(l) { }
@@ -3928,30 +3863,26 @@ char force_lower(char a)
 
 struct less_ignoring_case
 {
+    typedef char input_type_0;
+    typedef char input_type_1;
+    typedef bool codomain_type;
+
     bool operator()(char a, char b) const
     {
         return force_lower(a) < force_lower(b);
     }
 };
 
-template<>
-struct input_type<less_ignoring_case, 0>
-{
-    typedef char type;
-};
-
 struct equal_ignoring_case
 {
+    typedef char input_type_0;
+    typedef char input_type_1;
+    typedef bool codomain_type;
+
     bool operator()(char a, char b) const
     {
         return force_lower(a) == force_lower(b);
     }
-};
-
-template<>
-struct input_type<equal_ignoring_case, 0>
-{
-    typedef char type;
 };
 
 int size_unguarded(const pointer(char) a)
@@ -3974,6 +3905,11 @@ template<typename M, typename R, typename E>
         Relation(E) && Domain(E) == char)
 struct merge_case
 {
+    typedef pointer(const char) input_type_0;
+    typedef pointer(const char) input_type_1;
+    typedef pointer(const char) input_type_2;
+    typedef void codomain_type;
+
     M merger;
     R r;
     E e;
@@ -4005,7 +3941,7 @@ struct merge_case
             print_eol();
         }
     }
-    void operator()(const pointer(char) a, const pointer(char) b, const pointer(char) c)
+    void operator()(pointer(const char) a, pointer(const char) b, pointer(const char) c)
     {
         int n_a = size_unguarded(a) ;
         int n_b = size_unguarded(b);

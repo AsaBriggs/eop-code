@@ -55,7 +55,7 @@ int square(int n) { return n * n; }
 
 template<typename Op>
     requires(BinaryOperation(Op))
-Domain(Op) square(const Domain(Op)& x, Op op)
+Domain(Op) square(Domain(Op) const& x, Op op)
 {
     return op(x, x);
 }
@@ -67,17 +67,14 @@ template<typename T>
     requires(Regular(T))
 struct equal
 {
-    bool operator()(const T& x, const T& y)
+    typedef T input_type_0;
+    typedef T input_type_1;
+    typedef bool codomain_type;
+
+    bool operator()(T const& x, T const& y)
     {
         return x == y;
     }
-};
-
-template<typename T>
-    requires(Regular(T))
-struct input_type<equal<T>, 0>
-{
-    typedef T type;
 };
 
 
@@ -623,8 +620,13 @@ template<typename R>
     requires(Relation(R))
 struct complement
 {
+    typedef Domain(R) T;
+    typedef T input_type_0;
+    typedef T input_type_1;
+    typedef bool codomain_type;
+
     R r;
-    bool operator()(const Domain(R)& x, const Domain(R)& y)
+    bool operator()(T const& x, T const& y)
     {
         return !r(x, y);
     }
@@ -640,17 +642,15 @@ inline complement<R> make_complement(const R& r)
 
 template<typename R>
     requires(Relation(R))
-struct input_type< complement<R>, 0>
-{
-    typedef Domain(R) type;
-};
-
-template<typename R>
-    requires(Relation(R))
 struct converse
 {
+    typedef Domain(R) T;
+    typedef T input_type_0;
+    typedef T input_type_1;
+    typedef bool codomain_type;
+
     R r;
-    bool operator()(const Domain(R)& x, const Domain(R)& y)
+    bool operator()(T const& x, T const& y)
     {
         return r(y, x);
     }
@@ -666,18 +666,15 @@ inline converse<R> make_converse(const R& r)
 
 template<typename R>
     requires(Relation(R))
-struct input_type< converse<R>, 0>
-{
-    typedef Domain(R) type;
-};
-
-template<typename R>
-    requires(Relation(R))
 struct complement_of_converse
 {
     typedef Domain(R) T;
+    typedef T input_type_0;
+    typedef T input_type_1;
+    typedef bool codomain_type;
+
     R r;
-    bool operator()(const T& a, const T& b)
+    bool operator()(T const& a, T const& b)
     {
         return !r(b, a);
     }
@@ -692,18 +689,16 @@ inline complement_of_converse<R> make_complement_of_converse(const R& r)
 }
 
 template<typename R>
-    requires(Relation(R))
-struct input_type< complement_of_converse<R>, 0>
-{
-    typedef Domain(R) type;
-};
-
-template<typename R>
    requires(Relation(R))
 struct symmetric_complement
 {
+    typedef Domain(R) T;
+    typedef T input_type_0;
+    typedef T input_type_1;
+    typedef bool codomain_type;
+
     R r;
-    bool operator()(const Domain(R)& a, const Domain(R)& b)
+    bool operator()(T const& a, T const& b)
     {
         return !r(a, b) && !r(b, a);
     }
@@ -716,13 +711,6 @@ inline symmetric_complement<R> make_symmetric_complement(const R& r)
     symmetric_complement<R> tmp = {r};
     return tmp;
 }
-
-template<typename R>
-    requires(Relation(R))
-struct input_type< symmetric_complement<R>, 0>
-{
-    typedef Domain(R) type;
-};
 
 template<typename R>
     requires(Relation(R))
@@ -825,8 +813,13 @@ template<typename R>
     requires(Relation(R))
 struct compare_strict_or_reflexive<true, R> // strict
 {
-    bool operator()(const Domain(R)& a,
-                    const Domain(R)& b, R r)
+    typedef Domain(R) T;
+    typedef T input_type_0;
+    typedef T input_type_1;
+    typedef bool codomain_type;
+
+    bool operator()(T const& a,
+                    T const& b, R r)
     {
         return r(a, b);
     }
@@ -836,8 +829,14 @@ template<typename R>
     requires(Relation(R))
 struct compare_strict_or_reflexive<false, R> // reflexive
 {
-    bool operator()(const Domain(R)& a,
-                    const Domain(R)& b, R r)
+    typedef Domain(R) T;
+    typedef T input_type_0;
+    typedef T input_type_1;
+    typedef R input_type_2;
+    typedef bool codomain_type;
+
+    bool operator()(T const& a,
+                    T const& b, R r)
     {
         return !r(b, a); // $\func{complement\_of\_converse}_r(a, b)$
     }
@@ -979,17 +978,14 @@ template<typename T>
     requires(TotallyOrdered(T))
 struct less
 {
-    bool operator()(const T& x, const T& y)
+    typedef T input_type_0;
+    typedef T input_type_1;
+    typedef bool codomain_type;
+
+    bool operator()(T const& x, T const& y)
     {
         return x < y;
     }
-};
-
-template<typename T>
-    requires(TotallyOrdered(T))
-struct input_type<less<T>, 0>
-{
-    typedef T type;
 };
 
 template<typename T>
@@ -1050,43 +1046,41 @@ template<typename T>
     requires(AdditiveSemigroup(T))
 struct plus
 {
-    T operator()(const T& x, const T& y)
+    typedef T input_type_0;
+    typedef T input_type_1;
+    typedef T codomain_type;
+
+    T operator()(T const& x, T const& y)
     {
         return x + y;
     }
 };
 
 template<typename T>
-    requires(AdditiveSemigroup(T))
-struct input_type< plus<T>, 0 >
-{
-    typedef T type;
-};
-
-template<typename T>
     requires(MultiplicativeSemigroup(T))
 struct multiplies
 {
-    T operator()(const T& x, const T& y)
+    typedef T input_type_0;
+    typedef T input_type_1;
+    typedef T codomain_type;
+
+    T operator()(T const& x, T const& y)
     {
         return x * y;
     }
-};
-
-template<typename T>
-    requires(MultiplicativeSemigroup(T))
-struct input_type< multiplies<T>, 0 >
-{
-    typedef T type;
 };
 
 template<typename Op>
     requires(SemigroupOperation(Op)) // ***** or MultiplicativeSemigroup ?????
 struct multiplies_transformation
 {
-    Domain(Op) x;
+    typedef Domain(Op) T;
+    typedef T input_type_0;
+    typedef T codomain_type;
+
+    T x;
     Op op;
-    Domain(Op) operator()(const Domain(Op)& y)
+    T operator()(T const& y)
     {
         return op(x, y);
     }
@@ -1100,28 +1094,17 @@ inline multiplies_transformation<Op> make_multiplies_transformation(const Domain
     return tmp;
 }
 
-template<typename Op>
-    requires(SemigroupOperation(Op))
-struct input_type< multiplies_transformation<Op>, 0 >
-{
-    typedef Domain(Op) type;
-};
-
 template<typename T>
     requires(AdditiveGroup(T))
 struct negate
 {
-    T operator()(const T& x)
+    typedef T input_type_0;
+    typedef T codomain_type;
+
+    T operator()(T const& x)
     {
         return -x;
     }
-};
-
-template<typename T>
-    requires(AdditiveGroup(T))
-struct input_type< negate<T>, 0>
-{
-    typedef T type;
 };
 
 template<typename T>
@@ -1973,9 +1956,12 @@ template<typename R>
 struct lower_bound_predicate
 {
     typedef Domain(R) T;
+    typedef T input_type_0;
+    typedef bool codomain_type;
+
     const T& a;
     R r;
-    bool operator()(const T& x) { return !r(x, a); }
+    bool operator()(T const& x) { return !r(x, a); }
 };
 
 template<typename R>
@@ -2002,9 +1988,12 @@ template<typename R>
 struct upper_bound_predicate
 {
     typedef Domain(R) T;
+    typedef T input_type_0;
+    typedef bool codomain_type;
+
     const T& a;
     R r;
-    bool operator()(const T& x) { return r(a, x); }
+    bool operator()(T const& x) { return r(a, x); }
 };
 
 template<typename R>
@@ -2339,20 +2328,28 @@ template<int k, typename I0, typename I1>
        ValueType(I0) == ValueType(I1))
 struct lexicographical_equal_k
 {
-   bool operator()(I0 f0, I1 f1)
-   {
-       if (source(f0) != source(f1)) return false;
-       return lexicographical_equal_k<k - 1, I0, I1>()(successor(f0), successor(f1)); 
-   }
+    typedef I0 input_type_0;
+    typedef I1 input_type_1;
+    typedef bool codomain_type;
+
+     bool operator()(I0 f0, I1 f1)
+     {
+         if (source(f0) != source(f1)) return false;
+         return lexicographical_equal_k<k - 1, I0, I1>()(successor(f0), successor(f1)); 
+     }
 };
 
 template<typename I0, typename I1>
 struct lexicographical_equal_k<0, I0, I1>
 {
-   bool operator()(I0, I1)
-   {
+    typedef I0 input_type_0;
+    typedef I1 input_type_1;
+    typedef bool codomain_type;
+
+    bool operator()(I0, I1)
+    {
        return true;
-   }
+    }
 };
 
 template<typename C0, typename C1, typename R>
@@ -2456,23 +2453,31 @@ template<int k, typename I0, typename I1>
        ValueType(I0) == ValueType(I1))
 struct lexicographical_less_k
 {
-   bool operator()(I0 f0, I1 f1)
-   {
-       if (source(f0) < source(f1)) return true;
-       if (source(f0) > source(f1)) return false;
-       return lexicographical_less_k<k - 1, I0, I1>()(
-           successor(f0),
-           successor(f1)); 
-   }
+    typedef I0 input_type_0;
+    typedef I1 input_type_1;
+    typedef bool codomain_type;
+
+    bool operator()(I0 f0, I1 f1)
+    {
+        if (source(f0) < source(f1)) return true;
+        if (source(f0) > source(f1)) return false;
+        return lexicographical_less_k<k - 1, I0, I1>()(
+            successor(f0),
+            successor(f1)); 
+    }
 };
 
 template<typename I0, typename I1>
 struct lexicographical_less_k<0, I0, I1>
 {
-   bool operator()(I0, I1)
-   {
+    typedef I0 input_type_0;
+    typedef I1 input_type_1;
+    typedef bool codomain_type;
+
+    bool operator()(I0, I1)
+    {
        return false;
-   }
+    }
 };
 
 
@@ -2497,8 +2502,12 @@ template<typename R>
 struct comparator_3_way
 {
     typedef Domain(R) T;
+    typedef T input_type_0;
+    typedef T input_type_1;
+    typedef int codomain_type;
+
     R r;
-    int operator()(const T& a, const T& b)
+    int operator()(T const& a, T const& b)
     {
         if (r(a, b)) return 1;
         if (r(b, a)) return -1;
@@ -2611,7 +2620,11 @@ template<typename T>
     requires(TotallyOrdered(T))
 struct always_false
 {
-    bool operator()(const T& x, const T& y)
+    typedef T input_type_0;
+    typedef T input_type_1;
+    typedef bool codomain_type;
+
+    bool operator()(T const& x, T const& y) const
     {
         return false;
     }
@@ -2642,6 +2655,10 @@ template<typename I>
     requires(LinkedForwardIterator(I))
 struct forward_linker
 {
+    typedef I input_type_0;
+    typedef I input_type_1;
+    typedef void codomain_type;
+
     void operator()(I x, I y)
     {
         sink(x.p).forward_link = y.p;
@@ -2659,6 +2676,10 @@ template<typename I>
     requires(LinkedBidirectionalIterator(I))
 struct backward_linker
 {
+    typedef I input_type_0;
+    typedef I input_type_1;
+    typedef void codomain_type;
+
     void operator()(I x, I y)
     {
         sink(y.p).backward_link = x.p;
@@ -2676,6 +2697,10 @@ template<typename I>
     requires(LinkedBidirectionalIterator(I))
 struct bidirectional_linker
 {
+    typedef I input_type_0;
+    typedef I input_type_1;
+    typedef void codomain_type;
+
     void operator()(I x, I y)
     {
         sink(x.p).forward_link = y.p;
@@ -2704,6 +2729,10 @@ template<typename S>
 struct linker_to_tail
 {
     typedef IteratorType(S) I;
+    typedef I& input_type_0;
+    typedef I& input_type_1;
+    typedef void codomain_type;
+
     S set_link;
     void operator()(I& t, I& f)
     {
@@ -2797,6 +2826,10 @@ template<typename S>
 struct linker_to_head
 {
     typedef IteratorType(S) I;
+    typedef I& input_type_0;
+    typedef I& input_type_1;
+    typedef void codomain_type;
+
     S set_link;
     void operator()(I& h, I& f)
     {
@@ -2831,6 +2864,9 @@ template<typename I, typename P>
         Predicate(P) && ValueType(I) == Domain(P))
 struct predicate_source
 {
+    typedef I input_type_0;
+    typedef bool codomain_type;
+
     P p;
     bool operator()(I i)
     {
@@ -2864,6 +2900,10 @@ template<typename I0, typename I1, typename R>
         Relation(R) && ValueType(I0) == Domain(R))
 struct relation_source
 {
+    typedef I0 input_type_0;
+    typedef I1 input_type_1;
+    typedef bool codomain_type;
+
     R r;
     bool operator()(I0 i0, I1 i1)
     {
@@ -2967,8 +3007,11 @@ template<typename T, typename N>
     requires(Integer(N))
 struct counter
 {
+    typedef T input_type_0;
+    typedef void codomain_type;
+
     N n;
-    void operator()(const T&) { n = successor(n); }
+    void operator()(T const&) { n = successor(n); }
 };
 
 template<typename T, typename N>
@@ -2993,6 +3036,9 @@ template<typename N, typename Proc>
         Procedure(Proc) && Arity(Proc) == 1)
 struct phased_applicator
 {
+    typedef InputType0(Proc) input_type_0;
+    typedef void codomain_type;
+
     N period;
     N phase;
     N n;
@@ -3000,7 +3046,7 @@ struct phased_applicator
     Proc proc;
     phased_applicator(N period, N phase, N n, Proc proc) :
         period(period), phase(phase), n(n), proc(proc) { }
-    void operator()(InputType(Proc, 0) x)
+    void operator()(input_type_0 x)
     {
         if (n == phase) proc(x);
         n = successor(n);
@@ -3717,6 +3763,9 @@ template<typename I>
     requires(RandomAccessIterator(I))
 struct k_rotate_from_permutation_random_access
 {
+    typedef I input_type_0;
+    typedef I codomain_type;
+
     DistanceType(I) k;
     DistanceType(I) n_minus_k;
     I m_prime;
@@ -3737,6 +3786,9 @@ template<typename I>
     requires(IndexedIterator(I))
 struct k_rotate_from_permutation_indexed
 {
+    typedef I input_type_0;
+    typedef I codomain_type;
+
     DistanceType(I) k;
     DistanceType(I) n_minus_k;
     I f;
@@ -4342,6 +4394,9 @@ template<typename I, typename P>
         UnaryPredicate(P) && ValueType(I) == Domain(P))
 struct partition_trivial 
 {
+    typedef I input_type_0;
+    typedef pair<I, I> codomain_type;
+
     P p;
     pair<I, I> operator()(I i)
     {
@@ -4357,13 +4412,6 @@ inline partition_trivial<I, P> make_partition_trivial(const P& p)
     partition_trivial<I, P> tmp = {p};
     return tmp ;
 }
-
-template<typename I, typename P>
-    requires(ForwardIterator(I) && UnaryPredicate(P) && ValueType(I) == Domain(P))
-struct codomain_type< partition_trivial<I, P> >
-{
-    typedef pair<I, I> type;
-};
 
 template<typename I, typename Op>
     requires(Mutable(I) && ForwardIterator(I) &&
@@ -4389,13 +4437,16 @@ template<typename Op>
 struct counter_machine
 {
     typedef Domain(Op) T;
+    typedef T input_type_0;
+    typedef void codomain_type;
+
     Op op;
     T z;
     T f[64];
     pointer(T) l;
-    counter_machine(Op op, const Domain(Op)& z) :
+    counter_machine(Op op, T const& z) :
         op(op), z(z), l(f) { }
-    void operator()(const T& x)
+    void operator()(T const& x)
     {
         // Precondition: must not be called more than $2^{64}-1$ times
          T tmp = add_to_counter(f, l, op, x, z);
@@ -4412,7 +4463,11 @@ struct transpose_operation
 {
     Op op;
     typedef Domain(Op) T;
-    T operator()(const T& x, const T& y)
+    typedef T input_type_0;
+    typedef T input_type_1;
+    typedef T codomain_type;
+
+    T operator()(T const& x, T const& y)
     {
         return op(y, x);
     }
@@ -4426,18 +4481,14 @@ inline transpose_operation<Op> make_transpose_operation(const Op& op)
     return tmp;
 }
 
-template<typename Op>
-    requires(BinaryOperation(Op))
-struct input_type< transpose_operation<Op>, 0 >
-{
-    typedef Domain(Op) type;
-};
-
 template<typename I>
     requires(Iterator(I))
 struct apply_source
 {
-    ValueType(I) operator()(I f) const
+    typedef I input_type_0;
+    typedef ValueType(I) codomain_type;
+
+    codomain_type operator()(I f) const
     {
         return source(f);
     }
@@ -4450,20 +4501,6 @@ inline apply_source<I> make_apply_source()
     apply_source<I> tmp = {};
     return tmp ;
 }
-
-template<typename I>
-    requires(Iterator(I))
-struct input_type< apply_source<I>, 0 >
-{
-    typedef I type;
-};
-
-template<typename I>
-    requires(Iterator(I))
-struct codomain_type< apply_source<I> >
-{
-    typedef ValueType(I) type;
-};
 
 template<typename I, typename Op, typename F>
     requires(Iterator(I) && BinaryOperation(Op) && 
@@ -4873,8 +4910,12 @@ template<typename I>
     requires(Readable(I) && Iterator(I))
 struct less< bounded_range<I> >
 {
-    bool operator()(const bounded_range<I>& x,
-                    const bounded_range<I>& y)
+    typedef bounded_range<I> input_type_0;
+    typedef bounded_range<I> input_type_1;
+    typedef bool codomain_type;
+
+    bool operator()(bounded_range<I> const& x,
+                    bounded_range<I> const& y)
     {
         less<I> less_I;
         return less_I(begin(x), begin(y)) ||
@@ -4952,8 +4993,12 @@ template<typename I>
     requires(Readable(I) && Iterator(I))
 struct less< counted_range<I> >
 {
-    bool operator()(const counted_range<I>& x,
-                    const counted_range<I>& y)
+    typedef counted_range<I> input_type_0;
+    typedef counted_range<I> input_type_1;
+    typedef bool codomain_type;
+
+    bool operator()(counted_range<I> const& x,
+                    counted_range<I> const& y)
     {
         less<I> less_I;
         return less_I(begin(x), begin(y)) ||
@@ -5463,6 +5508,10 @@ template<typename T>
     requires(Regular(T))
 struct less< slist_iterator<T> >
 {
+    typedef slist_iterator<T> input_type_0;
+    typedef slist_iterator<T> input_type_1;
+    typedef bool codomain_type;
+
     bool operator()(slist_iterator<T> i,
                     slist_iterator<T> j)
     {
@@ -5775,6 +5824,10 @@ template<typename T>
     requires(Regular(T))
 struct less< list_iterator<T> >
 {
+    typedef list_iterator<T> input_type_0;
+    typedef list_iterator<T> input_type_1;
+    typedef bool codomain_type;
+
     bool operator()(list_iterator<T> i,
                     list_iterator<T> j)
     {
@@ -6978,11 +7031,15 @@ template<typename P>
     requires(Predicate(P))
 struct underlying_predicate
 {
-    typedef UnderlyingType(Domain(P)) U;
+    typedef Domain(P) T;
+    typedef UnderlyingType(T) U;
+    typedef U input_type_0;
+    typedef bool codomain_type;
+
     P p;
-    bool operator()(const U& x)
+    bool operator()(U const& x)
     {
-        return p(original_ref<Domain(P)>(x));
+        return p(original_ref<T>(x));
     }
 };
 
@@ -6994,22 +7051,20 @@ inline underlying_predicate<P> make_underlying_predicate(const P& p)
     return tmp;
 }
 
-template<typename P>
-    requires(Predicate(P))
-struct input_type< underlying_predicate<P>, 0>
-{
-    typedef UnderlyingType(Domain(P)) type;
-};
-
 template<typename R>
     requires(Relation(R))
 struct underlying_relation
 {
-    typedef UnderlyingType(Domain(R)) U;
+    typedef Domain(R) T;
+    typedef UnderlyingType(T) U;
+    typedef U input_type_0;
+    typedef U input_type_1;
+    typedef bool codomain_type;
+
     R r;
-    bool operator()(const U& x, const U& y)
+    bool operator()(U const& x, U const& y)
     {
-        return r(original_ref<Domain(R)>(x), original_ref<Domain(R)>(y));
+        return r(original_ref<T>(x), original_ref<T>(y));
     }
 };
 
@@ -7020,13 +7075,6 @@ inline underlying_relation<R> make_underlying_relation(const R& r)
     underlying_relation<R> tmp = {r};
     return tmp;
 }
-
-template<typename R>
-    requires(Relation(R))
-struct input_type< underlying_relation<R>, 0>
-{
-    typedef UnderlyingType(Domain(R)) type;
-};
 
 template<typename I, typename P>
     requires(Mutable(I) && ForwardIterator(I) &&

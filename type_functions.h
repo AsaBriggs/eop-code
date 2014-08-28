@@ -69,23 +69,47 @@
 
 template<typename T>
     requires(FunctionalProcedure(T))
-struct codomain_type;
+struct codomain_type
+{
+    typedef typename T::codomain_type type;
+};
 
 #define Codomain(T) typename codomain_type< T >::type
 
 
 // InputType : FunctionalProcedure x unsigned int -> Regular
 
-template<typename T, int i>
+template<typename T>
     requires(FunctionalProcedure(T))
-struct input_type;
+struct input_type_0
+{
+    typedef typename T::input_type_0 type;
+};
 
-#define InputType(T, i) typename input_type< T, i >::type
+template<typename T>
+    requires(FunctionalProcedure(T))
+struct input_type_1
+{
+    typedef typename T::input_type_1 type;
+};
+
+template<typename T>
+    requires(FunctionalProcedure(T))
+struct input_type_2
+{
+    typedef typename T::input_type_2 type;
+};
+
+#define InputType0(T) typename input_type_0< T >::type
+#define InputType1(T) typename input_type_1< T >::type
+#define InputType2(T) typename input_type_2< T >::type
+
+#define InputType(T, n) InputType ## n
 
 
 // Domain : HomogeneousFunction -> Regular
 
-#define Domain(T) InputType(T, 0)
+#define Domain(T) InputType0(T)
 
 
 // Chapter 2 - Transformations and their orbits
@@ -123,32 +147,39 @@ struct distance_type<long long>
 
 // Chapter 3 - Associative operations
 
-template<typename T> 
-    requires(Regular(T)) 
-struct input_type<T (*)(T x, T y), 0> 
+template<typename S, typename T, typename U>
+    requires(Regular(S) && Regular(T) && Regular(U)) 
+struct input_type_0<S (*)(T x, U y)> 
 { 
     typedef T type; 
 };
 
-template<typename T> 
-    requires(Regular(T)) 
-struct codomain_type<T (*)(T x, T y)> 
+template<typename S, typename T, typename U> 
+    requires(Regular(S) && Regular(T) && Regular(U)) 
+struct input_type_0<S (*)(T const& x, U y)> 
 { 
     typedef T type; 
 };
 
-template<typename T> 
-    requires(Regular(T)) 
-struct input_type<T (*)(const T& x, const T& y), 0> 
+template<typename S, typename T, typename U>
+    requires(Regular(S) && Regular(T) && Regular(U)) 
+struct input_type_1<S (*)(T x, U y)> 
 { 
-    typedef T type; 
+    typedef U type; 
 };
 
-template<typename T> 
-    requires(Regular(T)) 
-struct codomain_type<T (*)(const T& x, const T& y)> 
+template<typename S, typename T, typename U> 
+    requires(Regular(S) && Regular(T) && Regular(U)) 
+struct input_type_1<S (*)(T x, U const& y)> 
 { 
-    typedef T type; 
+    typedef U type; 
+};
+
+template<typename S, typename T, typename U>
+    requires(Regular(S) && Regular(T) && Regular(U)) 
+struct codomain_type<S (*)(T x, U y)> 
+{ 
+    typedef S type; 
 };
 
 
@@ -157,37 +188,26 @@ struct codomain_type<T (*)(const T& x, const T& y)>
 
 // Domain type function for Predicate
 
-template<typename T> 
-    requires(Regular(T)) 
-struct input_type<bool (*)(T x), 0> 
+template<typename S, typename T> 
+    requires(Regular(S) && Regular(T)) 
+struct input_type_0<S (*)(T x)> 
 { 
     typedef T type; 
 };
 
-template<typename T> 
-    requires(Regular(T)) 
-struct input_type<bool (*)(const T& x), 0> 
+template<typename S, typename T> 
+    requires(Regular(S) && Regular(T)) 
+struct input_type_0<S (*)(T const& x)> 
 { 
-    typedef T type; 
+    typedef T type;
 };
 
-
-// Domain type function for Relation
-
-template<typename T> 
-    requires(Regular(T)) 
-struct input_type<bool (*)(T x, T y), 0> 
+template<typename S, typename T> 
+    requires(Regular(S) && Regular(T)) 
+struct codomain_type<S (*)(T x)> 
 { 
-    typedef T type; 
+    typedef S type;
 };
-
-template<typename T> 
-    requires(Regular(T)) 
-struct input_type<bool (*)(const T& x, const T& y), 0> 
-{ 
-    typedef T type; 
-};
-
 
 // Chapter 5 - Ordered algebraic structures
 

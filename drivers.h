@@ -60,20 +60,15 @@ template<typename I>
     requires(Integer(I))
 struct additive_congruential_transformation
 {
+    typedef I input_type_0;
+    typedef I codomain_type;
+
     I modulus;
     I index;
     additive_congruential_transformation(I modulus, I index) :
         modulus(modulus), index(index) { }
     I operator()(I x) { return remainder(x + index, modulus); }
 };
-
-template<typename I>
-    requires(Integer(I))
-struct input_type<additive_congruential_transformation<I>, 0>
-{
-    typedef I type;
-};
-
 
 // Definition space predicate for total transformation
 
@@ -110,6 +105,9 @@ template<typename I>
 struct table_transformation
 {
     typedef DistanceType(I) N;
+    typedef N input_type_0;
+    typedef int codomian_type;
+
     const I p;
     const N n;
     table_transformation(const I p, const N n) : p(p), n(n) {}    
@@ -125,19 +123,15 @@ struct table_transformation_definition_space_predicate
 {
     typedef table_transformation<I> T;
     typedef DistanceType(I) N;
+    typedef N input_type_0;
+    typedef bool codomain_type;
+
     const T& tbl;
     table_transformation_definition_space_predicate(const T& tbl) : tbl(tbl) { }
     bool operator()(N x)
     {
         return N(0) <= x && x < tbl.n;
     }
-};
-
-template<typename I>
-    requires(Readable(I) && IndexedIterator(I) && ValueType(I) == DistanceType(I))
-struct input_type<table_transformation<I>, 0>
-{
-    typedef ValueType(I) type;
 };
 
 template<typename I>
@@ -174,17 +168,14 @@ void run_table_transformation()
 
 struct srand_transformation // Transformation(srand_transformation)
 {
+    typedef int input_type_0;
+    typedef int codomain_type;
+
     int operator()(int x)
     {
         srand(x);
         return rand();
     }
-};
-
-template<>
-struct input_type<srand_transformation, 0>
-{
-    typedef int type;
 };
 
 template<>
@@ -213,17 +204,15 @@ void push(array<T>& x, const T& y) {
 struct LCG // linear congruential generator
 {
     typedef long long T;
+    typedef T input_type_0;
+    typedef T codomain_typel;
+
+
     T m, a, b, x0;
     const pointer(char) name;
     LCG(T m, T a, T b, T x0, const pointer(char) name) :
         m(m), a(a), b(b), x0(x0), name(name) { }
     T operator()(T x) { return (a * x + b) % m; }
-};
-
-template<>
-struct input_type<LCG, 0>
-{
-    typedef long long type;
 };
 
 template<>
@@ -311,16 +300,13 @@ void run_any_lcg_transformation()
 template<typename T>
     requires(DiscreteEuclideanSemiring(T))
 struct multiplies_modulo {
+    typedef T input_type_0;
+    typedef T input_type_1;
+    typedef T codomain_type;
+
     T m;
     multiplies_modulo(const T& m) : m(m) { }
     T operator()(const T& x, const T& y) const { return (x * y) % m; }
-};
-
-template<typename T>
-    requires(DiscreteEuclideanSemiring(T))
-struct input_type< multiplies_modulo<T>, 0 >
-{
-    typedef T type;
 };
 
 void run_idempotent_power()
@@ -358,6 +344,10 @@ template<typename T>
     requires(AdditiveMonoid(T))
 struct annotated_plus
 {
+    typedef T input_type_0;
+    typedef T input_type_1;
+    typedef T codomain_type;
+
     T operator()(const T& x, const T& y)
     {
         T tmp = x + y;
@@ -368,22 +358,11 @@ struct annotated_plus
 
 template<typename T>
     requires(AdditiveMonoid(T))
-struct input_type< annotated_plus<T>, 0>
-{
-    typedef T type;
-};
-
-template<typename T>
-    requires(AdditiveMonoid(T))
-struct codomain_type< annotated_plus<T> >
-{
-    typedef T type;
-};
-
-template<typename T>
-    requires(AdditiveMonoid(T))
 struct annotated_negate
 {
+    typedef T input_type_0;
+    typedef T codomain_type;
+
     T operator()(const T& x)
     {
         T tmp = -x;
@@ -424,14 +403,11 @@ template<typename T>
     requires(EuclideanSemiring(T))
 struct modulus
 {
-    T operator()(const T& x, const T& y) const { return x % y; }
-};
+    typedef T input_type_0;
+    typedef T input_type_1;
+    typedef T codomain_type;
 
-template<typename T>
-    requires(EuclideanSemiring(T))
-struct input_type< modulus<T>, 0 >
-{
-    typedef T type;
+    T operator()(const T& x, const T& y) const { return x % y; }
 };
 
 template<typename T>
@@ -439,17 +415,15 @@ template<typename T>
 struct quo_rem
 {
     typedef QuotientType(T) I;
+
+    typedef T input_type_0;
+    typedef T input_type_1;
+    typedef pair<I, T> codomain_type;
+
     pair<I, T> operator()(const T& a, const T& b)
     {
         return make_pair(I(a / b), T(a % b));
     }
-};
-
-template<typename T>
-    requires(EuclideanSemiring(T))
-struct input_type< quo_rem<T>, 0 >
-{
-    typedef T type;
 };
 
 void run_quotient_remainder()
@@ -610,6 +584,9 @@ template<typename C>
 struct serializer
 {
     typedef WeightType(C) N;
+    typedef C input_type_0;
+    typedef void codomain_type;
+
     N n;
     serializer() : n(0) { }
     void operator()(C c) {
@@ -817,21 +794,19 @@ template<typename R, typename I>
     requires(Relation(R) && Mutable(I) && Integer(ValueType(I)))
 struct instrumented_less
 {
+    typedef Domain(R) T;
+    typedef T input_type_0;
+    typedef T input_type_1;
+    typedef bool codomain_type;
+
     R r;
     I p;
     instrumented_less(R r, I p) : r(r), p(p) { }
-    bool operator()(const Domain(R)& x, const Domain(R)& y)
+    bool operator()(T const& x, T const& y)
     {
         ++sink(p);
         return r(x, y);
     }
-};
-
-template<typename R, typename I>
-    requires(Relation(R) && Mutable(I) && Integer(ValueType(I)))
-struct input_type< instrumented_less<R, I>, 0 >
-{
-    typedef Domain(R) type;
 };
 
 template<typename T>
