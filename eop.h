@@ -1484,7 +1484,7 @@ DistanceType(I) operator-(I l, I f)
 template<typename I, typename Proc>
     requires(Readable(I) && Iterator(I) &&
         Procedure(Proc) && Arity(Proc) == 1 &&
-        EOPValueType(I) == InputType(Proc, 0))
+        EOPValueType(I) == EOPInputType(Proc, 0))
 Proc for_each(I f, I l, Proc proc)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
@@ -1779,7 +1779,7 @@ EOPValueType(I) reduce(I f, I l)
 template<typename I, typename Proc>
     requires(Readable(I) && Iterator(I) &&
         Procedure(Proc) && Arity(Proc) == 1 &&
-        EOPValueType(I) == InputType(Proc, 0))
+        EOPValueType(I) == EOPInputType(Proc, 0))
 pair<Proc, I> for_each_n(I f, DistanceType(I) n, Proc proc)
 {
     // Precondition: $\property{readable\_weak\_range}(f, n)$
@@ -2126,8 +2126,8 @@ enum visit { pre, in, post };
 template<typename C, typename Proc>
     requires(BifurcateCoordinate(C) &&
         Procedure(Proc) && Arity(Proc) == 2 &&
-        visit == InputType(Proc, 0) &&
-        C == InputType(Proc, 1))
+        visit == EOPInputType(Proc, 0) &&
+        C == EOPInputType(Proc, 1))
 Proc traverse_nonempty(C c, Proc proc)
 {
     // Precondition: $\property{tree}(c) \wedge \neg \func{empty}(c)$
@@ -2233,8 +2233,8 @@ WeightType(C) height(C c)
 template<typename C, typename Proc>
     requires(BidirectionalBifurcateCoordinate(C) &&
         Procedure(Proc) && Arity(Proc) == 2 &&
-        visit == InputType(Proc, 0) &&
-        C == InputType(Proc, 1))
+        visit == EOPInputType(Proc, 0) &&
+        C == EOPInputType(Proc, 1))
 Proc traverse(C c, Proc proc)
 {
     // Precondition: $\property{tree}(c)$
@@ -2979,7 +2979,7 @@ void tree_rotate(C& curr, C& prev)
 template<typename C, typename Proc>
     requires(EmptyLinkedBifurcateCoordinate(C) &&
         Procedure(Proc) && Arity(Proc) == 1 &&
-        C == InputType(Proc, 0))
+        C == EOPInputType(Proc, 0))
 Proc traverse_rotating(C c, Proc proc)
 {
     // Precondition: $\property{tree}(c)$
@@ -3036,7 +3036,7 @@ template<typename N, typename Proc>
         Procedure(Proc) && Arity(Proc) == 1)
 struct phased_applicator
 {
-    typedef InputType0(Proc) input_type_0;
+    typedef EOPInputType0(Proc) input_type_0;
     typedef void codomain_type;
 
     N period;
@@ -3057,7 +3057,7 @@ struct phased_applicator
 template<typename C, typename Proc>
     requires(EmptyLinkedBifurcateCoordinate(C) &&
         Procedure(Proc) && Arity(Proc) == 1 &&
-        C == InputType(Proc, 0))
+        C == EOPInputType(Proc, 0))
 Proc traverse_phased_rotating(C c, int phase, Proc proc)
 {
     // Precondition: $\property{tree}(c) \wedge 0 \leq phase < 3$
@@ -3357,7 +3357,7 @@ template<typename I0, typename I1, typename O, typename R>
         BinaryPredicate(R) &&
         EOPValueType(I0) == EOPValueType(O) &&
         EOPValueType(I1) == EOPValueType(O) &&
-        I0 == InputType(R, 1) && I1 == InputType(R, 0))
+        I0 == EOPInputType(R, 1) && I1 == EOPInputType(R, 0))
 O combine_copy(I0 f_i0, I0 l_i0, I1 f_i1, I1 l_i1, O f_o, R r)
 {
     // Precondition: see section 9.3 of Elements of Programming
@@ -3374,7 +3374,7 @@ template<typename I0, typename I1, typename O, typename R>
         BinaryPredicate(R) &&
         EOPValueType(I0) == EOPValueType(O) &&
         EOPValueType(I1) == EOPValueType(O) &&
-        I0 == InputType(R, 1) && I1 = InputType(R, 0))
+        I0 == EOPInputType(R, 1) && I1 = EOPInputType(R, 0))
 triple<I0, I1, O> combine_copy_n(I0 f_i0, DistanceType(I0) n_i0,
                                  I1 f_i1, DistanceType(I1) n_i1,
                                  O f_o, R r) {
@@ -3405,7 +3405,7 @@ template<typename I0, typename I1, typename O, typename R>
         BinaryPredicate(R) &&
         EOPValueType(I0) == EOPValueType(O) &&
         EOPValueType(I1) == EOPValueType(O) &&
-        I0 == InputType(R, 1) && I1 == InputType(R, 0))
+        I0 == EOPInputType(R, 1) && I1 == EOPInputType(R, 0))
 O combine_copy_backward(I0 f_i0, I0 l_i0, I1 f_i1, I1 l_i1,
                         O l_o, R r)
 {
@@ -3426,7 +3426,7 @@ template<typename I0, typename I1, typename O, typename R>
         Writable(O) && BidirectionalIterator(O) &&
         BinaryPredicate(R) && 
         EOPValueType(I0) == EOPValueType(O) && EOPValueType(I1) == EOPValueType(O) &&
-        I0 == InputType(R, 1) && I1 = InputType(R, 0))
+        I0 == EOPInputType(R, 1) && I1 = EOPInputType(R, 0))
 triple<I0, I1, O> combine_copy_backward_n(I0 l_i0, DistanceType(I0) n_i0,
                            I1 l_i1, DistanceType(I1) n_i1, O l_o, R r) {
     // Precondition: see $\func{combine\_copy\_backward}$
@@ -6346,8 +6346,8 @@ bool operator<(const stree<T>& x, const stree<T>& y)
 template<typename T, typename Proc>
     requires(Regular(T) &&
         Procedure(Proc) && Arity(Proc) == 2 &&
-        visit == InputType(Proc, 0) &&
-        CoordinateType(stree<T>) == InputType(Proc, 1))
+        visit == EOPInputType(Proc, 0) &&
+        CoordinateType(stree<T>) == EOPInputType(Proc, 1))
 void traverse(stree<T>& x, Proc proc)
 {
     traverse_nonempty(begin(x), proc);
@@ -6598,8 +6598,8 @@ bool operator<(const tree<T>& x, const tree<T>& y)
 template<typename T, typename Proc>
     requires(Regular(T) &&
         Procedure(Proc) && Arity(Proc) == 2 &&
-        visit == InputType(Proc, 0) &&
-        CoordinateType(tree<T>) == InputType(Proc, 1))
+        visit == EOPInputType(Proc, 0) &&
+        CoordinateType(tree<T>) == EOPInputType(Proc, 1))
 void traverse(tree<T>& x, Proc proc)
 {
     traverse(begin(x), proc);

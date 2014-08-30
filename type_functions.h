@@ -77,7 +77,7 @@ struct codomain_type
 #define EOPCodomain(T) typename codomain_type< T >::type
 
 
-// InputType : FunctionalProcedure x unsigned int -> Regular
+// EOPInputType : FunctionalProcedure x unsigned int -> Regular
 
 template<typename T>
     requires(FunctionalProcedure(T))
@@ -100,16 +100,16 @@ struct input_type_2
     typedef typename T::input_type_2 type;
 };
 
-#define InputType0(T) typename input_type_0< T >::type
-#define InputType1(T) typename input_type_1< T >::type
-#define InputType2(T) typename input_type_2< T >::type
+#define EOPInputType0(T) typename input_type_0< T >::type
+#define EOPInputType1(T) typename input_type_1< T >::type
+#define EOPInputType2(T) typename input_type_2< T >::type
 
-#define InputType(T, n) InputType ## n
+#define EOPInputType(T, n) EOPInputType ## n
 
 
 // Domain : HomogeneousFunction -> Regular
 
-#define Domain(T) InputType0(T)
+#define Domain(T) EOPInputType0(T)
 
 
 // Chapter 2 - Transformations and their orbits
