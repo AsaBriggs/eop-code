@@ -279,7 +279,7 @@ template<typename F>
 void concept_Transformation(F f, Domain(F) x)
 {
     typedef Domain(F) X;
-    typedef Codomain(F) Y;
+    typedef EOPCodomain(F) Y;
     // X == Y
     Y y;
     y = x;
@@ -490,7 +490,7 @@ template<typename Op>
 void concept_BinaryOperation(Op op, Domain(Op) x)
 {
     typedef Domain(Op) X;
-    typedef Codomain(Op) Y;
+    typedef EOPCodomain(Op) Y;
     // X == Y
     Y y;
     y = x;
@@ -782,7 +782,7 @@ bool next_permutation(I f, I l, R r)
 
 template<typename F, typename R>
     requires(UnaryFunction(F) && Relation(R) &&
-        Codomain(F) == Domain(R))
+        EOPCodomain(F) == Domain(R))
 struct key_ordering
 {
     typedef Domain(F) T;

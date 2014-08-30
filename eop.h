@@ -1408,7 +1408,7 @@ Domain(Op) remainder(Domain(Op) a, Domain(Op) b, Op rem)
 template<typename F>
     requires(HomogeneousFunction(F) && Arity(F) == 2 &&
         ArchimedeanGroup(Domain(F)) &&
-        Codomain(F) == pair<QuotientType(Domain(F)),
+        EOPCodomain(F) == pair<QuotientType(Domain(F)),
                             Domain(F)>)
 pair<QuotientType(Domain(F)), Domain(F)>
 quotient_remainder(Domain(F) a, Domain(F) b, F quo_rem) 
@@ -1484,7 +1484,7 @@ DistanceType(I) operator-(I l, I f)
 template<typename I, typename Proc>
     requires(Readable(I) && Iterator(I) &&
         Procedure(Proc) && Arity(Proc) == 1 &&
-        ValueType(I) == InputType(Proc, 0))
+        EOPValueType(I) == InputType(Proc, 0))
 Proc for_each(I f, I l, Proc proc)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
@@ -1497,7 +1497,7 @@ Proc for_each(I f, I l, Proc proc)
 
 template<typename I>
     requires(Readable(I) && Iterator(I))
-I find(I f, I l, const ValueType(I)& x)
+I find(I f, I l, const EOPValueType(I)& x)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
     while (f != l && source(f) != x) f = successor(f);
@@ -1506,7 +1506,7 @@ I find(I f, I l, const ValueType(I)& x)
 
 template<typename I>
     requires(Readable(I) && Iterator(I))
-I find_not(I f, I l, const ValueType(I)& x)
+I find_not(I f, I l, const EOPValueType(I)& x)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
     while (f != l && source(f) == x) f = successor(f);
@@ -1515,7 +1515,7 @@ I find_not(I f, I l, const ValueType(I)& x)
 
 template<typename I, typename P>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 I find_if(I f, I l, P p)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
@@ -1525,7 +1525,7 @@ I find_if(I f, I l, P p)
 
 template<typename I,  typename P>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 I find_if_not(I f, I l, P p)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
@@ -1538,7 +1538,7 @@ I find_if_not(I f, I l, P p)
 
 template<typename I,  typename P>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 bool all(I f, I l, P p)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
@@ -1547,7 +1547,7 @@ bool all(I f, I l, P p)
 
 template<typename I,  typename P>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 bool none(I f, I l, P p)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
@@ -1556,7 +1556,7 @@ bool none(I f, I l, P p)
 
 template<typename I,  typename P>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 bool not_all(I f, I l, P p)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
@@ -1565,7 +1565,7 @@ bool not_all(I f, I l, P p)
 
 template<typename I,  typename P>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 bool some(I f, I l, P p)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
@@ -1575,7 +1575,7 @@ bool some(I f, I l, P p)
 template<typename I, typename P, typename J>
     requires(Readable(I) && Iterator(I) &&
         UnaryPredicate(P) && Iterator(J) &&
-        ValueType(I) == Domain(P))
+        EOPValueType(I) == Domain(P))
 J count_if(I f, I l, P p, J j)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
@@ -1592,7 +1592,7 @@ J count_if(I f, I l, P p, J j)
 
 template<typename I, typename P>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 DistanceType(I) count_if(I f, I l, P p) {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
     return count_if(f, l, p, DistanceType(I)(0));
@@ -1601,7 +1601,7 @@ DistanceType(I) count_if(I f, I l, P p) {
 template<typename I, typename J>
     requires(Readable(I) && Iterator(I) &&
         Iterator(J))
-J count(I f, I l, const ValueType(I)& x, J j)
+J count(I f, I l, const EOPValueType(I)& x, J j)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
     while (f != l) {
@@ -1613,7 +1613,7 @@ J count(I f, I l, const ValueType(I)& x, J j)
 
 template<typename I>
     requires(Readable(I) && Iterator(I))
-DistanceType(I) count(I f, I l, const ValueType(I)& x)
+DistanceType(I) count(I f, I l, const EOPValueType(I)& x)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
   return count(f, l, x, DistanceType(I)(0));
@@ -1622,7 +1622,7 @@ DistanceType(I) count(I f, I l, const ValueType(I)& x)
 template<typename I, typename J>
     requires(Readable(I) && Iterator(I) &&
         Iterator(J))
-J count_not(I f, I l, const ValueType(I)& x, J j)
+J count_not(I f, I l, const EOPValueType(I)& x, J j)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
     while (f != l) {
@@ -1634,7 +1634,7 @@ J count_not(I f, I l, const ValueType(I)& x, J j)
 
 template<typename I>
     requires(Readable(I) && Iterator(I))
-DistanceType(I) count_not(I f, I l, const ValueType(I)& x)
+DistanceType(I) count_not(I f, I l, const EOPValueType(I)& x)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
   return count_not(f, l, x, DistanceType(I)(0));
@@ -1642,7 +1642,7 @@ DistanceType(I) count_not(I f, I l, const ValueType(I)& x)
 
 template<typename I, typename P, typename J>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && Domain(P) == ValueType(I) &&
+        UnaryPredicate(P) && Domain(P) == EOPValueType(I) &&
         Iterator(J))
 J count_if_not(I f, I l, P p, J j)
 {
@@ -1655,7 +1655,7 @@ J count_if_not(I f, I l, P p, J j)
 }
 template<typename I, typename P>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && Domain(P) == ValueType(I))
+        UnaryPredicate(P) && Domain(P) == EOPValueType(I))
 DistanceType(I) count_if_not(I f, I l, P p)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
@@ -1665,7 +1665,7 @@ DistanceType(I) count_if_not(I f, I l, P p)
 template<typename I, typename Op, typename F>
     requires(Iterator(I) && BinaryOperation(Op) && 
         UnaryFunction(F) &&
-        I == Domain(F) && Codomain(F) == Domain(Op))
+        I == Domain(F) && EOPCodomain(F) == Domain(Op))
 Domain(Op) reduce_nonempty(I f, I l, Op op, F fun)
 {
     // Precondition: $\property{bounded\_range}(f, l) \wedge f \neq l$
@@ -1682,7 +1682,7 @@ Domain(Op) reduce_nonempty(I f, I l, Op op, F fun)
 
 template<typename I, typename Op>
     requires(Readable(I) && Iterator(I) && BinaryOperation(Op) && 
-        ValueType(I) == Domain(Op))
+        EOPValueType(I) == Domain(Op))
 Domain(Op) reduce_nonempty(I f, I l, Op op)
 {
     // Precondition: $\property{readable\_bounded\_range}(f, l) \wedge f \neq l$
@@ -1699,7 +1699,7 @@ Domain(Op) reduce_nonempty(I f, I l, Op op)
 template<typename I, typename Op, typename F>
     requires(Iterator(I) && BinaryOperation(Op) && 
         UnaryFunction(F) &&
-        I == Domain(F) && Codomain(F) == Domain(Op))
+        I == Domain(F) && EOPCodomain(F) == Domain(Op))
 Domain(Op) reduce(I f, I l, Op op, F fun, const Domain(Op)& z)
 {
     // Precondition: $\property{bounded\_range}(f, l)$
@@ -1711,7 +1711,7 @@ Domain(Op) reduce(I f, I l, Op op, F fun, const Domain(Op)& z)
 
 template<typename I, typename Op>
     requires(ReadableIterator(I) && BinaryOperation(Op) && 
-        ValueType(I) == Domain(Op))
+        EOPValueType(I) == Domain(Op))
 Domain(Op) reduce(I f, I l, Op op, const Domain(Op)& z)
 {
     // Precondition: $\property{readable\_bounded\_range}(f, l)$
@@ -1723,7 +1723,7 @@ Domain(Op) reduce(I f, I l, Op op, const Domain(Op)& z)
 template<typename I, typename Op, typename F>
     requires(Iterator(I) && BinaryOperation(Op) && 
         UnaryFunction(F) &&
-        I == Domain(F) && Codomain(F) == Domain(Op))
+        I == Domain(F) && EOPCodomain(F) == Domain(Op))
 Domain(Op) reduce_nonzeroes(I f, I l,
                             Op op, F fun, const Domain(Op)& z)
 {
@@ -1746,7 +1746,7 @@ Domain(Op) reduce_nonzeroes(I f, I l,
 
 template<typename I, typename Op>
     requires(ReadableIterator(I) && BinaryOperation(Op) && 
-        ValueType(I) == Domain(Op))
+        EOPValueType(I) == Domain(Op))
 Domain(Op) reduce_nonzeroes(I f, I l,
                             Op op, const Domain(Op)& z)
 {
@@ -1768,18 +1768,18 @@ Domain(Op) reduce_nonzeroes(I f, I l,
 
 template<typename I>
     requires(Readable(I) && Iterator(I) &&
-        AdditiveMonoid(ValueType(I)))
-ValueType(I) reduce(I f, I l)
+        AdditiveMonoid(EOPValueType(I)))
+EOPValueType(I) reduce(I f, I l)
 {
     // Precondition: $\property{readable\_bounded\_range}(f, l)$
-    typedef ValueType(I) T;
+    typedef EOPValueType(I) T;
     return reduce(f, l, plus<T>(), T(0));
 }
 
 template<typename I, typename Proc>
     requires(Readable(I) && Iterator(I) &&
         Procedure(Proc) && Arity(Proc) == 1 &&
-        ValueType(I) == InputType(Proc, 0))
+        EOPValueType(I) == InputType(Proc, 0))
 pair<Proc, I> for_each_n(I f, DistanceType(I) n, Proc proc)
 {
     // Precondition: $\property{readable\_weak\_range}(f, n)$
@@ -1794,7 +1794,7 @@ pair<Proc, I> for_each_n(I f, DistanceType(I) n, Proc proc)
 template<typename I>
     requires(Readable(I) && Iterator(I))
 pair<I, DistanceType(I)> find_n(I f, DistanceType(I) n,
-                                const ValueType(I)& x)
+                                const EOPValueType(I)& x)
 {
     // Precondition: $\property{readable\_weak\_range}(f, n)$
     while (!zero(n) && source(f) != x) {
@@ -1811,7 +1811,7 @@ pair<I, DistanceType(I)> find_n(I f, DistanceType(I) n,
 
 template<typename I, typename P>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 I find_if_unguarded(I f, P p) {
     // Precondition:
     // $(\exists l)\,\func{readable\_bounded\_range}(f, l) \wedge \func{some}(f, l, p)$
@@ -1822,7 +1822,7 @@ I find_if_unguarded(I f, P p) {
 
 template<typename I,  typename P>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && Domain(P) == ValueType(I))
+        UnaryPredicate(P) && Domain(P) == EOPValueType(I))
 I find_if_not_unguarded(I f, P p) {
     // Let $l$ be the end of the implied range starting with $f$
     // Precondition:
@@ -1834,8 +1834,8 @@ I find_if_not_unguarded(I f, P p) {
 template<typename I0, typename I1, typename R>
     requires(Readable(I0) && Iterator(I0) &&
         Readable(I1) && Iterator(I1) && Relation(R) && 
-        ValueType(I0) == ValueType(I1) &&
-        ValueType(I0) == Domain(R))
+        EOPValueType(I0) == EOPValueType(I1) &&
+        EOPValueType(I0) == Domain(R))
 pair<I0, I1> find_mismatch(I0 f0, I0 l0, I1 f1, I1 l1, R r)
 {
     // Precondition: $\func{readable\_bounded\_range}(f0, l0)$
@@ -1849,12 +1849,12 @@ pair<I0, I1> find_mismatch(I0 f0, I0 l0, I1 f1, I1 l1, R r)
 
 template<typename I, typename R>
     requires(Readable(I) && Iterator(I) &&
-        Relation(R) && ValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == Domain(R))
 I find_adjacent_mismatch(I f, I l, R r)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
     if (f == l) return l;
-    ValueType(I) x = source(f);
+    EOPValueType(I) x = source(f);
     f = successor(f);
     while (f != l && r(x, source(f))) {
         x = source(f);
@@ -1865,7 +1865,7 @@ I find_adjacent_mismatch(I f, I l, R r)
 
 template<typename I, typename R>
     requires(Readable(I) && Iterator(I) &&
-        Relation(R) && ValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == Domain(R))
 bool relation_preserving(I f, I l, R r)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
@@ -1874,7 +1874,7 @@ bool relation_preserving(I f, I l, R r)
 
 template<typename I, typename R>
     requires(Readable(I) && Iterator(I) &&
-        Relation(R) && ValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == Domain(R))
 bool strictly_increasing_range(I f, I l, R r)
 {
     // Precondition:
@@ -1884,7 +1884,7 @@ bool strictly_increasing_range(I f, I l, R r)
 
 template<typename I, typename R>
     requires(Readable(I) && Iterator(I) &&
-        Relation(R) && ValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == Domain(R))
 bool increasing_range(I f, I l, R r)
 {
     // Precondition:
@@ -1896,7 +1896,7 @@ bool increasing_range(I f, I l, R r)
 
 template<typename I, typename P>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 bool partitioned(I f, I l, P p)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
@@ -1909,7 +1909,7 @@ bool partitioned(I f, I l, P p)
 
 template<typename I, typename R>
     requires(Readable(I) && ForwardIterator(I) &&
-        Relation(R) && ValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == Domain(R))
 I find_adjacent_mismatch_forward(I f, I l, R r)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
@@ -1924,7 +1924,7 @@ I find_adjacent_mismatch_forward(I f, I l, R r)
 
 template<typename I, typename P>
     requires(Readable(I) && ForwardIterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 I partition_point_n(I f, DistanceType(I) n, P p)
 {
     // Precondition:
@@ -1943,7 +1943,7 @@ I partition_point_n(I f, DistanceType(I) n, P p)
 
 template<typename I,  typename P>
     requires(Readable(I) && ForwardIterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 I partition_point(I f, I l, P p)
 {
     // Precondition:
@@ -1974,9 +1974,9 @@ inline lower_bound_predicate<R> make_lower_bound_predicate(const Domain(R)& a, c
 
 template<typename I, typename R>
     requires(Readable(I) && ForwardIterator(I) &&
-        Relation(R) && ValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == Domain(R))
 I lower_bound_n(I f, DistanceType(I) n,
-                const ValueType(I)& a, R r)
+                const EOPValueType(I)& a, R r)
 {
     // Precondition:
     // $\property{weak\_ordering(r)} \wedge \property{increasing\_counted\_range}(f, n, r)$
@@ -2006,9 +2006,9 @@ inline upper_bound_predicate<R> make_upper_bound_predicate(const Domain(R)& a, c
 
 template<typename I, typename R>
     requires(Readable(I) && ForwardIterator(I) &&
-        Relation(R) && ValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == Domain(R))
 I upper_bound_n(I f, DistanceType(I) n,
-                const ValueType(I)& a, R r)
+                const EOPValueType(I)& a, R r)
 {
     // Precondition:
     // $\property{weak\_ordering(r)} \wedge \property{increasing\_counted\_range}(f, n, r)$
@@ -2033,7 +2033,7 @@ I operator-(I l, DistanceType(I) n)
 
 template<typename I, typename P>
     requires(Readable(I) && BidirectionalIterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 I find_backward_if(I f, I l, P p)
 {
     // Precondition: $(f, l] \text{ is a readable bounded half-open on left range}$
@@ -2044,7 +2044,7 @@ I find_backward_if(I f, I l, P p)
 
 template<typename I, typename P>
     requires(Readable(I) && BidirectionalIterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 I find_backward_if_not(I f, I l, P p) {
     // Precondition: $(f, l] \text{ is a readable bounded half-open on left range}$
     while (l != f && p(source(predecessor(l))))
@@ -2061,7 +2061,7 @@ I find_backward_if_not(I f, I l, P p) {
 
 template<typename I, typename P>
     requires(Readable(I) && BidirectionalIterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 I find_backward_if_unguarded(I l, P p)
 {
     // Precondition:
@@ -2073,7 +2073,7 @@ I find_backward_if_unguarded(I l, P p)
 
 template<typename I, typename P>
     requires(Readable(I) && BidirectionalIterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 I find_backward_if_not_unguarded(I l, P p)
 {
     // Precondition:
@@ -2300,8 +2300,8 @@ bool bifurcate_isomorphic(C0 c0, C1 c1)
 template<typename I0, typename I1, typename R>
     requires(Readable(I0) && Iterator(I0) &&
         Readable(I1) && Iterator(I1) &&
-        ValueType(I0) == ValueType(I1) &&
-        Relation(R) && ValueType(I0) == Domain(R))
+        EOPValueType(I0) == EOPValueType(I1) &&
+        Relation(R) && EOPValueType(I0) == Domain(R))
 bool lexicographical_equivalent(I0 f0, I0 l0, I1 f1, I1 l1, R r)
 {
     // Precondition: $\property{readable\_bounded\_range}(f0, l0)$
@@ -2314,18 +2314,18 @@ bool lexicographical_equivalent(I0 f0, I0 l0, I1 f1, I1 l1, R r)
 template<typename I0, typename I1>
     requires(Readable(I0) && Iterator(I0) &&
         Readable(I1) && Iterator(I1) &&
-        ValueType(I0) == ValueType(I1))
+        EOPValueType(I0) == EOPValueType(I1))
 bool lexicographical_equal(I0 f0, I0 l0, I1 f1, I1 l1)
 {
     return lexicographical_equivalent(f0, l0, f1, l1,
-                                      equal<ValueType(I0)>());
+                                      equal<EOPValueType(I0)>());
 }
 
 // Could specialize to use lexicographic_equal for k > some cutoff
 template<int k, typename I0, typename I1>
    requires(Readable(I0) && ForwardIterator(I0) &&
        Readable(I1) && ForwardIterator(I1) &&
-       ValueType(I0) == ValueType(I1))
+       EOPValueType(I0) == EOPValueType(I1))
 struct lexicographical_equal_k
 {
     typedef I0 input_type_0;
@@ -2355,8 +2355,8 @@ struct lexicographical_equal_k<0, I0, I1>
 template<typename C0, typename C1, typename R>
     requires(Readable(C0) && BifurcateCoordinate(C0) &&
         Readable(C1) && BifurcateCoordinate(C1) &&
-        ValueType(C0) == ValueType(C1) &&
-        Relation(R) && ValueType(C0) == Domain(R))
+        EOPValueType(C0) == EOPValueType(C1) &&
+        Relation(R) && EOPValueType(C0) == Domain(R))
 bool bifurcate_equivalent_nonempty(C0 c0, C1 c1, R r)
 {
     // Precondition: $\property{readable\_tree}(c0) \wedge \property{readable\_tree}(c1)$
@@ -2385,8 +2385,8 @@ template<typename C0, typename C1, typename R>
         BidirectionalBifurcateCoordinate(C0) &&
         Readable(C1) && 
         BidirectionalBifurcateCoordinate(C1) &&
-        ValueType(C0) == ValueType(C1) &&
-        Relation(R) && ValueType(C0) == Domain(R))
+        EOPValueType(C0) == EOPValueType(C1) &&
+        Relation(R) && EOPValueType(C0) == Domain(R))
 bool bifurcate_equivalent(C0 c0, C1 c1, R r)
 {
     // Precondition: $\property{readable\_tree}(c0) \wedge \property{readable\_tree}(c1)$
@@ -2411,17 +2411,17 @@ template<typename C0, typename C1>
         BidirectionalBifurcateCoordinate(C0) &&
         Readable(C1) && 
         BidirectionalBifurcateCoordinate(C1) &&
-        ValueType(C0) == ValueType(C1))
+        EOPValueType(C0) == EOPValueType(C1))
 bool bifurcate_equal(C0 c0, C1 c1)
 {
-    return bifurcate_equivalent(c0, c1, equal<ValueType(C0)>());
+    return bifurcate_equivalent(c0, c1, equal<EOPValueType(C0)>());
 }
 
 template<typename I0, typename I1, typename R>
     requires(Readable(I0) && Iterator(I0) &&
         Readable(I1) && Iterator(I1) &&
-        ValueType(I0) == ValueType(I1) &&
-        Relation(R) && ValueType(I0) == Domain(R))
+        EOPValueType(I0) == EOPValueType(I1) &&
+        Relation(R) && EOPValueType(I0) == Domain(R))
 bool lexicographical_compare(I0 f0, I0 l0, I1 f1, I1 l1, R r)
 {
     // Precondition: $\property{readable\_bounded\_range}(f0, l0)$
@@ -2440,17 +2440,17 @@ bool lexicographical_compare(I0 f0, I0 l0, I1 f1, I1 l1, R r)
 template<typename I0, typename I1>
     requires(Readable(I0) && Iterator(I0) &&
         Readable(I1) && Iterator(I1) &&
-        ValueType(I0) == ValueType(I1))
+        EOPValueType(I0) == EOPValueType(I1))
 bool lexicographical_less(I0 f0, I0 l0, I1 f1, I1 l1)
 {
     return lexicographical_compare(f0, l0, f1, l1,
-                                   less<ValueType(I0)>());
+                                   less<EOPValueType(I0)>());
 }
 
 template<int k, typename I0, typename I1>
    requires(Readable(I0) && ForwardIterator(I0) &&
        Readable(I1) && ForwardIterator(I1) &&
-       ValueType(I0) == ValueType(I1))
+       EOPValueType(I0) == EOPValueType(I1))
 struct lexicographical_less_k
 {
     typedef I0 input_type_0;
@@ -2486,7 +2486,7 @@ struct lexicographical_less_k<0, I0, I1>
 // concept Comparator3Way(F) is
 //     HomogeneousFunction(F)
 //  /\ Arity(F) = 2
-//  /\ Codomain(F) = int
+//  /\ EOPCodomain(F) = int
 
 // property(F : Comparator3Way)
 // three_way_compare : F
@@ -2526,8 +2526,8 @@ inline comparator_3_way<R> make_comparator_3_way(const R& r)
 template<typename I0, typename I1, typename F>
     requires(Readable(I0) && Iterator(I0) &&
         Readable(I1) && Iterator(I1) &&
-        ValueType(I0) == ValueType(I1) &&
-        Comparator3Way(F) && ValueType(I0) == Domain(F))
+        EOPValueType(I0) == EOPValueType(I1) &&
+        Comparator3Way(F) && EOPValueType(I0) == Domain(F))
 int lexicographical_compare_3way(I0 f0, I0 l0, I1 f1, I1 l1, F comp)
 {
     // Precondition: $\property{readable\_bounded\_range}(f0, l0)$
@@ -2549,8 +2549,8 @@ int lexicographical_compare_3way(I0 f0, I0 l0, I1 f1, I1 l1, F comp)
 template<typename C0, typename C1, typename F>
     requires(Readable(C0) && BifurcateCoordinate(C0) &&
         Readable(C1) && BifurcateCoordinate(C1) &&
-        ValueType(C0) == ValueType(C1) &&
-        Comparator3Way(F) && ValueType(I0) == Domain(F))
+        EOPValueType(C0) == EOPValueType(C1) &&
+        Comparator3Way(F) && EOPValueType(I0) == Domain(F))
 int bifurcate_compare_nonempty(C0 c0, C1 c1, F comp)
 {
     // Precondition: $\property{readable\_tree}(c0) \wedge \property{readable\_tree}(c1)$
@@ -2580,8 +2580,8 @@ template<typename C0, typename C1, typename R>
         BidirectionalBifurcateCoordinate(C0) &&
         Readable(C1) && 
         BidirectionalBifurcateCoordinate(C1) &&
-        ValueType(C0) == ValueType(C1) &&
-        Relation(R) && ValueType(C0) == Domain(R))
+        EOPValueType(C0) == EOPValueType(C1) &&
+        Relation(R) && EOPValueType(C0) == Domain(R))
 bool bifurcate_compare(C0 c0, C1 c1, R r)
 {
     // Precondition: $\property{readable\_tree}(c0) \wedge
@@ -2613,7 +2613,7 @@ bool bifurcate_less(C0 c0, C1 c1)
 {
     // Precondition: $\property{readable\_tree}(c0) \wedge
     //                \property{readable\_tree}(c1)
-    return bifurcate_compare(c0, c1, less<ValueType(C0)>());
+    return bifurcate_compare(c0, c1, less<EOPValueType(C0)>());
 }
 
 template<typename T>
@@ -2639,7 +2639,7 @@ bool bifurcate_shape_compare(C0 c0, C1 c1)
 {
     // Precondition: $\property{readable\_tree}(c0) \wedge
     //                \property{readable\_tree}(c1)
-    return bifurcate_compare(c0, c1, always_false<ValueType(C0)>());
+    return bifurcate_compare(c0, c1, always_false<EOPValueType(C0)>());
 }
 
 
@@ -2861,7 +2861,7 @@ I reverse_append(I f, I l, I h, S set_link)
 
 template<typename I, typename P>
     requires(Readable(I) && 
-        Predicate(P) && ValueType(I) == Domain(P))
+        Predicate(P) && EOPValueType(I) == Domain(P))
 struct predicate_source
 {
     typedef I input_type_0;
@@ -2876,7 +2876,7 @@ struct predicate_source
 
 template<typename I, typename P>
     requires(Readable(I) && 
-        Predicate(P) && ValueType(I) == Domain(P))
+        Predicate(P) && EOPValueType(I) == Domain(P))
 inline predicate_source<I, P> make_predicate_source(const P& p)
 {
     predicate_source<I, P> tmp = {p};
@@ -2885,7 +2885,7 @@ inline predicate_source<I, P> make_predicate_source(const P& p)
 
 template<typename I, typename S, typename P>
     requires(ForwardLinker(S) && I == IteratorType(S) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 pair< pair<I, I>, pair<I, I> >
 partition_linked(I f, I l, P p, S set_link)
 {
@@ -2896,8 +2896,8 @@ partition_linked(I f, I l, P p, S set_link)
 
 template<typename I0, typename I1, typename R>
     requires(Readable(I0) && Readable(I1) &&
-        ValueType(I0) == ValueType(I1) &&
-        Relation(R) && ValueType(I0) == Domain(R))
+        EOPValueType(I0) == EOPValueType(I1) &&
+        Relation(R) && EOPValueType(I0) == Domain(R))
 struct relation_source
 {
     typedef I0 input_type_0;
@@ -2913,8 +2913,8 @@ struct relation_source
 
 template<typename I0, typename I1, typename R>
     requires(Readable(I0) && Readable(I1) &&
-        ValueType(I0) == ValueType(I1) &&
-        Relation(R) && ValueType(I0) == Domain(R))
+        EOPValueType(I0) == EOPValueType(I1) &&
+        Relation(R) && EOPValueType(I0) == Domain(R))
 inline relation_source<I0, I1, R> make_relation_source(const R& r)
 {
     relation_source<I0, I1, R> tmp = {r};
@@ -2924,7 +2924,7 @@ inline relation_source<I0, I1, R> make_relation_source(const R& r)
 template<typename I, typename S, typename R>
     requires(Readable(I) &&
         ForwardLinker(S) && I == IteratorType(S) &&
-        Relation(R) && ValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == Domain(R))
 pair<I, I> merge_linked_nonempty(I f0, I l0, I f1, I l1,
                                  R r, S set_link)
 {
@@ -2941,7 +2941,7 @@ pair<I, I> merge_linked_nonempty(I f0, I l0, I f1, I l1,
 template<typename I, typename S, typename R>
     requires(Readable(I) &&
         ForwardLinker(S) && I == IteratorType(S) &&
-        Relation(R) && ValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == Domain(R))
 pair<I, I> sort_linked_nonempty_n(I f, DistanceType(I) n,
                                   R r, S set_link)
 {
@@ -3074,7 +3074,7 @@ Proc traverse_phased_rotating(C c, int phase, Proc proc)
 template<typename I, typename O>
     requires(Readable(I) && Iterator(I) &&
         Writable(O) && Iterator(O) &&
-        ValueType(I) == ValueType(O))
+        EOPValueType(I) == EOPValueType(O))
 void copy_step(I& f_i, O& f_o)
 {
     // Precondition: $\func{source}(f_i)$ and $\func{sink}(f_o)$ are defined
@@ -3086,7 +3086,7 @@ void copy_step(I& f_i, O& f_o)
 template<typename I, typename O>
     requires(Readable(I) && Iterator(I) &&
         Writable(O) && Iterator(O) &&
-        ValueType(I) == ValueType(O))
+        EOPValueType(I) == EOPValueType(O))
 O copy(I f_i, I l_i, O f_o)
 {
     // Precondition:
@@ -3097,7 +3097,7 @@ O copy(I f_i, I l_i, O f_o)
 
 template<typename I>
     requires(Writable(I) && Iterator(I))
-void fill_step(I& f_o, const ValueType(I)& x)
+void fill_step(I& f_o, const EOPValueType(I)& x)
 {
     sink(f_o) = x;
     f_o = successor(f_o);
@@ -3105,7 +3105,7 @@ void fill_step(I& f_o, const ValueType(I)& x)
 
 template<typename I>
     requires(Writable(I) && Iterator(I))
-I fill(I f, I l, const ValueType(I)& x)
+I fill(I f, I l, const EOPValueType(I)& x)
 {
     while (f != l) fill_step(f, x);
     return f;
@@ -3113,18 +3113,18 @@ I fill(I f, I l, const ValueType(I)& x)
 
 template<typename O>
     requires(Writable(O) && Iterator(O) &&
-        Integer(ValueType(O)))
-O iota(ValueType(O) n, O o) // like APL $\iota$
+        Integer(EOPValueType(O)))
+O iota(EOPValueType(O) n, O o) // like APL $\iota$
 {
     // Precondition: $\property{writable\_counted\_range}(o, n) \wedge n \geq 0$
-    return copy(ValueType(O)(0), n, o);
+    return copy(EOPValueType(O)(0), n, o);
 }
 
 // Useful for testing in conjunction with iota
 template<typename I>
     requires(Readable(I) && Iterator(I) &&
-        Integer(ValueType(I)))
-bool equal_iota(I f, I l, ValueType(I) n = 0)
+        Integer(EOPValueType(I)))
+bool equal_iota(I f, I l, EOPValueType(I) n = 0)
 {
     // Precondition: $\property{readable\_bounded\_range}(f, l)$
     while (f != l) {
@@ -3138,7 +3138,7 @@ bool equal_iota(I f, I l, ValueType(I) n = 0)
 template<typename I, typename O>
     requires(Readable(I) && Iterator(I) &&
         Writable(O) && Iterator(O) &&
-        ValueType(I) == ValueType(O))
+        EOPValueType(I) == EOPValueType(O))
 pair<I, O> copy_bounded(I f_i, I l_i, O f_o, O l_o)
 {
     // Precondition: $\property{not\_overlapped\_forward}(f_i, l_i, f_o, l_o)$
@@ -3159,7 +3159,7 @@ bool count_down(N& n)
 template<typename I, typename O, typename N>
     requires(Readable(I) && Iterator(I) &&
         Writable(O) && Iterator(O) &&
-        ValueType(I) == ValueType(O) &&
+        EOPValueType(I) == EOPValueType(O) &&
         Integer(N))
 pair<I, O> copy_n(I f_i, N n, O f_o)
 {
@@ -3170,7 +3170,7 @@ pair<I, O> copy_n(I f_i, N n, O f_o)
 
 template<typename I>
     requires(Writable(I) && Iterator(I))
-I fill_n(I f, DistanceType(I) n, const ValueType(I)& x)
+I fill_n(I f, DistanceType(I) n, const EOPValueType(I)& x)
 {
     while (count_down(n)) fill_step(f, x);
     return f;
@@ -3179,7 +3179,7 @@ I fill_n(I f, DistanceType(I) n, const ValueType(I)& x)
 template<typename I, typename O>
     requires(Readable(I) && BidirectionalIterator(I) &&
         Writable(O) && BidirectionalIterator(O) &&
-        ValueType(I) == ValueType(O))
+        EOPValueType(I) == EOPValueType(O))
 void copy_backward_step(I& l_i, O& l_o)
 {
     // Precondition: $\func{source}(\property{predecessor}(l_i))$ and
@@ -3193,7 +3193,7 @@ void copy_backward_step(I& l_i, O& l_o)
 template<typename I, typename O>
     requires(Readable(I) && BidirectionalIterator(I) &&
         Writable(O) && BidirectionalIterator(O) &&
-        ValueType(I) == ValueType(O))
+        EOPValueType(I) == EOPValueType(O))
 O copy_backward(I f_i, I l_i, O l_o)
 {
     // Precondition: $\property{not\_overlapped\_backward}(f_i, l_i, l_o-(l_i-f_i), l_o)$
@@ -3204,7 +3204,7 @@ O copy_backward(I f_i, I l_i, O l_o)
 template<typename I, typename O>
     requires(Readable(I) && BidirectionalIterator(I) &&
         Writable(O) && BidirectionalIterator(O) &&
-        ValueType(I) == ValueType(O))
+        EOPValueType(I) == EOPValueType(O))
 pair<I, O> copy_backward_n(I l_i, DistanceType(I) n, O l_o)
 {
     while (count_down(n)) copy_backward_step(l_i, l_o);
@@ -3214,7 +3214,7 @@ pair<I, O> copy_backward_n(I l_i, DistanceType(I) n, O l_o)
 template<typename I, typename O>
     requires(Readable(I) && BidirectionalIterator(I) &&
         Writable(O) && Iterator(O) &&
-        ValueType(I) == ValueType(O))
+        EOPValueType(I) == EOPValueType(O))
 void reverse_copy_step(I& l_i, O& f_o)
 {
     // Precondition: $\func{source}(\func{predecessor}(l_i))$ and
@@ -3227,7 +3227,7 @@ void reverse_copy_step(I& l_i, O& f_o)
 template<typename I, typename O>
     requires(Readable(I) && Iterator(I) &&
         Writable(O) && BidirectionalIterator(O) &&
-        ValueType(I) == ValueType(O))
+        EOPValueType(I) == EOPValueType(O))
 void reverse_copy_backward_step(I& f_i, O& l_o)
 {
     // Precondition: $\func{source}(f_i)$ and
@@ -3240,7 +3240,7 @@ void reverse_copy_backward_step(I& f_i, O& l_o)
 template<typename I, typename O>
     requires(Readable(I) && BidirectionalIterator(I) &&
         Writable(O) && Iterator(O) &&
-        ValueType(I) == ValueType(O))
+        EOPValueType(I) == EOPValueType(O))
 O reverse_copy(I f_i, I l_i, O f_o)
 {
     // Precondition: $\property{not\_overlapped}(f_i, l_i, f_o, f_o+(l_i-f_i))$
@@ -3251,7 +3251,7 @@ O reverse_copy(I f_i, I l_i, O f_o)
 template<typename I, typename O>
     requires(Readable(I) && Iterator(I) &&
         Writable(O) && BidirectionalIterator(O) &&
-        ValueType(I) == ValueType(O))
+        EOPValueType(I) == EOPValueType(O))
 O reverse_copy_backward(I f_i, I l_i, O l_o)
 {
     // Precondition: $\property{not\_overlapped}(f_i, l_i, l_o-(l_i-f_i), l_o)$
@@ -3262,7 +3262,7 @@ O reverse_copy_backward(I f_i, I l_i, O l_o)
 template<typename I, typename O, typename P>
     requires(Readable(I) && Iterator(I) &&
         Writable(O) && Iterator(O) &&
-        ValueType(I) == ValueType(O) &&
+        EOPValueType(I) == EOPValueType(O) &&
         UnaryPredicate(P) && I == Domain(P))
 O copy_select(I f_i, I l_i, O f_t, P p)
 {
@@ -3277,8 +3277,8 @@ O copy_select(I f_i, I l_i, O f_t, P p)
 template<typename I, typename O, typename P>
     requires(Readable(I) && Iterator(I) &&
         Writable(O) && Iterator(O) &&
-        ValueType(I) == ValueType(O) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        EOPValueType(I) == EOPValueType(O) &&
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 O copy_if(I f_i, I l_i, O f_t, P p)
 {
     // Precondition: same as for $\func{copy\_select}$
@@ -3290,8 +3290,8 @@ template<typename I, typename O_f, typename O_t, typename P>
     requires(Readable(I) && Iterator(I) &&
         Writable(O_f) && Iterator(O_f) &&
         Writable(O_t) && Iterator(O_t) &&
-        ValueType(I) == ValueType(O_f) &&
-        ValueType(I) == ValueType(O_t) &&
+        EOPValueType(I) == EOPValueType(O_f) &&
+        EOPValueType(I) == EOPValueType(O_t) &&
         UnaryPredicate(P) && I == Domain(P))
 pair<O_f, O_t> split_copy(I f_i, I l_i, O_f f_f, O_t f_t,
                           P p)
@@ -3307,8 +3307,8 @@ template<typename I, typename O_f, typename O_t, typename P>
     requires(Readable(I) && Iterator(I) &&
         Writable(O_f) && Iterator(O_f) &&
         Writable(O_t) && Iterator(O_t) &&
-        ValueType(I) == ValueType(O_f) &&
-        ValueType(I) == ValueType(O_t) &&
+        EOPValueType(I) == EOPValueType(O_f) &&
+        EOPValueType(I) == EOPValueType(O_t) &&
         UnaryPredicate(P) && I == Domain(P))
 pair<O_f, O_t> split_copy_n(I f_i, DistanceType(I) n_i, O_f f_f, O_t f_t, P p)
 {
@@ -3323,9 +3323,9 @@ template<typename I, typename O_f, typename O_t, typename P>
     requires(Readable(I) && Iterator(I) &&
         Writable(O_f) && Iterator(O_f) &&
         Writable(O_t) && Iterator(O_t) &&
-        ValueType(I) == ValueType(O_f) &&
-        ValueType(I) == ValueType(O_t) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        EOPValueType(I) == EOPValueType(O_f) &&
+        EOPValueType(I) == EOPValueType(O_t) &&
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 pair<O_f, O_t> partition_copy(I f_i, I l_i, O_f f_f, O_t f_t,
                               P p)
 {
@@ -3338,9 +3338,9 @@ template<typename I, typename O_f, typename O_t, typename P>
     requires(Readable(I) && Iterator(I) &&
         Writable(O_f) && Iterator(O_f) &&
         Writable(O_t) && Iterator(O_t) &&
-        ValueType(I) == ValueType(O_f) &&
-        ValueType(I) == ValueType(O_t) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        EOPValueType(I) == EOPValueType(O_f) &&
+        EOPValueType(I) == EOPValueType(O_t) &&
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 pair<O_f, O_t> partition_copy_n(I f_i, DistanceType(I) n,
                                 O_f f_f, O_t f_t,
                                 P p)
@@ -3355,8 +3355,8 @@ template<typename I0, typename I1, typename O, typename R>
         Readable(I1) && Iterator(I1) &&
         Writable(O) && Iterator(O) &&
         BinaryPredicate(R) &&
-        ValueType(I0) == ValueType(O) &&
-        ValueType(I1) == ValueType(O) &&
+        EOPValueType(I0) == EOPValueType(O) &&
+        EOPValueType(I1) == EOPValueType(O) &&
         I0 == InputType(R, 1) && I1 == InputType(R, 0))
 O combine_copy(I0 f_i0, I0 l_i0, I1 f_i1, I1 l_i1, O f_o, R r)
 {
@@ -3372,8 +3372,8 @@ template<typename I0, typename I1, typename O, typename R>
         Readable(I1) && Iterator(I1) &&
         Writable(O) && Iterator(O) &&
         BinaryPredicate(R) &&
-        ValueType(I0) == ValueType(O) &&
-        ValueType(I1) == ValueType(O) &&
+        EOPValueType(I0) == EOPValueType(O) &&
+        EOPValueType(I1) == EOPValueType(O) &&
         I0 == InputType(R, 1) && I1 = InputType(R, 0))
 triple<I0, I1, O> combine_copy_n(I0 f_i0, DistanceType(I0) n_i0,
                                  I1 f_i1, DistanceType(I1) n_i1,
@@ -3403,8 +3403,8 @@ template<typename I0, typename I1, typename O, typename R>
         Readable(I1) && BidirectionalIterator(I1) &&
         Writable(O) && BidirectionalIterator(O) &&
         BinaryPredicate(R) &&
-        ValueType(I0) == ValueType(O) &&
-        ValueType(I1) == ValueType(O) &&
+        EOPValueType(I0) == EOPValueType(O) &&
+        EOPValueType(I1) == EOPValueType(O) &&
         I0 == InputType(R, 1) && I1 == InputType(R, 0))
 O combine_copy_backward(I0 f_i0, I0 l_i0, I1 f_i1, I1 l_i1,
                         O l_o, R r)
@@ -3425,7 +3425,7 @@ template<typename I0, typename I1, typename O, typename R>
         Readable(I1) && BidirectionalIterator(I1) &&
         Writable(O) && BidirectionalIterator(O) &&
         BinaryPredicate(R) && 
-        ValueType(I0) == ValueType(O) && ValueType(I1) == ValueType(O) &&
+        EOPValueType(I0) == EOPValueType(O) && EOPValueType(I1) == EOPValueType(O) &&
         I0 == InputType(R, 1) && I1 = InputType(R, 0))
 triple<I0, I1, O> combine_copy_backward_n(I0 l_i0, DistanceType(I0) n_i0,
                            I1 l_i1, DistanceType(I1) n_i1, O l_o, R r) {
@@ -3454,9 +3454,9 @@ template<typename I0, typename I1, typename O, typename R>
         Readable(I1) && Iterator(I1) &&
         Writable(O) && Iterator(O) &&
         Relation(R) && 
-        ValueType(I0) == ValueType(O) &&
-        ValueType(I1) == ValueType(O) &&
-        ValueType(I0) == Domain(R))
+        EOPValueType(I0) == EOPValueType(O) &&
+        EOPValueType(I1) == EOPValueType(O) &&
+        EOPValueType(I0) == Domain(R))
 O merge_copy(I0 f_i0, I0 l_i0, I1 f_i1, I1 l_i1, O f_o, R r)
 {
     // Precondition: in addition to that for $\func{combine\_copy}$:
@@ -3472,9 +3472,9 @@ template<typename I0, typename I1, typename O, typename R>
         Readable(I1) && Iterator(I1) &&
         Writable(O) && Iterator(O) &&
         Relation(R) && 
-        ValueType(I0) == ValueType(O) &&
-        ValueType(I1) == ValueType(O) &&
-        ValueType(I0) == Domain(R))
+        EOPValueType(I0) == EOPValueType(O) &&
+        EOPValueType(I1) == EOPValueType(O) &&
+        EOPValueType(I0) == Domain(R))
 triple<I0, I1, O> merge_copy_n(I0 f_i0, DistanceType(I0) n_i0,
                                I1 f_i1, DistanceType(I1) n_i1,
                                O o, R r)
@@ -3489,9 +3489,9 @@ template<typename I0, typename I1, typename O, typename R>
         Readable(I1) && BidirectionalIterator(I1) &&
         Writable(O) && BidirectionalIterator(O) &&
         Relation(R) && 
-        ValueType(I0) == ValueType(O) &&
-        ValueType(I1) == ValueType(O) &&
-        ValueType(I0) == Domain(R))
+        EOPValueType(I0) == EOPValueType(O) &&
+        EOPValueType(I1) == EOPValueType(O) &&
+        EOPValueType(I0) == Domain(R))
 O merge_copy_backward(I0 f_i0, I0 l_i0, I1 f_i1, I1 l_i1, O l_o,
                       R r)
 {
@@ -3509,8 +3509,8 @@ template<typename I0, typename I1, typename O, typename R>
         Readable(I1) && BidirectionalIterator(I1) &&
         Writable(O) && BidirectionalIterator(O) &&
         Relation(R) && 
-        ValueType(I0) == ValueType(O) && ValueType(I1) == ValueType(O) &&
-        ValueType(I0) == Domain(R))
+        EOPValueType(I0) == EOPValueType(O) && EOPValueType(I1) == EOPValueType(O) &&
+        EOPValueType(I0) == Domain(R))
 triple<I0, I1, O> merge_copy_backward_n(I0 l_i0, DistanceType(I0) n_i0,
                            I1 l_i1, DistanceType(I1) n_i1, O l_o, R r) {
     // Precondition: see $\func{merge\_copy\_backward}$
@@ -3520,11 +3520,11 @@ triple<I0, I1, O> merge_copy_backward_n(I0 l_i0, DistanceType(I0) n_i0,
 
 template<typename I0, typename I1>
     requires(Mutable(I0) && Mutable(I1) &&
-        ValueType(I0) == ValueType(I1))
+        EOPValueType(I0) == EOPValueType(I1))
 void exchange_values(I0 x, I1 y)
 {
     // Precondition: $\func{deref}(x)$ and $\func{deref}(y)$ are defined
-    ValueType(I0) t = source(x);
+    EOPValueType(I0) t = source(x);
             sink(x) = source(y);
             sink(y) = t;
 }
@@ -3532,7 +3532,7 @@ void exchange_values(I0 x, I1 y)
 template<typename I0, typename I1>
     requires(Mutable(I0) && ForwardIterator(I0) &&
         Mutable(I1) && ForwardIterator(I1) &&
-        ValueType(I0) == ValueType(I1))
+        EOPValueType(I0) == EOPValueType(I1))
 void swap_step(I0& f0, I1& f1)
 {
     // Precondition: $\func{deref}(f_0)$ and $\func{deref}(f_1)$ are defined
@@ -3544,7 +3544,7 @@ void swap_step(I0& f0, I1& f1)
 template<typename I0, typename I1>
     requires(Mutable(I0) && ForwardIterator(I0) &&
         Mutable(I1) && ForwardIterator(I1) &&
-        ValueType(I0) == ValueType(I1))
+        EOPValueType(I0) == EOPValueType(I1))
 I1 swap_ranges(I0 f0, I0 l0, I1 f1)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f_0, l_0)$
@@ -3556,7 +3556,7 @@ I1 swap_ranges(I0 f0, I0 l0, I1 f1)
 template<typename I0, typename I1>
     requires(Mutable(I0) && ForwardIterator(I0) &&
         Mutable(I1) && ForwardIterator(I1) &&
-        ValueType(I0) == ValueType(I1))
+        EOPValueType(I0) == EOPValueType(I1))
 pair<I0, I1> swap_ranges_bounded(I0 f0, I0 l0, I1 f1, I1 l1)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f_0, l_0)$
@@ -3568,7 +3568,7 @@ pair<I0, I1> swap_ranges_bounded(I0 f0, I0 l0, I1 f1, I1 l1)
 template<typename I0, typename I1, typename N>
     requires(Mutable(I0) && ForwardIterator(I0) &&
         Mutable(I1) && ForwardIterator(I1) &&
-        ValueType(I0) == ValueType(I1) &&
+        EOPValueType(I0) == EOPValueType(I1) &&
         Integer(N))
 pair<I0, I1> swap_ranges_n(I0 f0, I1 f1, N n)
 {
@@ -3581,7 +3581,7 @@ pair<I0, I1> swap_ranges_n(I0 f0, I1 f1, N n)
 template<typename I0, typename I1>
     requires(Mutable(I0) && BidirectionalIterator(I0) &&
         Mutable(I1) && ForwardIterator(I1) &&
-        ValueType(I0) == ValueType(I1))
+        EOPValueType(I0) == EOPValueType(I1))
 void reverse_swap_step(I0& l0, I1& f1)
 {
     // Precondition: $\func{deref}(\func{predecessor}(l_0))$ and
@@ -3594,7 +3594,7 @@ void reverse_swap_step(I0& l0, I1& f1)
 template<typename I0, typename I1>
     requires(Mutable(I0) && BidirectionalIterator(I0) &&
         Mutable(I1) && ForwardIterator(I1) &&
-        ValueType(I0) == ValueType(I1))
+        EOPValueType(I0) == EOPValueType(I1))
 I1 reverse_swap_ranges(I0 f0, I0 l0, I1 f1)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f_0, l_0)$
@@ -3606,7 +3606,7 @@ I1 reverse_swap_ranges(I0 f0, I0 l0, I1 f1)
 template<typename I0, typename I1>
     requires(Mutable(I0) && BidirectionalIterator(I0) &&
         Mutable(I1) && ForwardIterator(I1) &&
-        ValueType(I0) == ValueType(I1))
+        EOPValueType(I0) == EOPValueType(I1))
 pair<I0, I1>reverse_swap_ranges_bounded(I0 f0, I0 l0,
                                         I1 f1, I1 l1)
 {
@@ -3620,7 +3620,7 @@ pair<I0, I1>reverse_swap_ranges_bounded(I0 f0, I0 l0,
 template<typename I0, typename I1, typename N>
     requires(Mutable(I0) && BidirectionalIterator(I0) &&
         Mutable(I1) && ForwardIterator(I1) &&
-        ValueType(I0) == ValueType(I1) &&
+        EOPValueType(I0) == EOPValueType(I1) &&
         Integer(N))
 pair<I0, I1> reverse_swap_ranges_n(I0 l0, I1 f1, N n)
 {
@@ -3658,7 +3658,7 @@ void cycle_from(I i, F f)
 {
     // Precondition: The orbit of $i$ under $f$ is circular
     // Precondition: $(\forall n \in \mathbb{N})\,\func{deref}(f^n(i))$ is defined
-    ValueType(I) tmp = source(i);
+    EOPValueType(I) tmp = source(i);
     I j = i;
     I k = f(i);
     while (k != i) {
@@ -3714,7 +3714,7 @@ void reverse_n_bidirectional(I f, I l, DistanceType(I) n)
 template<typename I, typename B>
     requires(Mutable(I) && ForwardIterator(I) &&
         Mutable(B) && BidirectionalIterator(B) &&
-        ValueType(I) == ValueType(B))
+        EOPValueType(I) == EOPValueType(B))
 I reverse_n_with_buffer(I f_i, DistanceType(I) n, B f_b)
 {
     // Precondition: $\property{mutable\_counted\_range}(f_i, n)$
@@ -3740,7 +3740,7 @@ I reverse_n_forward(I f, DistanceType(I) n)
 template<typename I, typename B>
     requires(Mutable(I) && ForwardIterator(I) &&
         Mutable(B) && BidirectionalIterator(B) &&
-        ValueType(I) == ValueType(B))
+        EOPValueType(I) == EOPValueType(B))
 I reverse_n_adaptive(I f_i, DistanceType(I) n_i,
                      B f_b, DistanceType(I) n_b)
 {
@@ -3955,7 +3955,7 @@ void construct_all(I f, I l)
     // Postcondition:
     // $(\forall i \in [f, l)) \func{sink}(i) \text{is in a default-constructed state}$
     // We assume if an iterator is writeable, its value can be constructed
-    construct_all(f, l, NeedsConstruction(ValueType(I))());
+    construct_all(f, l, NeedsConstruction(EOPValueType(I))());
 }
 
 template<typename I>
@@ -3975,7 +3975,7 @@ void construct_all(I f, I l, true_type)
 
 template<typename I>
     requires(Writeable(I) && ForwardIterator(I) &&
-        NeedsConstruction(ValueType(I)) == false_type)
+        NeedsConstruction(EOPValueType(I)) == false_type)
 void construct_all(I /*f*/, I /*l*/, false_type)
 {
     // Precondition:
@@ -3993,7 +3993,7 @@ void destroy_all(I f, I l)
     // Postcondition:
     // $(\forall i \in [f, l)) \func{sink}(i) \text{refers to raw memory, not an object}$
     // We assume if an iterator is writeable, its value can be destroyed
-    destroy_all(f, l, NeedsDestruction(ValueType(I))());
+    destroy_all(f, l, NeedsDestruction(EOPValueType(I))());
 }
 
 template<typename I>
@@ -4011,7 +4011,7 @@ void destroy_all(I f, I l, true_type)
 
 template<typename I>
     requires(Writeable(I) && ForwardIterator(I) &&
-        NeedsDestruction(ValueType(I)) == false_type)
+        NeedsDestruction(EOPValueType(I)) == false_type)
 void destroy_all(I /*f*/, I /*l*/, false_type)
 {
     // Precondition:
@@ -4071,7 +4071,7 @@ template<typename I>
 void reverse_n_with_temporary_buffer(I f, DistanceType(I) n)
 {
     // Precondition: $\property{mutable\_counted\_range}(f, n)$
-    temporary_buffer<ValueType(I)> b(n);
+    temporary_buffer<EOPValueType(I)> b(n);
     reverse_n_adaptive(f, n, begin(b), size(b));
 }
 
@@ -4127,7 +4127,7 @@ I rotate_nontrivial(I f, I m, I l, random_access_iterator_tag)
 
 template<typename I,  typename P>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 bool partitioned_at_point(I f, I m, I l, P p)
 {
     // Precondition: $\property{readable\_bounded\_range}(f, l) \wedge m \in [f, l]$
@@ -4139,7 +4139,7 @@ bool partitioned_at_point(I f, I m, I l, P p)
 
 template<typename I, typename P>
     requires(Readable(I) && ForwardIterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 I potential_partition_point(I f, I l, P p)
 {
     // Precondition: $\property{readable\_bounded\_range}(f, l)$
@@ -4148,7 +4148,7 @@ I potential_partition_point(I f, I l, P p)
 
 template<typename I, typename P>
     requires(Mutable(I) && ForwardIterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 I partition_semistable(I f, I l, P p)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f, l)$
@@ -4170,7 +4170,7 @@ I partition_semistable(I f, I l, P p)
 
 template<typename I, typename P>
     requires(Mutable(I) && ForwardIterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 I remove_if(I f, I l, P p)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f, l)$
@@ -4189,7 +4189,7 @@ I remove_if(I f, I l, P p)
 
 //template<typename I, typename P>
 //    requires(Mutable(I) && ForwardIterator(I) &&
-//        UnaryPredicate(P) && ValueType(I) == Domain(P))
+//        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 //void partition_semistable_omit_last_predicate_evaluation(I f, I l, P p)
 //{
 //    // Precondition: $\property{mutable\_bounded\_range}(f, l)$
@@ -4198,7 +4198,7 @@ I remove_if(I f, I l, P p)
 
 template<typename I, typename P>
     requires(Mutable(I) && BidirectionalIterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 I partition_bidirectional(I f, I l, P p)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f, l)$
@@ -4214,7 +4214,7 @@ I partition_bidirectional(I f, I l, P p)
 
 template<typename I,  typename P>
     requires(Mutable(I) && ForwardIterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 I partition_forward(I f, I l, P p)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f, l)$
@@ -4232,7 +4232,7 @@ I partition_forward(I f, I l, P p)
 
 template<typename I, typename P>
     requires(Mutable(I) && BidirectionalIterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 I partition_single_cycle(I f, I l, P p)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f, l)$
@@ -4240,7 +4240,7 @@ I partition_single_cycle(I f, I l, P p)
     l = find_backward_if_not(f, l, p);
     if (f == l) return f;
     l = predecessor(l);
-    ValueType(I) tmp = source(f);
+    EOPValueType(I) tmp = source(f);
     while (true) {
         sink(f) = source(l);
         f = find_if(successor(f), l, p);
@@ -4258,7 +4258,7 @@ I partition_single_cycle(I f, I l, P p)
 
 template<typename I, typename P>
     requires(Mutable(I) && BidirectionalIterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 I partition_bidirectional_unguarded(I f, I l, P p)
 {
     // Precondition:
@@ -4275,7 +4275,7 @@ I partition_bidirectional_unguarded(I f, I l, P p)
 
 template<typename I, typename P>
     requires(Mutable(I) && BidirectionalIterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 I partition_sentinel(I f, I l, P p)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f, l)$
@@ -4294,7 +4294,7 @@ I partition_sentinel(I f, I l, P p)
 
 template<typename I, typename P>
     requires(Mutable(I) && IndexedIterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 I partition_indexed(I f, I l, P p)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f, l)$
@@ -4320,8 +4320,8 @@ I partition_indexed(I f, I l, P p)
 template<typename I, typename B, typename P>
     requires(Mutable(I) && ForwardIterator(I) &&
         Mutable(B) && ForwardIterator(B) &&
-        ValueType(I) == ValueType(B) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        EOPValueType(I) == EOPValueType(B) &&
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 I partition_stable_with_buffer(I f, I l, B f_b, P p)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f, l)$
@@ -4333,7 +4333,7 @@ I partition_stable_with_buffer(I f, I l, B f_b, P p)
 
 template<typename I, typename P>
     requires(Mutable(I) && ForwardIterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 pair<I, I> partition_stable_singleton(I f, P p)
 {
     // Precondition: $\property{readable\_bounded\_range}(f, \func{successor}(f))$
@@ -4354,7 +4354,7 @@ pair<I, I> combine_ranges(const pair<I, I>& x,
 
 template<typename I, typename P>
     requires(Mutable(I) && ForwardIterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 pair<I, I> partition_stable_n_nonempty(I f, DistanceType(I) n,
                                        P p)
 {
@@ -4368,7 +4368,7 @@ pair<I, I> partition_stable_n_nonempty(I f, DistanceType(I) n,
 
 template<typename I, typename P>
     requires(Mutable(I) && ForwardIterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 pair<I, I> partition_stable_n(I f, DistanceType(I) n, P p)
 {
     // Precondition: $\property{mutable\_counted\_range}(f, n)$
@@ -4382,7 +4382,7 @@ pair<I, I> partition_stable_n(I f, DistanceType(I) n, P p)
 
 template<typename I, typename P>
    requires(Mutable(I) && ForwardIterator(I) &&
-       UnaryPredicate(P) && Domain(P) == ValueType(I)\)
+       UnaryPredicate(P) && Domain(P) == EOPValueType(I)\)
 I partition_stable(I f, I l, P p)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f, l)$
@@ -4391,7 +4391,7 @@ I partition_stable(I f, I l, P p)
 
 template<typename I, typename P>
     requires(ForwardIterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 struct partition_trivial 
 {
     typedef I input_type_0;
@@ -4406,7 +4406,7 @@ struct partition_trivial
 
 template<typename I, typename P>
     requires(ForwardIterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 inline partition_trivial<I, P> make_partition_trivial(const P& p)
 {
     partition_trivial<I, P> tmp = {p};
@@ -4415,7 +4415,7 @@ inline partition_trivial<I, P> make_partition_trivial(const P& p)
 
 template<typename I, typename Op>
     requires(Mutable(I) && ForwardIterator(I) &&
-        BinaryOperation(Op) && ValueType(I) == Domain(Op))
+        BinaryOperation(Op) && EOPValueType(I) == Domain(Op))
 Domain(Op) add_to_counter(I f, I l, Op op, Domain(Op) x,
                           const Domain(Op)& z)
 {
@@ -4486,7 +4486,7 @@ template<typename I>
 struct apply_source
 {
     typedef I input_type_0;
-    typedef ValueType(I) codomain_type;
+    typedef EOPValueType(I) codomain_type;
 
     codomain_type operator()(I f) const
     {
@@ -4505,7 +4505,7 @@ inline apply_source<I> make_apply_source()
 template<typename I, typename Op, typename F>
     requires(Iterator(I) && BinaryOperation(Op) && 
         UnaryFunction(F) && I == Domain(F) &&
-        Codomain(F) == Domain(Op))
+        EOPCodomain(F) == Domain(Op))
 Domain(Op) reduce_balanced(I f, I l, Op op, F fun,
                            const Domain(Op)& z)
 {
@@ -4522,7 +4522,7 @@ Domain(Op) reduce_balanced(I f, I l, Op op, F fun,
 
 template<typename I, typename Op>
     requires(ReadableIterator(I) && BinaryOperation(Op) && 
-        ValueType(I) == Domain(Op))
+        EOPValueType(I) == Domain(Op))
 inline Domain(Op) reduce_balanced(I f, I l, Op op, const Domain(Op)& z)
 {
     // Precondition: $\property{readable\_bounded\_range}(f, l) \wedge l-f < 2^{64}$
@@ -4533,7 +4533,7 @@ inline Domain(Op) reduce_balanced(I f, I l, Op op, const Domain(Op)& z)
 
 template<typename I, typename P>
     requires(ForwardIterator(I) && UnaryPredicate(P) &&
-        ValueType(I) == Domain(P))
+        EOPValueType(I) == Domain(P))
 I partition_stable_iterative(I f, I l, P p)
 {
     // Precondition: $\property{bounded\_range}(f, l) \wedge l - f < 2^{64}$
@@ -4548,8 +4548,8 @@ I partition_stable_iterative(I f, I l, P p)
 template<typename I, typename B, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
         Mutable(B) && ForwardIterator(B) &&
-        ValueType(I) == ValueType(B) &&
-        Relation(R) && ValueType(I) == Domain(R))
+        EOPValueType(I) == EOPValueType(B) &&
+        Relation(R) && EOPValueType(I) == Domain(R))
 I merge_n_with_buffer(I f0, DistanceType(I) n0,
                       I f1, DistanceType(I) n1, B f_b, R r)
 {
@@ -4562,8 +4562,8 @@ I merge_n_with_buffer(I f0, DistanceType(I) n0,
 template<typename I, typename B, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
         Mutable(B) && ForwardIterator(B) &&
-        ValueType(I) == ValueType(B) &&
-        Relation(R) && ValueType(I) == Domain(R))
+        EOPValueType(I) == EOPValueType(B) &&
+        Relation(R) && EOPValueType(I) == Domain(R))
 I sort_n_with_buffer(I f, DistanceType(I) n, B f_b, R r)
 {
     // Property:
@@ -4578,7 +4578,7 @@ I sort_n_with_buffer(I f, DistanceType(I) n, B f_b, R r)
 
 template<typename I, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
-        Relation(R) && ValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == Domain(R))
 void merge_n_step_0(I f0, DistanceType(I) n0,
                     I f1, DistanceType(I) n1, R r,
                     I& f0_0, DistanceType(I)& n0_0,
@@ -4600,7 +4600,7 @@ void merge_n_step_0(I f0, DistanceType(I) n0,
 
 template<typename I, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
-        Relation(R) && ValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == Domain(R))
 void merge_n_step_1(I f0, DistanceType(I) n0,
                     I f1, DistanceType(I) n1, R r,
                     I& f0_0, DistanceType(I)& n0_0,
@@ -4623,8 +4623,8 @@ void merge_n_step_1(I f0, DistanceType(I) n0,
 template<typename I, typename B, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
         Mutable(B) && ForwardIterator(B) &&
-        ValueType(I) == ValueType(B) &&
-        Relation(R) && ValueType(I) == Domain(R))
+        EOPValueType(I) == EOPValueType(B) &&
+        Relation(R) && EOPValueType(I) == Domain(R))
 I merge_n_adaptive(I f0, DistanceType(I) n0,
                    I f1, DistanceType(I) n1,
                    B f_b, DistanceType(B) n_b, R r)
@@ -4654,8 +4654,8 @@ I merge_n_adaptive(I f0, DistanceType(I) n0,
 template<typename I, typename B, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
         Mutable(B) && ForwardIterator(B) &&
-        ValueType(I) == ValueType(B) &&
-        Relation(R) && ValueType(I) == Domain(R))
+        EOPValueType(I) == EOPValueType(B) &&
+        Relation(R) && EOPValueType(I) == Domain(R))
 I sort_n_adaptive(I f, DistanceType(I) n,
                   B f_b, DistanceType(B) n_b, R r)
 {
@@ -4671,12 +4671,12 @@ I sort_n_adaptive(I f, DistanceType(I) n,
 
 template<typename I, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
-        Relation(R) && ValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == Domain(R))
 I sort_n(I f, DistanceType(I) n, R r)
 {
     // Precondition:
     // $\property{mutable\_counted\_range}(f, n) \wedge \property{weak\_ordering}(r)$
-    temporary_buffer<ValueType(I)> b(half_nonnegative(n));
+    temporary_buffer<EOPValueType(I)> b(half_nonnegative(n));
     return sort_n_adaptive(f, n, begin(b), size(b), r);
 }
 
@@ -4817,7 +4817,7 @@ bool empty(const array_k<k, T>&) // unused parameter name dropped to avoid warni
 //     requires(Linearizable(W))
 // struct value_type
 // {
-//     typedef ValueType(IteratorType(W)) type;
+//     typedef EOPValueType(IteratorType(W)) type;
 // };
 
 // Instead, each type W that models Linearizable must provide
@@ -4862,7 +4862,7 @@ struct bounded_range {
     I l;
     bounded_range() { }
     bounded_range(const I& f, const I& l) : f(f), l(l) { }
-    const ValueType(I)& operator[](DistanceType(I) i)
+    const EOPValueType(I)& operator[](DistanceType(I) i)
     {
         // Precondition: $0 \leq i < l - f$
         return source(f + i);
@@ -4880,7 +4880,7 @@ template<typename I>
     requires(Readable(I) && Iterator(I))
 struct value_type< bounded_range<I> >
 {
-    typedef ValueType(I) type;
+    typedef EOPValueType(I) type;
 };
 
 template<typename I>
@@ -4936,7 +4936,7 @@ struct counted_range {
     N n;
     counted_range() { }
     counted_range(I f, N n) : f(f), n(n) { }
-    const ValueType(I)& operator[](int i)
+    const EOPValueType(I)& operator[](int i)
     {
         // Precondition: $0 \leq i < l - f$
         return source(f + i);
@@ -4954,7 +4954,7 @@ template<typename I>
     requires(Readable(I) && Iterator(I))
 struct value_type< counted_range<I> >
 {
-    typedef ValueType(I) type;
+    typedef EOPValueType(I) type;
 };
 
 template<typename I>
@@ -5012,7 +5012,7 @@ struct less< counted_range<I> >
 //     BaseType : Position -> Linearizable
 //  /\ IteratorType : Position -> Iterator
 //  /\ ValueType : Position -> Regular
-//         T |- ValueType(IteratorType(T))
+//         T |- EOPValueType(IteratorType(T))
 //  /\ SizeType : Position -> Integer
 //         T |- SizeType(IteratorType(T))
 //  /\ base : T -> BaseType(T)
@@ -5072,7 +5072,7 @@ template<typename S>
     requires(DynamicSequence(S))
 struct value_type< before<S> >
 {
-    typedef ValueType(S) type;
+    typedef EOPValueType(S) type;
 };
 
 template<typename S>
@@ -5138,7 +5138,7 @@ template<typename S>
     requires(DynamicSequence(S))
 struct value_type< after<S> >
 {
-    typedef ValueType(S) type;
+    typedef EOPValueType(S) type;
 };
 
 template<typename S>
@@ -5202,7 +5202,7 @@ template<typename S>
     requires(DynamicSequence(S))
 struct value_type< front<S> >
 {
-    typedef ValueType(S) type;
+    typedef EOPValueType(S) type;
 };
 
 template<typename S>
@@ -5266,7 +5266,7 @@ template<typename S>
     requires(DynamicSequence(S))
 struct value_type< back<S> >
 {
-    typedef ValueType(S) type;
+    typedef EOPValueType(S) type;
 };
 
 template<typename S>
@@ -5332,7 +5332,7 @@ template<typename S>
     requires(DynamicSequence(S))
 struct value_type< at<S> >
 {
-    typedef ValueType(S) type;
+    typedef EOPValueType(S) type;
 };
 
 template<typename S>
@@ -5381,7 +5381,7 @@ struct insert_iterator
     typedef insert_iterator I;
     P p;
     insert_iterator(const P& p) : p(p) { }
-    void operator=(const ValueType(P)& x) { p = insert(p, x); }
+    void operator=(const EOPValueType(P)& x) { p = insert(p, x); }
 };
 
 template<typename P>
@@ -5395,7 +5395,7 @@ template<typename P>
     requires(InsertPosition(P))
 struct value_type< insert_iterator<P> >
 {
-    typedef ValueType(P) type;
+    typedef EOPValueType(P) type;
 };
 
 template<typename P>
@@ -5587,7 +5587,7 @@ struct slist
         dynamic_sequence_construction(sink(this), x);
     }
     template<typename W>
-        requires(Linearizable(W) && T == ValueType(W))
+        requires(Linearizable(W) && T == EOPValueType(W))
     slist(const W& w)
     {
         dynamic_sequence_construction(sink(this), w);
@@ -6557,7 +6557,7 @@ template<typename T>
     requires(Regular(T))
 struct value_type< tree<T> >
 {
-    typedef ValueType(CoordinateType(tree<T>)) type;
+    typedef EOPValueType(CoordinateType(tree<T>)) type;
 };
 
 template<typename T>
@@ -6659,13 +6659,13 @@ struct array
         insert_range(back< array<T> >(sink(this)), x);
     }
     template<typename W>
-        requires(Linearizable(W) && T == ValueType(W))
+        requires(Linearizable(W) && T == EOPValueType(W))
     array(const W& w) : p(allocate_array<T>(0))
     {
         insert_range(back< array<T> >(sink(this)), w);
     }
     template<typename I>
-        requires(Readable(I) && Iterator(I) && T == ValueType(I))
+        requires(Readable(I) && Iterator(I) && T == EOPValueType(I))
     array(const counted_range<I>& w) : p(allocate_array<T>(size(w)))
     {
         insert_range(back< array<T> >(sink(this)), w);
@@ -6789,7 +6789,7 @@ back< array<T> > insert(back< array<T> > p, const U& y)
 
 template<typename T, typename W>
     requires(Regular(T) &&
-        Linearizable(W) && Constructible(T, ValueType(W)))
+        Linearizable(W) && Constructible(T, EOPValueType(W)))
 before< array<T> > insert_range(before< array<T> > p, const W& w)
 {
     typedef IteratorType(array<T>) I;
@@ -6893,7 +6893,7 @@ template<typename I>
     requires(Iterator(I))
 struct value_type< underlying_iterator<I> >
 {
-    typedef UnderlyingType(ValueType(I)) type;
+    typedef UnderlyingType(EOPValueType(I)) type;
 };
 
 template<typename I>
@@ -6961,21 +6961,21 @@ bool operator<(const underlying_iterator<I>& x, const underlying_iterator<I>& y)
 
 template<typename I>
     requires(Iterator(I))
-const UnderlyingType(ValueType(I))& source(const underlying_iterator<I>& x)
+const UnderlyingType(EOPValueType(I))& source(const underlying_iterator<I>& x)
 {
   return underlying_ref(source(x.i));
 }
 
 template<typename I>
     requires(Iterator(I))
-UnderlyingType(ValueType(I))& sink(underlying_iterator<I>& x)
+UnderlyingType(EOPValueType(I))& sink(underlying_iterator<I>& x)
 {
   return underlying_ref(sink(x.i));
 }
 
 template<typename i>
     requires(Iterator(i))
-UnderlyingType(ValueType(i))& deref(underlying_iterator<i>& x)
+UnderlyingType(EOPValueType(i))& deref(underlying_iterator<i>& x)
 {
   return underlying_ref(deref(x.i));
 }
@@ -7078,7 +7078,7 @@ inline underlying_relation<R> make_underlying_relation(const R& r)
 
 template<typename I, typename P>
     requires(Mutable(I) && ForwardIterator(I) &&
-        UnaryPredicate(P) && ValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
 pair<I, I> advanced_partition_stable_n(I f, DistanceType(I) n, P p)
 {
     typedef underlying_iterator<I> U;
@@ -7089,11 +7089,11 @@ pair<I, I> advanced_partition_stable_n(I f, DistanceType(I) n, P p)
 
 template<typename I, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
-        Relation(R) && ValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == Domain(R))
 I advanced_sort_n(I f, DistanceType(I) n, R r)
 {
     // Precondition: $\property{mutable\_counted\_range}(f, n) \wedge \property{weak\_ordering}(r)$
-    temporary_buffer<UnderlyingType(ValueType(I))> b(half_nonnegative(n));
+    temporary_buffer<UnderlyingType(EOPValueType(I))> b(half_nonnegative(n));
     return original(sort_n_adaptive(make_underlying_iterator(f), n,
                                     begin(b), size(b),
                                     make_underlying_relation(r)));

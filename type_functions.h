@@ -65,7 +65,7 @@
 // Chapter 1 - Foundations
 
 
-// Codomain : FunctionalProcedure -> Regular
+// EOPCodomain : FunctionalProcedure -> Regular
 
 template<typename T>
     requires(FunctionalProcedure(T))
@@ -74,7 +74,7 @@ struct codomain_type
     typedef typename T::codomain_type type;
 };
 
-#define Codomain(T) typename codomain_type< T >::type
+#define EOPCodomain(T) typename codomain_type< T >::type
 
 
 // InputType : FunctionalProcedure x unsigned int -> Regular
