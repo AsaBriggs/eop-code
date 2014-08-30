@@ -101,7 +101,7 @@ void run_additive_congruential_transformation()
 }
 
 template<typename I>
-    requires(Readable(I) && IndexedIterator(I) && ValueType(I) == DistanceType(I))
+    requires(Readable(I) && IndexedIterator(I) && EOPValueType(I) == DistanceType(I))
 struct table_transformation
 {
     typedef DistanceType(I) N;
@@ -118,7 +118,7 @@ struct table_transformation
 };
 
 template<typename I>
-    requires(Readable(I) && IndexedIterator(I) && ValueType(I) == DistanceType(I))
+    requires(Readable(I) && IndexedIterator(I) && EOPValueType(I) == DistanceType(I))
 struct table_transformation_definition_space_predicate
 {
     typedef table_transformation<I> T;
@@ -135,7 +135,7 @@ struct table_transformation_definition_space_predicate
 };
 
 template<typename I>
-    requires(Readable(I) && IndexedIterator(I) && ValueType(I) == DistanceType(I))
+    requires(Readable(I) && IndexedIterator(I) && EOPValueType(I) == DistanceType(I))
 struct distance_type< table_transformation<I> >
 {
     typedef DistanceType(I) type;
@@ -791,7 +791,7 @@ void run_tree_tests()
 }
 
 template<typename R, typename I>
-    requires(Relation(R) && Mutable(I) && Integer(ValueType(I)))
+    requires(Relation(R) && Mutable(I) && Integer(EOPValueType(I)))
 struct instrumented_less
 {
     typedef Domain(R) T;

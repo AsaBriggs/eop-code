@@ -33,7 +33,7 @@
 // Type functions
 
 //  Type functions are implemented using a C++ technique called a
-//  trait class. For each type function, say ValueType, we define a
+//  trait class. For each type function, say EOPValueType, we define a
 //  corresponding structure template, say value_type<T>. The structure
 //  template contains one typedef, named type by convention; if
 //  appropriate, a default can be provided in the base structure
@@ -50,7 +50,7 @@
 // only inside a template definition because of the use of the keyword
 // typename):
 
-// #define ValueType(T) typename value_type< T >::type
+// #define EOPValueType(T) typename value_type< T >::type
 
 // We refine the global definition for a particular type by
 // specializing:
@@ -235,7 +235,7 @@ struct quotient_type<long>
 // Chapter 6 - Iterators
 
 
-// ValueType : Readable -> Regular
+// EOPValueType : Readable -> Regular
 
 template<typename T>
     requires(Regular(T))
@@ -244,7 +244,7 @@ struct value_type
     typedef T type;
 };
 
-#define ValueType(T) typename value_type< T >::type
+#define EOPValueType(T) typename value_type< T >::type
 
 
 // DifferenceType : RandomAccessIterator -> Integer

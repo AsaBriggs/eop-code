@@ -1538,14 +1538,14 @@ struct quotient_type<double>
 //     ValueType : Polynomial -> CommutativeSemiring
 //     IndexType : Polynomial -> Integer
 //  /\ degree : T -> IndexType(T)
-//  /\ coefficient : T x IndexType(T) -> ValueType(T)
-//  /\ lc : T –> ValueType(T)
+//  /\ coefficient : T x IndexType(T) -> EOPValueType(T)
+//  /\ lc : T –> EOPValueType(T)
 //            a \mapsto coefficient(a, degree(a))
-//  /\ tc : T –> ValueType(T)
+//  /\ tc : T –> EOPValueType(T)
 //            a \mapsto coefficient(a, 0)
 //  /\ indeterminate : -> T
-//  /\ evaluate : T x ValueType(T) -> ValueType(T)
-//  /\ · : ValueType(T) x T -> T
+//  /\ evaluate : T x EOPValueType(T) -> EOPValueType(T)
+//  /\ · : EOPValueType(T) x T -> T
 //  /\ + : T x T -> T
 //  /\ · : T x T -> T
 //  /\ shift_left : T x Integer -> T
@@ -2477,9 +2477,9 @@ void algorithms_bifurcate_coordinates()
     }
     EOPAssert(t == u);
     EOPAssert(bifurcate_equivalent_nonempty(
-        begin(t), begin(u), equal<ValueType(T)>()));
+        begin(t), begin(u), equal<EOPValueType(T)>()));
     EOPAssert(!bifurcate_equivalent_nonempty(
-        begin(t), begin(t2_345_678), equal<ValueType(T)>()));
+        begin(t), begin(t2_345_678), equal<EOPValueType(T)>()));
 
     // These exercise bifurcate_compare_nonempty
     EOPAssert(!(t < u) && !(u < t));
@@ -2498,12 +2498,12 @@ void algorithms_bifurcate_coordinates()
 }
 
 template <typename T, typename T_X>
-    requires(Tree(T) && Tree(T_X) && Integer(ValueType(T)) && Character(ValueType(T_X)))
+    requires(Tree(T) && Tree(T_X) && Integer(EOPValueType(T)) && Character(EOPValueType(T_X)))
 void algorithms_bidirectional_bifurcate_coordinates()
 {
     print("    bidirectional bifurcate coordinates\n");
 
-    typedef ValueType(T) Z;
+    typedef EOPValueType(T) Z;
     typedef CoordinateType(T) C;
     typedef WeightType(T) N;
     typedef CoordinateType(T_X) C_X;
@@ -2676,7 +2676,7 @@ template<typename L>
     requires(List(L))
 void algorithms_linked()
 {
-    typedef ValueType(L) Z;
+    typedef EOPValueType(L) Z;
     typedef IteratorType(L) I;
     typedef DistanceType(I) N;
     const int n = 500;
@@ -2740,13 +2740,13 @@ void algorithms_linked_iterators()
 }
 
 template<typename C>
-    requires(Readable(C) && AdditiveMonoid(ValueType(C)))
+    requires(Readable(C) && AdditiveMonoid(EOPValueType(C)))
 struct sum_source
 {
     typedef C input_type_0;
     typedef void codomain_type;
 
-    typedef ValueType(C) T;
+    typedef EOPValueType(C) T;
     T sum;
     sum_source() : sum(T(0)) { }
     void operator()(C c) { sum = sum + source(c); }
@@ -2854,7 +2854,7 @@ void test_ch_8()
 
 template<typename S>
     requires(DynamicSequence(S))
-void extend_sequence_n(S& s, DistanceType(IteratorType(S)) n, const ValueType(S)& x)
+void extend_sequence_n(S& s, DistanceType(IteratorType(S)) n, const EOPValueType(S)& x)
 {
     typedef after<S> AP;
     while (count_down(n)) insert(AP(s, begin(s)), x);
@@ -2862,10 +2862,10 @@ void extend_sequence_n(S& s, DistanceType(IteratorType(S)) n, const ValueType(S)
 
 template<typename I>
     requires(Readable(I) && Iterator(I) &&
-        Integer(ValueType(I)))
+        Integer(EOPValueType(I)))
 bool equal_iota_reverse(I f, I l)
 {
-    ValueType(I) n(l - f);
+    EOPValueType(I) n(l - f);
     while (f != l) {
         n = predecessor(n);
         if (source(f) != n) return false;
@@ -2889,12 +2889,12 @@ struct equal_to_x
 template<typename I0, typename I1>
     requires(Mutable(I0) && ForwardIterator(I0) &&
         Mutable(I1) && ForwardIterator(I1) &&
-        ValueType(I0) == ValueType(I1) &&
-        Integer(ValueType(I0)))
+        EOPValueType(I0) == EOPValueType(I1) &&
+        Integer(EOPValueType(I0)))
 void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
 {
     // Precondition: $l0 - f0 <= l1 - f1$
-    typedef ValueType(I0) T;
+    typedef EOPValueType(I0) T;
     typedef DistanceType(I0) N0;
     typedef DistanceType(I1) N1;
     N0 n = l0 - f0;
@@ -3098,8 +3098,8 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
     {
         I0 m0 = iota(n_over_2, f0);
         iota(n - n_over_2, m0);
-        less<ValueType(I0)> lt;
-        relation_source< I0, I0, less<ValueType(I0)> > lts = {lt};
+        less<EOPValueType(I0)> lt;
+        relation_source< I0, I0, less<EOPValueType(I0)> > lts = {lt};
         I1 m1 = combine_copy(f0, m0, m0, l0, f1, lts);
         EOPAssert(m1 - f1 == n);
         EOPAssert(increasing_range(f1, m1, less<T>()));
@@ -3109,8 +3109,8 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
     {
         I0 m0 = iota(n_over_2, f0);
         iota(n - n_over_2, m0);
-        less<ValueType(I0)> lt;
-        relation_source< I0, I0, less<ValueType(I0)> > lts = {lt};
+        less<EOPValueType(I0)> lt;
+        relation_source< I0, I0, less<EOPValueType(I0)> > lts = {lt};
         triple<I0, I0, I1> t = combine_copy_n(f0, m0 - f0, m0, l0 - m0, f1, lts);
         EOPAssert(t.m0 == m0 && t.m1 == l0 && t.m2 - f1 == n);
         EOPAssert(increasing_range(f1, t.m2, less<T>()));
@@ -3120,7 +3120,7 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
     {
         I0 m0 = iota(n_over_2, f0);
         iota(n - n_over_2, m0);
-        less<ValueType(I0)> lt;
+        less<EOPValueType(I0)> lt;
         I1 m1 = merge_copy(f0, m0, m0, l0, f1, lt);
         EOPAssert(m1 - f1 == n);
         EOPAssert(increasing_range(f1, m1, less<T>()));
@@ -3180,11 +3180,11 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
 template<typename I0, typename I1>
     requires(Readable(I0) && BidirectionalIterator(I0) &&
         Writable(I1) && BidirectionalIterator(I1) &&
-        ValueType(I0) == ValueType(I1))
+        EOPValueType(I0) == EOPValueType(I1))
 void algorithms_copy_backward(I0 f0, I0 l0, I1 f1, I1 l1)
 {
     // Precondition: $l0 - f0 <= l1 - f1$
-    typedef ValueType(I0) T;
+    typedef EOPValueType(I0) T;
     typedef DistanceType(I0) N0;
     typedef DistanceType(I1) N1;
     N0 n = l0 - f0;
@@ -3228,8 +3228,8 @@ void algorithms_copy_backward(I0 f0, I0 l0, I1 f1, I1 l1)
     {
         I0 m0 = iota(n_over_2, f0);
         iota(n - n_over_2, m0);
-        less<ValueType(I0)> lt;
-        relation_source< I0, I0, less<ValueType(I0)> > lts = {lt};
+        less<EOPValueType(I0)> lt;
+        relation_source< I0, I0, less<EOPValueType(I0)> > lts = {lt};
         I1 m1 = combine_copy_backward(f0, m0, m0, l0, l1, lts);
         EOPAssert(l1 - m1 == n);
         EOPAssert(increasing_range(m1, l1, less<T>()));
@@ -3239,8 +3239,8 @@ void algorithms_copy_backward(I0 f0, I0 l0, I1 f1, I1 l1)
     {
         I0 m0 = iota(n_over_2, f0);
         iota(n - n_over_2, m0);
-        less<ValueType(I0)> lt;
-        relation_source< I0, I0, less<ValueType(I0)> > lts = {lt};
+        less<EOPValueType(I0)> lt;
+        relation_source< I0, I0, less<EOPValueType(I0)> > lts = {lt};
         triple<I0, I0, I1> t = combine_copy_backward_n(m0, m0 - f0, l0, l0 - m0, l1, lts);
         EOPAssert(t.m0 == f0 && t.m1 == m0 && l1 - t.m2 == n);
         EOPAssert(increasing_range(t.m2, l1, less<T>()));
@@ -3250,7 +3250,7 @@ void algorithms_copy_backward(I0 f0, I0 l0, I1 f1, I1 l1)
     {
         I0 m0 = iota(n_over_2, f0);
         iota(n - n_over_2, m0);
-        less<ValueType(I0)> lt;
+        less<EOPValueType(I0)> lt;
         I1 m1 = merge_copy_backward(f0, m0, m0, l0, l1, lt);
         EOPAssert(l1 - m1 == n);
         EOPAssert(increasing_range(m1, l1, less<T>()));
@@ -3260,7 +3260,7 @@ void algorithms_copy_backward(I0 f0, I0 l0, I1 f1, I1 l1)
     {
         I0 m0 = iota(n_over_2, f0);
         iota(n - n_over_2, m0);
-        less<ValueType(I0)> lt;
+        less<EOPValueType(I0)> lt;
         triple<I0, I0, I1> t = merge_copy_backward_n(m0, m0 - f0, l0, l0 - m0, l1, lt);
         EOPAssert(t.m0 == f0 && t.m1 == m0 && l1 - t.m2 == n);
         EOPAssert(increasing_range(t.m2, l1, less<T>()));
@@ -3270,11 +3270,11 @@ void algorithms_copy_backward(I0 f0, I0 l0, I1 f1, I1 l1)
 template<typename I0, typename I1>
     requires(Mutable(I0) && BidirectionalIterator(I0) &&
         Mutable(I1) && BidirectionalIterator(I1) &&
-        ValueType(I0) == ValueType(I1))
+        EOPValueType(I0) == EOPValueType(I1))
 void algorithms_copy_reverse(I0 f0, I0 l0, I1 f1, I1 l1)
 {
     // Precondition: $l0 - f0 == l1 - f1$
-    typedef ValueType(I0) T;
+    typedef EOPValueType(I0) T;
     typedef DistanceType(I0) N0;
     typedef DistanceType(I1) N1;
     N0 n = l0 - f0;
@@ -3985,22 +3985,22 @@ void merge_cases(M m)
 }
 template<typename I, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
-        Relation(R) && ValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == Domain(R))
 I wrapped_merge_n_with_buffer(I f0, DistanceType(I) n0,
                               I f1, DistanceType(I) n1, R r)
 {
-    array<ValueType(I)> b(n0, n0, ValueType(I)());
+    array<EOPValueType(I)> b(n0, n0, EOPValueType(I)());
     return merge_n_with_buffer(f0, n0, f1, n1, begin(b), r);
 }
 
 template<typename I, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
-        Relation(R) && ValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == Domain(R))
 I wrapped_merge_n_adaptive(I f0, DistanceType(I) n0,
                            I f1, DistanceType(I) n1, R r)
 {
     const DistanceType(I) n = half_nonnegative(n0);
-    array<ValueType(I)>  b(n, n, ValueType(I)());
+    array<EOPValueType(I)>  b(n, n, EOPValueType(I)());
     return merge_n_adaptive(f0, n0, f1, n1, begin(b), size(b), r);
 }
 
@@ -4013,12 +4013,12 @@ void algorithms_merge()
 }
 
 template <typename S>
-    requires(Sequence(S) && Integer(ValueType(S)))
+    requires(Sequence(S) && Integer(EOPValueType(S)))
 void algorithms_sort(S& s)
 {
     typedef IteratorType(S) I;
     typedef DistanceType(I) N;
-    typedef ValueType(I) T;
+    typedef EOPValueType(I) T;
 
     I f = begin(s);
     I l = end(s);
@@ -4101,7 +4101,7 @@ void concept_Linearizable(W& w)
 
     // Type functions
     typedef IteratorType(W) I;
-    typedef ValueType(W) T;
+    typedef EOPValueType(W) T;
     typedef SizeType(W) N;
 
     // Procedures and operators
@@ -4123,7 +4123,7 @@ void concept_Linearizable(W& w)
 
 template<typename S>
     requires(Sequence(S))
-void concept_Sequence(S& s0, S& s1, ValueType(S)& x)
+void concept_Sequence(S& s0, S& s1, EOPValueType(S)& x)
 {
     // Precondition: s0 < s1 /\ !empty(s1) /\ x != s1[0]
     EOPAssert(begin(s1) != end(s1));
@@ -4143,8 +4143,8 @@ void concept_Sequence(S& s0, S& s1, ValueType(S)& x)
 
 template<typename T0, typename T1>
     requires(ConstantSizeSequence(T0) && ConstantSizeSequence(T1) &&
-        ValueType(T0) == ValueType(T1))
-void concept_ConstantSizeSequence(T0& a0, T1& a1, ValueType(T1)& x)
+        EOPValueType(T0) == EOPValueType(T1))
+void concept_ConstantSizeSequence(T0& a0, T1& a1, EOPValueType(T1)& x)
 {
     // Precondition: a0 < a1 /\ x != a1[0]
 
@@ -4260,7 +4260,7 @@ void concept_Position(P p, BaseType(P)& s, IteratorType(P) i)
 {
     typedef BaseType(P) B;
     typedef IteratorType(P) I;
-    typedef ValueType(P) T;
+    typedef EOPValueType(P) T;
     typedef SizeType(P) N;
 
     // Not regular: lacks default constructor, copy constructor, assignment
@@ -4300,7 +4300,7 @@ void test_Position(S& s, IteratorType(S) i)
 
 template<typename S>
     requires(DynamicSequence(S))
-void concept_DynamicSequence(S& s0, S& s1, ValueType(S)& x)
+void concept_DynamicSequence(S& s0, S& s1, EOPValueType(S)& x)
 {
     // Precondition: s0 < s1 /\ x != s1[0]
     typedef IteratorType(S) I;
@@ -4319,7 +4319,7 @@ void concept_DynamicSequence(S& s0, S& s1, ValueType(S)& x)
 }
 
 template<typename L>
-    requires(List(L) && ValueType(L) == int)
+    requires(List(L) && EOPValueType(L) == int)
 void type_list()
 {
     const SizeType(L) k0 = 10;
@@ -4370,7 +4370,7 @@ void type_list()
 
 template<typename S>
     requires(SingleExtentArray(S))
-void type_single_extent_array(S& s0, S& s1, ValueType(S)& x)
+void type_single_extent_array(S& s0, S& s1, EOPValueType(S)& x)
 {
     // Precondition: s0 < s1 /\ x != s1[0]
     concept_DynamicSequence(s0, s1, x);
