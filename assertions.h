@@ -25,17 +25,8 @@
 #include <cassert> // assert
 #include <cstdio> // fprintf, stderr
 #include <cstdlib> // abort
-/*
-void Assert(bool b)
-{
-    assert(b); // if debug mode
-    if (!b) {  // if release mode
-        fprintf(stderr, "Assert failed\n");
-        abort(); 
-    }
-}
-*/
-#define Assert( test ) do { \
+
+#define EOPAssert( test ) do { \
   assert ( (test) ) ; \
   if ( !(test) ) { \
       fprintf(stderr, "Assert failed\n"); \

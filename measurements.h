@@ -133,7 +133,7 @@ struct measure_reverse_bidirectional
             a(N, N, T(17)),
             f(begin(a)), l(end(a))
     { 
-         Assert(size(a) == N && find_not(f, l, T(17)) == l);
+         EOPAssert(size(a) == N && find_not(f, l, T(17)) == l);
     }
     inline void operator()() {
         for (int i = 0; i < REPETITIONS; ++i) reverse_bidirectional(f, l);
@@ -200,7 +200,7 @@ void measure_reverse_algorithms()
         array<T> a(N, N, T(17));
         EOPpointer(T) f = begin(a);
         EOPpointer(T) l = end(a);
-        Assert(size(a) == N && find_not(f, l, T(17)) == l);
+        EOPAssert(size(a) == N && find_not(f, l, T(17)) == l);
 	    reverse_bidirectional(f, l);
 	    clock_t t0, t1;
 
@@ -271,7 +271,7 @@ struct measure_sort_linked
             pos = insert(pos, i);
             i = successor(i);
         }
-        // Assert(decreasing_range(f, l));
+        // EOPAssert(decreasing_range(f, l));
     }
     inline void operator()() {
         for (int i = 0; i < REPETITIONS; ++i)
@@ -320,7 +320,7 @@ struct measure_sort_n_adaptive
     { 
         iota(N, f);
         reverse_bidirectional(f, l);
-        // Assert(decreasing_range(f, l));
+        // EOPAssert(decreasing_range(f, l));
     }
     inline void operator()() {
         for (int i = 0; i < REPETITIONS; ++i)

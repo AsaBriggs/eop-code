@@ -126,19 +126,19 @@ void concept_Regular(T& x)
     T y;
 
     // Equality
-    Assert(x == x);
+    EOPAssert(x == x);
 
     // Assignment
     y = x;
-    Assert(y == x);
+    EOPAssert(y == x);
 
     // Copy constructor
     T x_copy(x);
-    Assert(x_copy == x);
+    EOPAssert(x_copy == x);
 
     // Default total ordering
     less<T> lt;
-    Assert(!lt(x, x));
+    EOPAssert(!lt(x, x));
 
     // Underlying type
     UnderlyingType(T) u;
@@ -153,15 +153,15 @@ void concept_TotallyOrdered(T& x0, T& x1)
 {
     // Precondition: x0 < x1
 
-    Assert(x0 != x1);
-    Assert(!(x0 == x1));
+    EOPAssert(x0 != x1);
+    EOPAssert(!(x0 == x1));
 
     // Natural total ordering
-    Assert(!(x0 < x0));
-    Assert(x0 < x1); Assert(x1 > x0);
-    Assert(x0 <= x1); Assert(x1 >= x0);
-    Assert(!(x1 < x0)); Assert(!(x0 > x1));
-    Assert(!(x1 <= x0)); Assert(!(x0 >= x1));
+    EOPAssert(!(x0 < x0));
+    EOPAssert(x0 < x1); EOPAssert(x1 > x0);
+    EOPAssert(x0 <= x1); EOPAssert(x1 >= x0);
+    EOPAssert(!(x1 < x0)); EOPAssert(!(x0 > x1));
+    EOPAssert(!(x1 <= x0)); EOPAssert(!(x0 >= x1));
 }
 
 template<typename T0, typename T1>
@@ -169,7 +169,7 @@ template<typename T0, typename T1>
 void type_pair(const T0& x00, const T0& x01, const T1& x10, const T1& x11)
 {
     // Precondition: x00 < x01 || (x00 == x01 && x10 < x11)
-    Assert(x00 < x01 || (x00 == x01 && x10 < x11));
+    EOPAssert(x00 < x01 || (x00 == x01 && x10 < x11));
 
     typedef pair<T0, T1> P01;
 
@@ -182,7 +182,7 @@ void type_pair(const T0& x00, const T0& x01, const T1& x10, const T1& x11)
     concept_TotallyOrdered(p0, p1);
 
     // Member selection
-    Assert(p0.m0 == x00 && p0.m1 == x10);
+    EOPAssert(p0.m0 == x00 && p0.m1 == x10);
 }
 
 template<typename T0, typename T1, typename T2>
@@ -191,7 +191,7 @@ void type_triple(const T0& x00, const T0& x01,
                  const T1& x10, const T1& x11,
                  const T2& x20, const T2& x21)
 {
-    Assert(x00 < x01 || (x00 == x01 && (x10 < x11 || (x10 == x11 && x20 < x21))));
+    EOPAssert(x00 < x01 || (x00 == x01 && (x10 < x11 || (x10 == x11 && x20 < x21))));
 
     typedef triple<T0, T1, T2> T;
 
@@ -204,7 +204,7 @@ void type_triple(const T0& x00, const T0& x01,
     concept_TotallyOrdered(t0, t1);
 
     // Member selection
-    Assert(t0.m0 == x00 &&
+    EOPAssert(t0.m0 == x00 &&
            t0.m1 == x10 &&
            t0.m2 == x20);
 }
@@ -256,16 +256,16 @@ void test_ch_1()
     concept_TotallyOrdered(n0, n1); // *****concept_Integer ?????
 
     // We check the most important fact in arithmetic
-    Assert(plus_0(3 * 3, 4 * 4) == 5 * 5);
-    Assert(plus_1(3 * 3, 4 * 4) == 5 * 5);
+    EOPAssert(plus_0(3 * 3, 4 * 4) == 5 * 5);
+    EOPAssert(plus_1(3 * 3, 4 * 4) == 5 * 5);
     int a = 3 * 3;
     int b = 4 * 4;
     int c;
     plus_2(&a, &b, &c);
-    Assert(c == 5 * 5);
+    EOPAssert(c == 5 * 5);
 
-    Assert(square(3) == 9);
-    Assert(square(3, times<int>()) == 9);
+    EOPAssert(square(3) == 9);
+    EOPAssert(square(3, times<int>()) == 9);
 
     test_tuples();
 }
@@ -283,7 +283,7 @@ void concept_Transformation(F f, Domain(F) x)
     // X == Y
     Y y;
     y = x;
-    Assert(x == y);
+    EOPAssert(x == y);
     y = f(x);
     typedef DistanceType(F) N;
     N n(1);
@@ -356,7 +356,7 @@ struct gen_orbit // transformation
     }
     I operator() (I x)
     {
-        Assert(p(x));
+        EOPAssert(p(x));
         x = successor(x);
         if (x == p.x_0 + I(p.h) + I(p.c)) x = p.x_0 + I(p.h);
         return x; 
@@ -377,44 +377,44 @@ void algorithms_orbit(Domain(F) x, DistanceType(F) h, DistanceType(F) c)
     typedef Domain(F) T;
     typedef DistanceType(F) N;
     F f(x, h, c);
-    Assert(zero(c) == terminating(x, f, f.p));
+    EOPAssert(zero(c) == terminating(x, f, f.p));
     if (zero(h) && !zero(c)) {
-        Assert(circular(x, f, f.p));
-        Assert(circular_nonterminating_orbit(x, f));
+        EOPAssert(circular(x, f, f.p));
+        EOPAssert(circular_nonterminating_orbit(x, f));
     } else if (!zero(h)) {
-        Assert(!circular(x, f, f.p));
+        EOPAssert(!circular(x, f, f.p));
         if (!zero(c))
-            Assert(!circular_nonterminating_orbit(x, f));
+            EOPAssert(!circular_nonterminating_orbit(x, f));
     }
     T y = connection_point(x, f, f.p);
-    Assert(power_unary<F>(x, h, f) == y);
+    EOPAssert(power_unary<F>(x, h, f) == y);
     if (!zero(c))
-        Assert(y == connection_point_nonterminating_orbit(x, f));
+        EOPAssert(y == connection_point_nonterminating_orbit(x, f));
     triple<unsigned, unsigned, int> t = orbit_structure(x, f, f.p);
     if (zero(c)) { // terminating
-        Assert(t.m0 == h);
-        Assert(zero(t.m1));
-        Assert(t.m2 == collision_point(x, f, f.p));
+        EOPAssert(t.m0 == h);
+        EOPAssert(zero(t.m1));
+        EOPAssert(t.m2 == collision_point(x, f, f.p));
     } else if (zero(h)) { // circular
-        Assert(zero(t.m0));
-        Assert(t.m1 == predecessor(c));
-        Assert(t.m2 == x);
+        EOPAssert(zero(t.m0));
+        EOPAssert(t.m1 == predecessor(c));
+        EOPAssert(t.m2 == x);
     } else { // rho-shaped
-        Assert(t.m0 == h);
-        Assert(t.m1 == predecessor(c));
-        Assert(t.m2 == y);
+        EOPAssert(t.m0 == h);
+        EOPAssert(t.m1 == predecessor(c));
+        EOPAssert(t.m2 == y);
     }
     if (!zero(c)) {
         triple<N, N, T> t =
             orbit_structure_nonterminating_orbit(x, f);
         if (zero(h)) { // circular
-            Assert(zero(t.m0));
-            Assert(t.m1 == predecessor(c));
-            Assert(t.m2 == x);
+            EOPAssert(zero(t.m0));
+            EOPAssert(t.m1 == predecessor(c));
+            EOPAssert(t.m2 == x);
         } else { // rho-shaped
-            Assert(t.m0 == h);
-            Assert(t.m1 == predecessor(c));
-            Assert(t.m2 == y);
+            EOPAssert(t.m0 == h);
+            EOPAssert(t.m1 == predecessor(c));
+            EOPAssert(t.m2 == y);
         }
     }
 }
@@ -442,12 +442,12 @@ void test_ch_2()
 {
     print("  Chapter 2\n");
     for (int i = 1; i < 100000000; i = 10 * i) {
-        Assert(abs(i) == i);
-        Assert(abs(-i) == i);
+        EOPAssert(abs(i) == i);
+        EOPAssert(abs(-i) == i);
     }
 
-    Assert(euclidean_norm(3., 4.) == 5.);
-    Assert(euclidean_norm(3., 4., 5.) == euclidean_norm(euclidean_norm(3., 4.), 5.));
+    EOPAssert(euclidean_norm(3., 4.) == 5.);
+    EOPAssert(euclidean_norm(3., 4., 5.) == euclidean_norm(euclidean_norm(3., 4.), 5.));
 
     concept_Transformation(sq<int>(), 2);
     concept_Transformation(gen_orbit<int, unsigned>(0, 0u, 5u), 0);
@@ -458,10 +458,10 @@ void test_ch_2()
     for (int i = 2; i < 5; i = successor(i))
         for (int j = 1; j < 5; j = successor(j)) {
             int tmp = power_unary(i, predecessor(j), sq<int>());
-            Assert(power_unary(i, j, sq<int>()) == tmp * tmp);
+            EOPAssert(power_unary(i, j, sq<int>()) == tmp * tmp);
         }
 
-    Assert(distance(2, 65536, sq<int>()) == 4);
+    EOPAssert(distance(2, 65536, sq<int>()) == 4);
 
     // Cyclic
     algorithms_orbit< gen_orbit<int, unsigned> >(0, 0u, 5u);
@@ -474,11 +474,11 @@ void test_ch_2()
     // Terminating
     algorithms_orbit< gen_orbit<int, unsigned> >(0, 101u, 0u);
 
-    Assert(convergent_point_guarded(1024, 64, 1, hf<int>()) == 64);
-    Assert(convergent_point_guarded(1025, 65, 1, hf<int>()) == 32);
-    Assert(convergent_point_guarded(64, 1024, 1, hf<int>()) == 64);
-    Assert(convergent_point_guarded(65, 1025, 1, hf<int>()) == 32);
-    Assert(convergent_point_guarded(1024, 2047, 1, hf<int>()) == 1);
+    EOPAssert(convergent_point_guarded(1024, 64, 1, hf<int>()) == 64);
+    EOPAssert(convergent_point_guarded(1025, 65, 1, hf<int>()) == 32);
+    EOPAssert(convergent_point_guarded(64, 1024, 1, hf<int>()) == 64);
+    EOPAssert(convergent_point_guarded(65, 1025, 1, hf<int>()) == 32);
+    EOPAssert(convergent_point_guarded(1024, 2047, 1, hf<int>()) == 1);
 }
 
 
@@ -494,7 +494,7 @@ void concept_BinaryOperation(Op op, Domain(Op) x)
     // X == Y
     Y y;
     y = x;
-    Assert(x == y);
+    EOPAssert(x == y);
     y = op(x, x);
 }
 
@@ -504,47 +504,47 @@ int times_int(int a, int b) { return a * b; }
 
 void algorithm_power(int (*pow)(int, int, int (*)(int, int)))
 {
-    Assert(pow(1, 1, times_int) == 1);
-    Assert(pow(10, 1, times_int) == 10);
-    Assert(pow(1, 10, times_int) == 1);
-    Assert(pow(2, 2, times_int) == 4);
-    Assert(pow(2, 10, times_int) == 1024);
-    Assert(pow(10, 2, times_int) == 100);
+    EOPAssert(pow(1, 1, times_int) == 1);
+    EOPAssert(pow(10, 1, times_int) == 10);
+    EOPAssert(pow(1, 10, times_int) == 1);
+    EOPAssert(pow(2, 2, times_int) == 4);
+    EOPAssert(pow(2, 10, times_int) == 1024);
+    EOPAssert(pow(10, 2, times_int) == 100);
 }
 
 void algorithm_power_accumulate(int (*pow)(int, int, int, int (*)(int, int)))
 {
-    Assert(pow(99, 1, 1, times_int) == 99 * 1);
-    Assert(pow(99, 10, 1, times_int) == 99 * 10);
-    Assert(pow(99, 1, 10, times_int) == 99 * 1);
-    Assert(pow(99, 2, 2, times_int) == 99 * 4);
-    Assert(pow(99, 2, 10, times_int) == 99 * 1024);
-    Assert(pow(99, 10, 2, times_int) == 99 * 100);
+    EOPAssert(pow(99, 1, 1, times_int) == 99 * 1);
+    EOPAssert(pow(99, 10, 1, times_int) == 99 * 10);
+    EOPAssert(pow(99, 1, 10, times_int) == 99 * 1);
+    EOPAssert(pow(99, 2, 2, times_int) == 99 * 4);
+    EOPAssert(pow(99, 2, 10, times_int) == 99 * 1024);
+    EOPAssert(pow(99, 10, 2, times_int) == 99 * 100);
 
-    Assert(pow(99, 1, 0, times_int) == 99);
+    EOPAssert(pow(99, 1, 0, times_int) == 99);
 }
 
 void algorithm_power_accumulate_positive(int (*pow)(int, int, int, int (*)(int, int)))
 {
-    Assert(pow(99, 1, 1, times_int) == 99 * 1);
-    Assert(pow(99, 10, 1, times_int) == 99 * 10);
-    Assert(pow(99, 1, 10, times_int) == 99 * 1);
-    Assert(pow(99, 2, 2, times_int) == 99 * 4);
-    Assert(pow(99, 2, 10, times_int) == 99 * 1024);
-    Assert(pow(99, 10, 2, times_int) == 99 * 100);
+    EOPAssert(pow(99, 1, 1, times_int) == 99 * 1);
+    EOPAssert(pow(99, 10, 1, times_int) == 99 * 10);
+    EOPAssert(pow(99, 1, 10, times_int) == 99 * 1);
+    EOPAssert(pow(99, 2, 2, times_int) == 99 * 4);
+    EOPAssert(pow(99, 2, 10, times_int) == 99 * 1024);
+    EOPAssert(pow(99, 10, 2, times_int) == 99 * 100);
 }
 
 void algorithm_power_with_identity(int (*pow)(int, int, int (*)(int, int), int))
 {
-    Assert(pow(1, 1, times_int, 1) == 1);
-    Assert(pow(10, 1, times_int, 1) == 10);
-    Assert(pow(1, 10, times_int, 1) == 1);
-    Assert(pow(2, 2, times_int, 1) == 4);
-    Assert(pow(2, 10, times_int, 1) == 1024);
-    Assert(pow(10, 2, times_int, 1) == 100);
+    EOPAssert(pow(1, 1, times_int, 1) == 1);
+    EOPAssert(pow(10, 1, times_int, 1) == 10);
+    EOPAssert(pow(1, 10, times_int, 1) == 1);
+    EOPAssert(pow(2, 2, times_int, 1) == 4);
+    EOPAssert(pow(2, 10, times_int, 1) == 1024);
+    EOPAssert(pow(10, 2, times_int, 1) == 100);
 
-    Assert(pow(1, 0, times_int, 1) == 1);
-    Assert(pow(1, 0, times_int, 99) == 99);
+    EOPAssert(pow(1, 0, times_int, 1) == 1);
+    EOPAssert(pow(1, 0, times_int, 99) == 99);
 }
 
 template<typename I>
@@ -569,15 +569,15 @@ void concept_Integer(I n)
     m = binary_scale_up_nonnegative(m, I(1));
     bool bp = positive(m);
     bool bn = negative(m);
-    Assert(!(bp && bn));
+    EOPAssert(!(bp && bn));
     bool bz = zero(m);
-    Assert((bz && !(bn || bp)) || (!bz && (bn || bp)));
+    EOPAssert((bz && !(bn || bp)) || (!bz && (bn || bp)));
     bool b1 = one(m);
-    Assert(!(bz && b1));
-    Assert(!b1 || bp);
+    EOPAssert(!(bz && b1));
+    EOPAssert(!b1 || bp);
     bool be = even(m);
     bool bo = odd(m);
-    Assert(be != bo);
+    EOPAssert(be != bo);
 }
 
 void test_ch_3()
@@ -587,11 +587,11 @@ void test_ch_3()
     concept_BinaryOperation(minus_int, 7);
     concept_BinaryOperation(times_int, 8);
 
-    Assert(power_left_associated(-2, 3, minus_int) == 2); // (-2 - -2) - -2 = 2
-    Assert(power_left_associated(-2, 4, minus_int) == 4); // ((-2 - -2) - -2) - -2 = 4
+    EOPAssert(power_left_associated(-2, 3, minus_int) == 2); // (-2 - -2) - -2 = 2
+    EOPAssert(power_left_associated(-2, 4, minus_int) == 4); // ((-2 - -2) - -2) - -2 = 4
     algorithm_power(power_left_associated<int, int (*)(int, int)>);
-    Assert(power_right_associated(-2, 3, minus_int) == -2); // -2 - (-2 - -2) = -2
-    Assert(power_right_associated(-2, 4, minus_int) == 0); // -2 - (-2 - (-2 - -2) = 0
+    EOPAssert(power_right_associated(-2, 3, minus_int) == -2); // -2 - (-2 - -2) = -2
+    EOPAssert(power_right_associated(-2, 4, minus_int) == 0); // -2 - (-2 - (-2 - -2) = 0
     algorithm_power(power_right_associated<int, int (*)(int, int)>);
     algorithm_power(power_0<int, int (*)(int, int)>);
     algorithm_power(power_1<int, int (*)(int, int)>);
@@ -620,23 +620,23 @@ void test_ch_3()
     Fib f10 = {N(55), N(34)};
     Fib f11 = {N(89), N(55)};
     Fib f21 = fibonacci_matrix_multiply(f10, f11);
-    Assert(f21.m0 == 10946 && f21.m1 == 6765);
-    Assert(fibonacci<N>(10) == N(55));
-    Assert(fibonacci<N>(20) == N(6765));
+    EOPAssert(f21.m0 == 10946 && f21.m1 == 6765);
+    EOPAssert(fibonacci<N>(10) == N(55));
+    EOPAssert(fibonacci<N>(20) == N(6765));
     N n = 3;
     N nMinus1 = 2;
     fibonacci_next(n, nMinus1);
-    Assert(n == N(5));
-    Assert(nMinus1 == N(3));
+    EOPAssert(n == N(5));
+    EOPAssert(nMinus1 == N(3));
     fibonacci_next(n, nMinus1);
-    Assert(n == N(8));
-    Assert(nMinus1 == N(5));
+    EOPAssert(n == N(8));
+    EOPAssert(nMinus1 == N(5));
     fibonacci_previous(n, nMinus1);
-    Assert(n == N(5));
-    Assert(nMinus1 == N(3));
+    EOPAssert(n == N(5));
+    EOPAssert(nMinus1 == N(3));
     fibonacci_previous(n, nMinus1);
-    Assert(n == N(3));
-    Assert(nMinus1 == N(2));
+    EOPAssert(n == N(3));
+    EOPAssert(nMinus1 == N(2));
 }
 
 
@@ -659,7 +659,7 @@ template<typename R>
 void property_transitive(R r, Domain(R) x, Domain(R) y, Domain(R) z)
 {
     concept_Relation(r, x);
-    Assert(!r(x, y) || !r(y, z) || r(x, z));
+    EOPAssert(!r(x, y) || !r(y, z) || r(x, z));
 }
 
 template<typename R>
@@ -670,12 +670,12 @@ void property_total_ordering(R r, const Domain(R)& x0,
 {
     // Precondition: total_ordering(r) /\ r(x0, x1) /\ r(x1, x2)
 
-    Assert(r(x0, x1) && r(x1, x2));
+    EOPAssert(r(x0, x1) && r(x1, x2));
 
     property_transitive(r, x0, x1, x2);
 
-    Assert( r(x0, x1) && !(x0 == x1) && !r(x1, x0)); // trichotomy
-    Assert(!r(x0, x0)                             ); // irreflexive
+    EOPAssert( r(x0, x1) && !(x0 == x1) && !r(x1, x0)); // trichotomy
+    EOPAssert(!r(x0, x0)                             ); // irreflexive
 }
 
 template<typename R>
@@ -686,15 +686,15 @@ void property_reflexive_total_ordering(R r, const Domain(R)& x0,
 {
     // Precondition: total_ordering(r) /\ r(x0, x1) /\ r(x1, x2)
 
-    Assert(r(x0, x1) && r(x1, x2));
+    EOPAssert(r(x0, x1) && r(x1, x2));
 
     property_transitive(r, x0, x1, x2);
     property_transitive(r, x0, x0, x1);
     property_transitive(r, x0, x1, x1);
     property_transitive(r, x0, x0, x0);
 
-    Assert(!r(x0, x1) || !r(x1, x0) || x0 == x1); // antisymmetric
-    Assert(r(x0, x0)                           ); // reflexive
+    EOPAssert(!r(x0, x1) || !r(x1, x0) || x0 == x1); // antisymmetric
+    EOPAssert(r(x0, x0)                           ); // reflexive
 }
 template<typename T, typename U>
     requires(Regular(T) && Regular(U))
@@ -817,7 +817,7 @@ void algorithm_select_1_4()
         T r = select_1_4(t[0], t[1], t[2], t[3],
                          key_ordering< first<int, int>, less<int> >(first<int, int>(), less<int>()));
         EOPpointer(T) f = find_if(t, l, eq_first<int, int>(2));
-        Assert(f != l && source(f) == r);
+        EOPAssert(f != l && source(f) == r);
         if (verbose) {
             print(r);
             print_eol();
@@ -842,7 +842,7 @@ void algorithm_select_1_4_stability_indices()
         T r = select_1_4<0,1,2,3>(t[0], t[1], t[2], t[3],
                                   key_ordering< first<int, int>, less<int> >(first<int, int>(), less<int>()));
         EOPpointer(T) f = find_if(t, l, eq_first<int, int>(2));
-        Assert(f != l && source(f) == r);
+        EOPAssert(f != l && source(f) == r);
         if (verbose) {
             print(r);
             print_eol();
@@ -860,126 +860,126 @@ void algorithm_select_2_5_stability_indices()
     P p2 = {'x', 2};
     P p3 = {'x', 3};
     P p4 = {'x', 4};
-    Assert((select_2_5<0,1,2,3,4>(p0,p1,p2,p3,p4,R()).m1 == p2.m1));
-    Assert((select_2_5<0,1,2,4,3>(p0,p1,p2,p4,p3,R()).m1 == p2.m1));
-    Assert((select_2_5<0,1,3,2,4>(p0,p1,p3,p2,p4,R()).m1 == p2.m1));
-    Assert((select_2_5<0,1,3,4,2>(p0,p1,p3,p4,p2,R()).m1 == p2.m1));
-    Assert((select_2_5<0,1,4,2,3>(p0,p1,p4,p2,p3,R()).m1 == p2.m1));
-    Assert((select_2_5<0,1,4,3,2>(p0,p1,p4,p3,p2,R()).m1 == p2.m1));
-    Assert((select_2_5<0,2,1,3,4>(p0,p2,p1,p3,p4,R()).m1 == p2.m1));
-    Assert((select_2_5<0,2,1,4,3>(p0,p2,p1,p4,p3,R()).m1 == p2.m1));
-    Assert((select_2_5<0,2,3,1,4>(p0,p2,p3,p1,p4,R()).m1 == p2.m1));
-    Assert((select_2_5<0,2,3,4,1>(p0,p2,p3,p4,p1,R()).m1 == p2.m1));
-    Assert((select_2_5<0,2,4,1,3>(p0,p2,p4,p1,p3,R()).m1 == p2.m1));
-    Assert((select_2_5<0,2,4,3,1>(p0,p2,p4,p3,p1,R()).m1 == p2.m1));
-    Assert((select_2_5<0,3,1,2,4>(p0,p3,p1,p2,p4,R()).m1 == p2.m1));
-    Assert((select_2_5<0,3,1,4,2>(p0,p3,p1,p4,p2,R()).m1 == p2.m1));
-    Assert((select_2_5<0,3,2,1,4>(p0,p3,p2,p1,p4,R()).m1 == p2.m1));
-    Assert((select_2_5<0,3,2,4,1>(p0,p3,p2,p4,p1,R()).m1 == p2.m1));
-    Assert((select_2_5<0,3,4,1,2>(p0,p3,p4,p1,p2,R()).m1 == p2.m1));
-    Assert((select_2_5<0,3,4,2,1>(p0,p3,p4,p2,p1,R()).m1 == p2.m1));
-    Assert((select_2_5<0,4,1,2,3>(p0,p4,p1,p2,p3,R()).m1 == p2.m1));
-    Assert((select_2_5<0,4,1,3,2>(p0,p4,p1,p3,p2,R()).m1 == p2.m1));
-    Assert((select_2_5<0,4,2,1,3>(p0,p4,p2,p1,p3,R()).m1 == p2.m1));
-    Assert((select_2_5<0,4,2,3,1>(p0,p4,p2,p3,p1,R()).m1 == p2.m1));
-    Assert((select_2_5<0,4,3,1,2>(p0,p4,p3,p1,p2,R()).m1 == p2.m1));
-    Assert((select_2_5<0,4,3,2,1>(p0,p4,p3,p2,p1,R()).m1 == p2.m1));
-    Assert((select_2_5<1,0,2,3,4>(p1,p0,p2,p3,p4,R()).m1 == p2.m1));
-    Assert((select_2_5<1,0,2,4,3>(p1,p0,p2,p4,p3,R()).m1 == p2.m1));
-    Assert((select_2_5<1,0,3,2,4>(p1,p0,p3,p2,p4,R()).m1 == p2.m1));
-    Assert((select_2_5<1,0,3,4,2>(p1,p0,p3,p4,p2,R()).m1 == p2.m1));
-    Assert((select_2_5<1,0,4,2,3>(p1,p0,p4,p2,p3,R()).m1 == p2.m1));
-    Assert((select_2_5<1,0,4,3,2>(p1,p0,p4,p3,p2,R()).m1 == p2.m1));
-    Assert((select_2_5<1,2,0,3,4>(p1,p2,p0,p3,p4,R()).m1 == p2.m1));
-    Assert((select_2_5<1,2,0,4,3>(p1,p2,p0,p4,p3,R()).m1 == p2.m1));
-    Assert((select_2_5<1,2,3,0,4>(p1,p2,p3,p0,p4,R()).m1 == p2.m1));
-    Assert((select_2_5<1,2,3,4,0>(p1,p2,p3,p4,p0,R()).m1 == p2.m1));
-    Assert((select_2_5<1,2,4,0,3>(p1,p2,p4,p0,p3,R()).m1 == p2.m1));
-    Assert((select_2_5<1,2,4,3,0>(p1,p2,p4,p3,p0,R()).m1 == p2.m1));
-    Assert((select_2_5<1,3,0,2,4>(p1,p3,p0,p2,p4,R()).m1 == p2.m1));
-    Assert((select_2_5<1,3,0,4,2>(p1,p3,p0,p4,p2,R()).m1 == p2.m1));
-    Assert((select_2_5<1,3,2,0,4>(p1,p3,p2,p0,p4,R()).m1 == p2.m1));
-    Assert((select_2_5<1,3,2,4,0>(p1,p3,p2,p4,p0,R()).m1 == p2.m1));
-    Assert((select_2_5<1,3,4,0,2>(p1,p3,p4,p0,p2,R()).m1 == p2.m1));
-    Assert((select_2_5<1,3,4,2,0>(p1,p3,p4,p2,p0,R()).m1 == p2.m1));
-    Assert((select_2_5<1,4,0,2,3>(p1,p4,p0,p2,p3,R()).m1 == p2.m1));
-    Assert((select_2_5<1,4,0,3,2>(p1,p4,p0,p3,p2,R()).m1 == p2.m1));
-    Assert((select_2_5<1,4,2,0,3>(p1,p4,p2,p0,p3,R()).m1 == p2.m1));
-    Assert((select_2_5<1,4,2,3,0>(p1,p4,p2,p3,p0,R()).m1 == p2.m1));
-    Assert((select_2_5<1,4,3,0,2>(p1,p4,p3,p0,p2,R()).m1 == p2.m1));
-    Assert((select_2_5<1,4,3,2,0>(p1,p4,p3,p2,p0,R()).m1 == p2.m1));
-    Assert((select_2_5<2,0,1,3,4>(p2,p0,p1,p3,p4,R()).m1 == p2.m1));
-    Assert((select_2_5<2,0,1,4,3>(p2,p0,p1,p4,p3,R()).m1 == p2.m1));
-    Assert((select_2_5<2,0,3,1,4>(p2,p0,p3,p1,p4,R()).m1 == p2.m1));
-    Assert((select_2_5<2,0,3,4,1>(p2,p0,p3,p4,p1,R()).m1 == p2.m1));
-    Assert((select_2_5<2,0,4,1,3>(p2,p0,p4,p1,p3,R()).m1 == p2.m1));
-    Assert((select_2_5<2,0,4,3,1>(p2,p0,p4,p3,p1,R()).m1 == p2.m1));
-    Assert((select_2_5<2,1,0,3,4>(p2,p1,p0,p3,p4,R()).m1 == p2.m1));
-    Assert((select_2_5<2,1,0,4,3>(p2,p1,p0,p4,p3,R()).m1 == p2.m1));
-    Assert((select_2_5<2,1,3,0,4>(p2,p1,p3,p0,p4,R()).m1 == p2.m1));
-    Assert((select_2_5<2,1,3,4,0>(p2,p1,p3,p4,p0,R()).m1 == p2.m1));
-    Assert((select_2_5<2,1,4,0,3>(p2,p1,p4,p0,p3,R()).m1 == p2.m1));
-    Assert((select_2_5<2,1,4,3,0>(p2,p1,p4,p3,p0,R()).m1 == p2.m1));
-    Assert((select_2_5<2,3,0,1,4>(p2,p3,p0,p1,p4,R()).m1 == p2.m1));
-    Assert((select_2_5<2,3,0,4,1>(p2,p3,p0,p4,p1,R()).m1 == p2.m1));
-    Assert((select_2_5<2,3,1,0,4>(p2,p3,p1,p0,p4,R()).m1 == p2.m1));
-    Assert((select_2_5<2,3,1,4,0>(p2,p3,p1,p4,p0,R()).m1 == p2.m1));
-    Assert((select_2_5<2,3,4,0,1>(p2,p3,p4,p0,p1,R()).m1 == p2.m1));
-    Assert((select_2_5<2,3,4,1,0>(p2,p3,p4,p1,p0,R()).m1 == p2.m1));
-    Assert((select_2_5<2,4,0,1,3>(p2,p4,p0,p1,p3,R()).m1 == p2.m1));
-    Assert((select_2_5<2,4,0,3,1>(p2,p4,p0,p3,p1,R()).m1 == p2.m1));
-    Assert((select_2_5<2,4,1,0,3>(p2,p4,p1,p0,p3,R()).m1 == p2.m1));
-    Assert((select_2_5<2,4,1,3,0>(p2,p4,p1,p3,p0,R()).m1 == p2.m1));
-    Assert((select_2_5<2,4,3,0,1>(p2,p4,p3,p0,p1,R()).m1 == p2.m1));
-    Assert((select_2_5<2,4,3,1,0>(p2,p4,p3,p1,p0,R()).m1 == p2.m1));
-    Assert((select_2_5<3,0,1,2,4>(p3,p0,p1,p2,p4,R()).m1 == p2.m1));
-    Assert((select_2_5<3,0,1,4,2>(p3,p0,p1,p4,p2,R()).m1 == p2.m1));
-    Assert((select_2_5<3,0,2,1,4>(p3,p0,p2,p1,p4,R()).m1 == p2.m1));
-    Assert((select_2_5<3,0,2,4,1>(p3,p0,p2,p4,p1,R()).m1 == p2.m1));
-    Assert((select_2_5<3,0,4,1,2>(p3,p0,p4,p1,p2,R()).m1 == p2.m1));
-    Assert((select_2_5<3,0,4,2,1>(p3,p0,p4,p2,p1,R()).m1 == p2.m1));
-    Assert((select_2_5<3,1,0,2,4>(p3,p1,p0,p2,p4,R()).m1 == p2.m1));
-    Assert((select_2_5<3,1,0,4,2>(p3,p1,p0,p4,p2,R()).m1 == p2.m1));
-    Assert((select_2_5<3,1,2,0,4>(p3,p1,p2,p0,p4,R()).m1 == p2.m1));
-    Assert((select_2_5<3,1,2,4,0>(p3,p1,p2,p4,p0,R()).m1 == p2.m1));
-    Assert((select_2_5<3,1,4,0,2>(p3,p1,p4,p0,p2,R()).m1 == p2.m1));
-    Assert((select_2_5<3,1,4,2,0>(p3,p1,p4,p2,p0,R()).m1 == p2.m1));
-    Assert((select_2_5<3,2,0,1,4>(p3,p2,p0,p1,p4,R()).m1 == p2.m1));
-    Assert((select_2_5<3,2,0,4,1>(p3,p2,p0,p4,p1,R()).m1 == p2.m1));
-    Assert((select_2_5<3,2,1,0,4>(p3,p2,p1,p0,p4,R()).m1 == p2.m1));
-    Assert((select_2_5<3,2,1,4,0>(p3,p2,p1,p4,p0,R()).m1 == p2.m1));
-    Assert((select_2_5<3,2,4,0,1>(p3,p2,p4,p0,p1,R()).m1 == p2.m1));
-    Assert((select_2_5<3,2,4,1,0>(p3,p2,p4,p1,p0,R()).m1 == p2.m1));
-    Assert((select_2_5<3,4,0,1,2>(p3,p4,p0,p1,p2,R()).m1 == p2.m1));
-    Assert((select_2_5<3,4,0,2,1>(p3,p4,p0,p2,p1,R()).m1 == p2.m1));
-    Assert((select_2_5<3,4,1,0,2>(p3,p4,p1,p0,p2,R()).m1 == p2.m1));
-    Assert((select_2_5<3,4,1,2,0>(p3,p4,p1,p2,p0,R()).m1 == p2.m1));
-    Assert((select_2_5<3,4,2,0,1>(p3,p4,p2,p0,p1,R()).m1 == p2.m1));
-    Assert((select_2_5<3,4,2,1,0>(p3,p4,p2,p1,p0,R()).m1 == p2.m1));
-    Assert((select_2_5<4,0,1,2,3>(p4,p0,p1,p2,p3,R()).m1 == p2.m1));
-    Assert((select_2_5<4,0,1,3,2>(p4,p0,p1,p3,p2,R()).m1 == p2.m1));
-    Assert((select_2_5<4,0,2,1,3>(p4,p0,p2,p1,p3,R()).m1 == p2.m1));
-    Assert((select_2_5<4,0,2,3,1>(p4,p0,p2,p3,p1,R()).m1 == p2.m1));
-    Assert((select_2_5<4,0,3,1,2>(p4,p0,p3,p1,p2,R()).m1 == p2.m1));
-    Assert((select_2_5<4,0,3,2,1>(p4,p0,p3,p2,p1,R()).m1 == p2.m1));
-    Assert((select_2_5<4,1,0,2,3>(p4,p1,p0,p2,p3,R()).m1 == p2.m1));
-    Assert((select_2_5<4,1,0,3,2>(p4,p1,p0,p3,p2,R()).m1 == p2.m1));
-    Assert((select_2_5<4,1,2,0,3>(p4,p1,p2,p0,p3,R()).m1 == p2.m1));
-    Assert((select_2_5<4,1,2,3,0>(p4,p1,p2,p3,p0,R()).m1 == p2.m1));
-    Assert((select_2_5<4,1,3,0,2>(p4,p1,p3,p0,p2,R()).m1 == p2.m1));
-    Assert((select_2_5<4,1,3,2,0>(p4,p1,p3,p2,p0,R()).m1 == p2.m1));
-    Assert((select_2_5<4,2,0,1,3>(p4,p2,p0,p1,p3,R()).m1 == p2.m1));
-    Assert((select_2_5<4,2,0,3,1>(p4,p2,p0,p3,p1,R()).m1 == p2.m1));
-    Assert((select_2_5<4,2,1,0,3>(p4,p2,p1,p0,p3,R()).m1 == p2.m1));
-    Assert((select_2_5<4,2,1,3,0>(p4,p2,p1,p3,p0,R()).m1 == p2.m1));
-    Assert((select_2_5<4,2,3,0,1>(p4,p2,p3,p0,p1,R()).m1 == p2.m1));
-    Assert((select_2_5<4,2,3,1,0>(p4,p2,p3,p1,p0,R()).m1 == p2.m1));
-    Assert((select_2_5<4,3,0,1,2>(p4,p3,p0,p1,p2,R()).m1 == p2.m1));
-    Assert((select_2_5<4,3,0,2,1>(p4,p3,p0,p2,p1,R()).m1 == p2.m1));
-    Assert((select_2_5<4,3,1,0,2>(p4,p3,p1,p0,p2,R()).m1 == p2.m1));
-    Assert((select_2_5<4,3,1,2,0>(p4,p3,p1,p2,p0,R()).m1 == p2.m1));
-    Assert((select_2_5<4,3,2,0,1>(p4,p3,p2,p0,p1,R()).m1 == p2.m1));
-    Assert((select_2_5<4,3,2,1,0>(p4,p3,p2,p1,p0,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<0,1,2,3,4>(p0,p1,p2,p3,p4,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<0,1,2,4,3>(p0,p1,p2,p4,p3,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<0,1,3,2,4>(p0,p1,p3,p2,p4,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<0,1,3,4,2>(p0,p1,p3,p4,p2,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<0,1,4,2,3>(p0,p1,p4,p2,p3,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<0,1,4,3,2>(p0,p1,p4,p3,p2,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<0,2,1,3,4>(p0,p2,p1,p3,p4,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<0,2,1,4,3>(p0,p2,p1,p4,p3,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<0,2,3,1,4>(p0,p2,p3,p1,p4,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<0,2,3,4,1>(p0,p2,p3,p4,p1,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<0,2,4,1,3>(p0,p2,p4,p1,p3,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<0,2,4,3,1>(p0,p2,p4,p3,p1,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<0,3,1,2,4>(p0,p3,p1,p2,p4,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<0,3,1,4,2>(p0,p3,p1,p4,p2,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<0,3,2,1,4>(p0,p3,p2,p1,p4,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<0,3,2,4,1>(p0,p3,p2,p4,p1,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<0,3,4,1,2>(p0,p3,p4,p1,p2,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<0,3,4,2,1>(p0,p3,p4,p2,p1,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<0,4,1,2,3>(p0,p4,p1,p2,p3,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<0,4,1,3,2>(p0,p4,p1,p3,p2,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<0,4,2,1,3>(p0,p4,p2,p1,p3,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<0,4,2,3,1>(p0,p4,p2,p3,p1,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<0,4,3,1,2>(p0,p4,p3,p1,p2,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<0,4,3,2,1>(p0,p4,p3,p2,p1,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<1,0,2,3,4>(p1,p0,p2,p3,p4,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<1,0,2,4,3>(p1,p0,p2,p4,p3,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<1,0,3,2,4>(p1,p0,p3,p2,p4,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<1,0,3,4,2>(p1,p0,p3,p4,p2,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<1,0,4,2,3>(p1,p0,p4,p2,p3,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<1,0,4,3,2>(p1,p0,p4,p3,p2,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<1,2,0,3,4>(p1,p2,p0,p3,p4,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<1,2,0,4,3>(p1,p2,p0,p4,p3,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<1,2,3,0,4>(p1,p2,p3,p0,p4,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<1,2,3,4,0>(p1,p2,p3,p4,p0,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<1,2,4,0,3>(p1,p2,p4,p0,p3,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<1,2,4,3,0>(p1,p2,p4,p3,p0,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<1,3,0,2,4>(p1,p3,p0,p2,p4,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<1,3,0,4,2>(p1,p3,p0,p4,p2,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<1,3,2,0,4>(p1,p3,p2,p0,p4,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<1,3,2,4,0>(p1,p3,p2,p4,p0,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<1,3,4,0,2>(p1,p3,p4,p0,p2,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<1,3,4,2,0>(p1,p3,p4,p2,p0,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<1,4,0,2,3>(p1,p4,p0,p2,p3,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<1,4,0,3,2>(p1,p4,p0,p3,p2,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<1,4,2,0,3>(p1,p4,p2,p0,p3,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<1,4,2,3,0>(p1,p4,p2,p3,p0,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<1,4,3,0,2>(p1,p4,p3,p0,p2,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<1,4,3,2,0>(p1,p4,p3,p2,p0,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<2,0,1,3,4>(p2,p0,p1,p3,p4,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<2,0,1,4,3>(p2,p0,p1,p4,p3,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<2,0,3,1,4>(p2,p0,p3,p1,p4,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<2,0,3,4,1>(p2,p0,p3,p4,p1,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<2,0,4,1,3>(p2,p0,p4,p1,p3,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<2,0,4,3,1>(p2,p0,p4,p3,p1,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<2,1,0,3,4>(p2,p1,p0,p3,p4,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<2,1,0,4,3>(p2,p1,p0,p4,p3,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<2,1,3,0,4>(p2,p1,p3,p0,p4,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<2,1,3,4,0>(p2,p1,p3,p4,p0,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<2,1,4,0,3>(p2,p1,p4,p0,p3,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<2,1,4,3,0>(p2,p1,p4,p3,p0,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<2,3,0,1,4>(p2,p3,p0,p1,p4,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<2,3,0,4,1>(p2,p3,p0,p4,p1,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<2,3,1,0,4>(p2,p3,p1,p0,p4,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<2,3,1,4,0>(p2,p3,p1,p4,p0,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<2,3,4,0,1>(p2,p3,p4,p0,p1,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<2,3,4,1,0>(p2,p3,p4,p1,p0,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<2,4,0,1,3>(p2,p4,p0,p1,p3,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<2,4,0,3,1>(p2,p4,p0,p3,p1,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<2,4,1,0,3>(p2,p4,p1,p0,p3,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<2,4,1,3,0>(p2,p4,p1,p3,p0,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<2,4,3,0,1>(p2,p4,p3,p0,p1,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<2,4,3,1,0>(p2,p4,p3,p1,p0,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<3,0,1,2,4>(p3,p0,p1,p2,p4,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<3,0,1,4,2>(p3,p0,p1,p4,p2,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<3,0,2,1,4>(p3,p0,p2,p1,p4,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<3,0,2,4,1>(p3,p0,p2,p4,p1,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<3,0,4,1,2>(p3,p0,p4,p1,p2,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<3,0,4,2,1>(p3,p0,p4,p2,p1,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<3,1,0,2,4>(p3,p1,p0,p2,p4,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<3,1,0,4,2>(p3,p1,p0,p4,p2,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<3,1,2,0,4>(p3,p1,p2,p0,p4,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<3,1,2,4,0>(p3,p1,p2,p4,p0,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<3,1,4,0,2>(p3,p1,p4,p0,p2,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<3,1,4,2,0>(p3,p1,p4,p2,p0,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<3,2,0,1,4>(p3,p2,p0,p1,p4,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<3,2,0,4,1>(p3,p2,p0,p4,p1,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<3,2,1,0,4>(p3,p2,p1,p0,p4,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<3,2,1,4,0>(p3,p2,p1,p4,p0,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<3,2,4,0,1>(p3,p2,p4,p0,p1,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<3,2,4,1,0>(p3,p2,p4,p1,p0,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<3,4,0,1,2>(p3,p4,p0,p1,p2,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<3,4,0,2,1>(p3,p4,p0,p2,p1,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<3,4,1,0,2>(p3,p4,p1,p0,p2,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<3,4,1,2,0>(p3,p4,p1,p2,p0,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<3,4,2,0,1>(p3,p4,p2,p0,p1,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<3,4,2,1,0>(p3,p4,p2,p1,p0,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<4,0,1,2,3>(p4,p0,p1,p2,p3,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<4,0,1,3,2>(p4,p0,p1,p3,p2,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<4,0,2,1,3>(p4,p0,p2,p1,p3,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<4,0,2,3,1>(p4,p0,p2,p3,p1,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<4,0,3,1,2>(p4,p0,p3,p1,p2,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<4,0,3,2,1>(p4,p0,p3,p2,p1,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<4,1,0,2,3>(p4,p1,p0,p2,p3,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<4,1,0,3,2>(p4,p1,p0,p3,p2,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<4,1,2,0,3>(p4,p1,p2,p0,p3,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<4,1,2,3,0>(p4,p1,p2,p3,p0,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<4,1,3,0,2>(p4,p1,p3,p0,p2,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<4,1,3,2,0>(p4,p1,p3,p2,p0,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<4,2,0,1,3>(p4,p2,p0,p1,p3,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<4,2,0,3,1>(p4,p2,p0,p3,p1,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<4,2,1,0,3>(p4,p2,p1,p0,p3,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<4,2,1,3,0>(p4,p2,p1,p3,p0,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<4,2,3,0,1>(p4,p2,p3,p0,p1,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<4,2,3,1,0>(p4,p2,p3,p1,p0,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<4,3,0,1,2>(p4,p3,p0,p1,p2,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<4,3,0,2,1>(p4,p3,p0,p2,p1,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<4,3,1,0,2>(p4,p3,p1,p0,p2,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<4,3,1,2,0>(p4,p3,p1,p2,p0,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<4,3,2,0,1>(p4,p3,p2,p0,p1,R()).m1 == p2.m1));
+    EOPAssert((select_2_5<4,3,2,1,0>(p4,p3,p2,p1,p0,R()).m1 == p2.m1));
 }
 
 void algorithm_median_5()
@@ -991,11 +991,11 @@ void algorithm_median_5()
     int i4 = 4;
     int i5 = 5;
     // ...
-    Assert((&select_2_5_ab_cd<0, 1, 2, 3, 4, less<int> >(
+    EOPAssert((&select_2_5_ab_cd<0, 1, 2, 3, 4, less<int> >(
         i4, i5, i2, i3, i1, less<int>()) == &i3));
-    Assert((&select_2_5_ab<0, 1, 2, 3, 4, less<int> >(
+    EOPAssert((&select_2_5_ab<0, 1, 2, 3, 4, less<int> >(
         i4, i5, i2, i3, i1, less<int>()) == &i3));
-    Assert((&select_2_5<0, 1, 2, 3, 4, less<int> >(
+    EOPAssert((&select_2_5<0, 1, 2, 3, 4, less<int> >(
         i4, i5, i2, i3, i1, less<int>()) == &i3));
     //
     int p[5] = {1, 2, 3, 4, 5};
@@ -1007,7 +1007,7 @@ void algorithm_median_5()
         }
         int m = select_2_5<0, 1, 2, 3, 4,less<int> >(
             p[0], p[1], p[2], p[3], p[4], less<int>());
-        Assert(m == 3);
+        EOPAssert(m == 3);
         if (verbose) { print(m); print_eol(); }
     } while (next_permutation(p, p + sizeof(p) / sizeof(int), less<int>()));
 }
@@ -1032,12 +1032,12 @@ void test_ch_4()
     property_reflexive_total_ordering(le, 0, 1, 2);
     property_transitive(eq, 0, 0, 0);
 
-    Assert(ge(4, 3));
-    Assert(gt(4, 3));
-    Assert(le(3, 4));
-    Assert(le(4, 4));
-    Assert(eq(4, 4));
-    Assert(ne(3, 4));
+    EOPAssert(ge(4, 3));
+    EOPAssert(gt(4, 3));
+    EOPAssert(le(3, 4));
+    EOPAssert(le(4, 4));
+    EOPAssert(eq(4, 4));
+    EOPAssert(ne(3, 4));
 
     // Test key_ordering
     typedef first<int, double> F;
@@ -1047,10 +1047,10 @@ void test_ch_4()
     PID key_1_2p0 = {1, 2.0};
     PID key_2_1p0 = {2, 1.0};
     PID key_1_1p0 = {1, 1.0};
-    Assert(ko(key_1_2p0, key_2_1p0));
-    Assert(!ko(key_1_2p0, key_1_2p0));
-    Assert(!ko(key_1_2p0, key_1_1p0));
-    Assert(!ko(key_1_1p0, key_1_2p0));
+    EOPAssert(ko(key_1_2p0, key_2_1p0));
+    EOPAssert(!ko(key_1_2p0, key_1_2p0));
+    EOPAssert(!ko(key_1_2p0, key_1_1p0));
+    EOPAssert(!ko(key_1_1p0, key_1_2p0));
 
     // clusters: != > <= >= -- see concept_TotallyOrdered
 
@@ -1059,59 +1059,59 @@ void test_ch_4()
     int b = 3;
     int c = 4;
     int d = 4;
-    Assert(&select_0_2(a, b, less<int>()) == &a);
-    Assert(&select_0_2(b, a, less<int>()) == &b);
-    Assert(&select_0_2(a, c, less<int>()) == &a);
-    Assert(&select_0_2(c, a, less<int>()) == &a);
-    Assert(select_0_2(a, c, less<int>()) == a);
-    Assert(select_0_2(c, a, less<int>()) == a);
+    EOPAssert(&select_0_2(a, b, less<int>()) == &a);
+    EOPAssert(&select_0_2(b, a, less<int>()) == &b);
+    EOPAssert(&select_0_2(a, c, less<int>()) == &a);
+    EOPAssert(&select_0_2(c, a, less<int>()) == &a);
+    EOPAssert(select_0_2(a, c, less<int>()) == a);
+    EOPAssert(select_0_2(c, a, less<int>()) == a);
 
-    Assert(&select_1_2(a, b, less<int>()) == &b);
-    Assert(&select_1_2(b, a, less<int>()) == &a);
-    Assert(&select_1_2(a, c, less<int>()) == &c);
-    Assert(&select_1_2(c, a, less<int>()) == &c);
-    Assert(select_1_2(a, c, less<int>()) == c);
-    Assert(select_1_2(c, a, less<int>()) == c);
+    EOPAssert(&select_1_2(a, b, less<int>()) == &b);
+    EOPAssert(&select_1_2(b, a, less<int>()) == &a);
+    EOPAssert(&select_1_2(a, c, less<int>()) == &c);
+    EOPAssert(&select_1_2(c, a, less<int>()) == &c);
+    EOPAssert(select_1_2(a, c, less<int>()) == c);
+    EOPAssert(select_1_2(c, a, less<int>()) == c);
 
     int_pair p1 = {1, 1};
     int_pair p2 = {1, 2};
     typedef less_first<int, int> R;
-    Assert((select_0_2<1, 2, R>(p1, p2, R()) == p1));
-    Assert((select_0_2<1, 2, R>(p2, p1, R()) == p2));
-    Assert((select_1_2<1, 2, R>(p1, p2, R()) == p2));
-    Assert((select_1_2<1, 2, R>(p2, p1, R()) == p1));
+    EOPAssert((select_0_2<1, 2, R>(p1, p2, R()) == p1));
+    EOPAssert((select_0_2<1, 2, R>(p2, p1, R()) == p2));
+    EOPAssert((select_1_2<1, 2, R>(p1, p2, R()) == p2));
+    EOPAssert((select_1_2<1, 2, R>(p2, p1, R()) == p1));
 
-    Assert(&select_0_3(a, b, c, less<int>()) == &a);
-    Assert(&select_0_3(a, c, b, less<int>()) == &a);
-    Assert(&select_0_3(b, a, c, less<int>()) == &b);
-    Assert(&select_0_3(b, c, a, less<int>()) == &b);
-    Assert(&select_0_3(c, a, b, less<int>()) == &a);
-    Assert(&select_0_3(c, b, a, less<int>()) == &b);
-    Assert(select_0_3(a, c, d, less<int>()) == a);
-    Assert(select_0_3(c, a, d, less<int>()) == a);
-    Assert(select_0_3(d, c, a, less<int>()) == a);
+    EOPAssert(&select_0_3(a, b, c, less<int>()) == &a);
+    EOPAssert(&select_0_3(a, c, b, less<int>()) == &a);
+    EOPAssert(&select_0_3(b, a, c, less<int>()) == &b);
+    EOPAssert(&select_0_3(b, c, a, less<int>()) == &b);
+    EOPAssert(&select_0_3(c, a, b, less<int>()) == &a);
+    EOPAssert(&select_0_3(c, b, a, less<int>()) == &b);
+    EOPAssert(select_0_3(a, c, d, less<int>()) == a);
+    EOPAssert(select_0_3(c, a, d, less<int>()) == a);
+    EOPAssert(select_0_3(d, c, a, less<int>()) == a);
 
-    Assert(&select_2_3(b, c, d, less<int>()) == &d);
-    Assert(&select_2_3(c, b, d, less<int>()) == &d);
-    Assert(&select_2_3(b, d, c, less<int>()) == &c);
-    Assert(&select_2_3(d, b, c, less<int>()) == &c);
-    Assert(&select_2_3(c, d, b, less<int>()) == &d);
-    Assert(&select_2_3(d, c, b, less<int>()) == &c);
-    Assert(select_2_3(a, c, d, less<int>()) == d);
-    Assert(select_2_3(c, a, d, less<int>()) == c);
-    Assert(select_2_3(d, c, a, less<int>()) == c);
+    EOPAssert(&select_2_3(b, c, d, less<int>()) == &d);
+    EOPAssert(&select_2_3(c, b, d, less<int>()) == &d);
+    EOPAssert(&select_2_3(b, d, c, less<int>()) == &c);
+    EOPAssert(&select_2_3(d, b, c, less<int>()) == &c);
+    EOPAssert(&select_2_3(c, d, b, less<int>()) == &d);
+    EOPAssert(&select_2_3(d, c, b, less<int>()) == &c);
+    EOPAssert(select_2_3(a, c, d, less<int>()) == d);
+    EOPAssert(select_2_3(c, a, d, less<int>()) == c);
+    EOPAssert(select_2_3(d, c, a, less<int>()) == c);
 
     // Test select_1_3_ab
 
-    Assert(&select_1_3(a, b, c, less<int>()) == &b);
-    Assert(&select_1_3(a, c, b, less<int>()) == &b);
-    Assert(&select_1_3(b, a, c, less<int>()) == &a);
-    Assert(&select_1_3(b, c, a, less<int>()) == &a);
-    Assert(&select_1_3(c, a, b, less<int>()) == &b);
-    Assert(&select_1_3(c, b, a, less<int>()) == &a);
-    Assert(select_1_3(a, c, d, less<int>()) == c);
-    Assert(select_1_3(c, a, d, less<int>()) == c);
-    Assert(select_1_3(d, c, a, less<int>()) == c);
+    EOPAssert(&select_1_3(a, b, c, less<int>()) == &b);
+    EOPAssert(&select_1_3(a, c, b, less<int>()) == &b);
+    EOPAssert(&select_1_3(b, a, c, less<int>()) == &a);
+    EOPAssert(&select_1_3(b, c, a, less<int>()) == &a);
+    EOPAssert(&select_1_3(c, a, b, less<int>()) == &b);
+    EOPAssert(&select_1_3(c, b, a, less<int>()) == &a);
+    EOPAssert(select_1_3(a, c, d, less<int>()) == c);
+    EOPAssert(select_1_3(c, a, d, less<int>()) == c);
+    EOPAssert(select_1_3(d, c, a, less<int>()) == c);
 
     // Test select_1_4_ab_cd
     // Test select_1_4_ab
@@ -1122,8 +1122,8 @@ void test_ch_4()
     {
         const int ca = 1, cb = 2, cc = 3, cd = 4, ce = 5;
         int b = 12, d = 14;
-        Assert(median_5(1, cb, b, d, 15, less<int>()) == 12);
-        Assert(median_5(ca, cb, cc, cd, ce, less<int>()) == 3);
+        EOPAssert(median_5(1, cb, b, d, 15, less<int>()) == 12);
+        EOPAssert(median_5(ca, cb, cc, cd, ce, less<int>()) == 3);
         algorithm_median_5();
     }
 
@@ -1131,10 +1131,10 @@ void test_ch_4()
         typedef pair<char, int> P;
         P a_3 = {'a', 3};
         P a_4 = {'a', 4};
-        Assert(min<P>(a_3, a_4) == a_3);
-        Assert(min<P>(a_4, a_3) == a_3);
-        Assert(max<P>(a_3, a_4) == a_4);
-        Assert(max<P>(a_4, a_3) == a_4);
+        EOPAssert(min<P>(a_3, a_4) == a_3);
+        EOPAssert(min<P>(a_4, a_3) == a_3);
+        EOPAssert(max<P>(a_3, a_4) == a_4);
+        EOPAssert(max<P>(a_4, a_3) == a_4);
     }
 
 }
@@ -1149,10 +1149,10 @@ void concept_OrderedAdditiveSemigroup(T& x, T& y, T& z)
     // Precondition: x < y
     concept_Regular(x);
     // + : T x T -> T
-    Assert((x + y) + z == x + (y + z));
-    Assert(x + y == y + x);
+    EOPAssert((x + y) + z == x + (y + z));
+    EOPAssert(x + y == y + x);
     concept_TotallyOrdered(x, y);
-    Assert(x + z < y + z);
+    EOPAssert(x + z < y + z);
 }
 
 template<typename T>
@@ -1161,7 +1161,7 @@ void concept_OrderedAdditiveMonoid(T& x, T& y, T& z)
 {
     concept_OrderedAdditiveSemigroup(x, y, z);
     // 0 in T
-    Assert(x + T(0) == x);
+    EOPAssert(x + T(0) == x);
 }
 
 template<typename T>
@@ -1171,7 +1171,7 @@ void concept_OrderedAdditiveGroup(T& x, T& y, T& z)
     // Precondition: x < y
     concept_OrderedAdditiveMonoid(x, y, z);
     // - : T -> T
-    Assert(x + (-x) == T(0));
+    EOPAssert(x + (-x) == T(0));
 }
 
 
@@ -1181,15 +1181,15 @@ void algorithm_abs(const T& something)
 {
     // We need a nonzero number to test with; OrderedAdditiveGroup doesn't guarantee one
     T zero(0);
-    Assert(something > zero);
+    EOPAssert(something > zero);
     T x(something);
     T y(x + something);
     T z(y + something);
     concept_OrderedAdditiveGroup(x, y, z); // need x < y < z
 
-    Assert(abs(zero) == zero);
-    Assert(abs( something) == something);
-    Assert(abs(-something) == something);
+    EOPAssert(abs(zero) == zero);
+    EOPAssert(abs( something) == something);
+    EOPAssert(abs(-something) == something);
 }
 
 template<typename T>
@@ -1201,7 +1201,7 @@ void concept_CancellableMonoid(T& x, T& y, T& z)
     // - : T x T -> T
     if (x <= y) {
         T z = y - x; // defined
-        Assert(z + x == y);
+        EOPAssert(z + x == y);
     }
 }
 
@@ -1223,8 +1223,8 @@ void concept_ArchimedeanGroup(T& x, T& y, T& z, QuotientType(T) n)
     // Precondition: x < y
     concept_ArchimedeanMonoid(x, y, z, n);
     T tmp = x - y;
-    Assert(tmp < 0);
-    Assert(-tmp == y - x);
+    EOPAssert(tmp < 0);
+    EOPAssert(-tmp == y - x);
 }
 
 template<typename T>
@@ -1241,7 +1241,7 @@ void algorithms_slow_q_and_r()
         while (b < max) {
             T r = slow_remainder(a, b);
             N q = slow_quotient(a, b);
-            Assert(power(b, q, plus_T, T(0)) + r == a);
+            EOPAssert(power(b, q, plus_T, T(0)) + r == a);
             b = successor(b);
         }
         a = successor(a);
@@ -1262,8 +1262,8 @@ void algorithms_q_and_r_nonnegative()
         while (b < max) {
             T r = remainder_nonnegative(a, b);
             pair<N, T> qr = quotient_remainder_nonnegative(a, b);
-            Assert(qr.m1 == r);
-            Assert(power(b, qr.m0, plus_T, T(0)) + r == a);
+            EOPAssert(qr.m1 == r);
+            EOPAssert(power(b, qr.m0, plus_T, T(0)) + r == a);
             b = successor(b);
         }
         a = successor(a);
@@ -1285,10 +1285,10 @@ void algorithms_q_and_r_nonnegative_fibonacci()
         while (b < max) {
             T r = remainder_nonnegative_fibonacci(a, b);
             pair<N, T> qr = quotient_remainder_nonnegative_fibonacci(a, b);
-            //Assert(Z(r) == Z(a) % Z(b));
-            Assert(qr.m1 == r);
-            //Assert(Z(qr.m0) == Z(a) / Z(b));
-            Assert(power(b, qr.m0, plus_T, T(0)) + r == a);
+            //EOPAssert(Z(r) == Z(a) % Z(b));
+            EOPAssert(qr.m1 == r);
+            //EOPAssert(Z(qr.m0) == Z(a) / Z(b));
+            EOPAssert(power(b, qr.m0, plus_T, T(0)) + r == a);
             b = successor(b);
         }
         a = successor(a);
@@ -1309,10 +1309,10 @@ void algorithms_q_and_r_nonnegative_iterative()
         while (b < max) {
             T r = remainder_nonnegative_iterative(a, b);
             pair<N, T> qr = quotient_remainder_nonnegative_iterative(a, b);
-            Assert(Z(r) == Z(a) % Z(b));
-            Assert(qr.m1 == r);
-            Assert(Z(qr.m0) == Z(a) / Z(b));
-            Assert(power(b, qr.m0, plus_T, T(0)) + r == a);
+            EOPAssert(Z(r) == Z(a) % Z(b));
+            EOPAssert(qr.m1 == r);
+            EOPAssert(Z(qr.m0) == Z(a) / Z(b));
+            EOPAssert(power(b, qr.m0, plus_T, T(0)) + r == a);
             b = successor(b);
         }
         a = successor(a);
@@ -1341,10 +1341,10 @@ void algorithm_largest_doubling()
         T b(1);
         while (b <= a) {
             T d = largest_doubling(a, b);
-//            Assert(Z(d) % Z(b) == 0); // it is an integral multiple of b
+//            EOPAssert(Z(d) % Z(b) == 0); // it is an integral multiple of b
 //            Z n = Z(d) / Z(b); // n = the integral multiple
-//            Assert(largest_power_of_two(n) == n); // n is a power of 2; it is a doubling
-            Assert(d <= a && d > a - d); // it is the largest
+//            EOPAssert(largest_power_of_two(n) == n); // n is a power of 2; it is a doubling
+            EOPAssert(d <= a && d > a - d); // it is the largest
             b = successor(b);
         }
         a = successor(a);
@@ -1381,7 +1381,7 @@ struct rational
     rational() { }
     rational(const N& p, const N& q) : p(p), q(q)
     {
-        Assert(q != N(0));
+        EOPAssert(q != N(0));
     }
     rational(const N& x) : p(x), q(N(1)) { }
 };
@@ -1487,7 +1487,7 @@ struct ag_quotient_remainder
     typedef pair<QuotientType(T), T> codomain_type;
     codomain_type operator()(T a, T b)
     {
-        Assert(a >= T(0) && b > T(0));
+        EOPAssert(a >= T(0) && b > T(0));
         return quotient_remainder_nonnegative(a, b);
     }
 };
@@ -1506,10 +1506,10 @@ void algorithms_signed_q_and_r()
         while (b <= max) {
             if (b != T(0)) {
                 T r = remainder(a, b, remainder_nonnegative<T>);
-                Assert(abs(r) < abs(b));
+                EOPAssert(abs(r) < abs(b));
                 pair<N, T> qr = quotient_remainder(a, b, ag_quotient_remainder<T>());
-                Assert(qr.m1 == r);
-                Assert(qr.m0 * b + r == a);
+                EOPAssert(qr.m1 == r);
+                EOPAssert(qr.m0 * b + r == a);
             }
             b = successor(b);
         }
@@ -1944,44 +1944,44 @@ void test_ch_5()
     algorithm_largest_doubling<double>();
     algorithm_largest_doubling<Q>();
 
-    Assert(subtractive_gcd_nonzero(1000, 990) == 10);
-    Assert(subtractive_gcd_nonzero(1000u, 990u) == 10u);
-    Assert(subtractive_gcd_nonzero(0.75, 0.5) == 0.25);
-    Assert(subtractive_gcd_nonzero(Q(3, 4), Q(1, 2)) == Q(1, 4));
+    EOPAssert(subtractive_gcd_nonzero(1000, 990) == 10);
+    EOPAssert(subtractive_gcd_nonzero(1000u, 990u) == 10u);
+    EOPAssert(subtractive_gcd_nonzero(0.75, 0.5) == 0.25);
+    EOPAssert(subtractive_gcd_nonzero(Q(3, 4), Q(1, 2)) == Q(1, 4));
 
-    Assert(subtractive_gcd(1000, 990) == 10);
-    Assert(subtractive_gcd(1000, 0) == 1000);
-    Assert(subtractive_gcd(0, 990) == 990);
-    Assert(subtractive_gcd(1000u, 990u) == 10u);
-    Assert(subtractive_gcd(1000u, 0u) == 1000u);
-    Assert(subtractive_gcd(0u, 990u) == 990u);
-    Assert(subtractive_gcd(0.75, 0.5) == 0.25);
-    Assert(subtractive_gcd(0.75, 0.0) == 0.75);
-    Assert(subtractive_gcd(0.0, 0.5) == 0.5);
-    Assert(subtractive_gcd(Q(3, 4), Q(1, 2)) == Q(1, 4));
-    Assert(subtractive_gcd(Q(3, 4), Q(0, 2)) == Q(3, 4));
-    Assert(subtractive_gcd(Q(0, 4), Q(1, 2)) == Q(1, 2));
+    EOPAssert(subtractive_gcd(1000, 990) == 10);
+    EOPAssert(subtractive_gcd(1000, 0) == 1000);
+    EOPAssert(subtractive_gcd(0, 990) == 990);
+    EOPAssert(subtractive_gcd(1000u, 990u) == 10u);
+    EOPAssert(subtractive_gcd(1000u, 0u) == 1000u);
+    EOPAssert(subtractive_gcd(0u, 990u) == 990u);
+    EOPAssert(subtractive_gcd(0.75, 0.5) == 0.25);
+    EOPAssert(subtractive_gcd(0.75, 0.0) == 0.75);
+    EOPAssert(subtractive_gcd(0.0, 0.5) == 0.5);
+    EOPAssert(subtractive_gcd(Q(3, 4), Q(1, 2)) == Q(1, 4));
+    EOPAssert(subtractive_gcd(Q(3, 4), Q(0, 2)) == Q(3, 4));
+    EOPAssert(subtractive_gcd(Q(0, 4), Q(1, 2)) == Q(1, 2));
 
-    Assert(fast_subtractive_gcd(1000, 990) == 10);
-    Assert(fast_subtractive_gcd(1000, 0) == 1000);
-    Assert(fast_subtractive_gcd(0, 990) == 990);
-    Assert(fast_subtractive_gcd(1000u, 990u) == 10u);
-    Assert(fast_subtractive_gcd(1000u, 0u) == 1000u);
-    Assert(fast_subtractive_gcd(0u, 990u) == 990u);
-    Assert(fast_subtractive_gcd(0.75, 0.5) == 0.25);
-    Assert(fast_subtractive_gcd(0.75, 0.0) == 0.75);
-    Assert(fast_subtractive_gcd(0.0, 0.5) == 0.5);
-    Assert(fast_subtractive_gcd(Q(3, 4), Q(1, 2)) == Q(1, 4));
-    Assert(fast_subtractive_gcd(Q(3, 4), Q(0, 2)) == Q(3, 4));
-    Assert(fast_subtractive_gcd(Q(0, 4), Q(1, 2)) == Q(1, 2));
+    EOPAssert(fast_subtractive_gcd(1000, 990) == 10);
+    EOPAssert(fast_subtractive_gcd(1000, 0) == 1000);
+    EOPAssert(fast_subtractive_gcd(0, 990) == 990);
+    EOPAssert(fast_subtractive_gcd(1000u, 990u) == 10u);
+    EOPAssert(fast_subtractive_gcd(1000u, 0u) == 1000u);
+    EOPAssert(fast_subtractive_gcd(0u, 990u) == 990u);
+    EOPAssert(fast_subtractive_gcd(0.75, 0.5) == 0.25);
+    EOPAssert(fast_subtractive_gcd(0.75, 0.0) == 0.75);
+    EOPAssert(fast_subtractive_gcd(0.0, 0.5) == 0.5);
+    EOPAssert(fast_subtractive_gcd(Q(3, 4), Q(1, 2)) == Q(1, 4));
+    EOPAssert(fast_subtractive_gcd(Q(3, 4), Q(0, 2)) == Q(3, 4));
+    EOPAssert(fast_subtractive_gcd(Q(0, 4), Q(1, 2)) == Q(1, 2));
 
     // gcd for EuclideanSemiring
-    Assert(gcd(1000, 990) == 10);
-    Assert(gcd(1000, 0) == 1000);
-    Assert(gcd(0, 990) == 990);
-    Assert(gcd(1000u, 990u) == 10u);
-    Assert(gcd(1000u, 0u) == 1000u);
-    Assert(gcd(0u, 990u) == 990u);
+    EOPAssert(gcd(1000, 990) == 10);
+    EOPAssert(gcd(1000, 0) == 1000);
+    EOPAssert(gcd(0, 990) == 990);
+    EOPAssert(gcd(1000u, 990u) == 10u);
+    EOPAssert(gcd(1000u, 0u) == 1000u);
+    EOPAssert(gcd(0u, 990u) == 990u);
     {
         typedef polynomial< rational<int> > Q_X;
         Q_X a = shift_left(Q_X(1), 2) - Q_X(1); // x^2 - 1
@@ -1996,22 +1996,22 @@ void test_ch_5()
             print("    poly a / b = "); print(p.m0);
                 print(" remainder "); print(p.m1); print_eol();
         }
-        Assert(gcd<Q_X>(a, b) == b);
+        EOPAssert(gcd<Q_X>(a, b) == b);
     }
 
     // gcd for EuclideanSemimodule
-    Assert(gcd(1000, 990) == 10);
-    Assert(gcd(1000, 0) == 1000);
-    Assert(gcd(0, 990) == 990);
-    Assert(gcd(1000u, 990u) == 10u);
-    Assert(gcd(1000u, 0u) == 1000u);
-    Assert(gcd(0u, 990u) == 990u);
-    Assert(gcd(0.75, 0.5) == 0.25);
-    Assert(gcd(0.75, 0.0) == 0.75);
-    Assert(gcd(0.0, 0.5) == 0.5);
-    Assert(gcd(Q(3, 4), Q(1, 2)) == Q(1, 4));
-    Assert(gcd(Q(3, 4), Q(0, 2)) == Q(3, 4));
-    Assert(gcd(Q(0, 4), Q(1, 2)) == Q(1, 2));
+    EOPAssert(gcd(1000, 990) == 10);
+    EOPAssert(gcd(1000, 0) == 1000);
+    EOPAssert(gcd(0, 990) == 990);
+    EOPAssert(gcd(1000u, 990u) == 10u);
+    EOPAssert(gcd(1000u, 0u) == 1000u);
+    EOPAssert(gcd(0u, 990u) == 990u);
+    EOPAssert(gcd(0.75, 0.5) == 0.25);
+    EOPAssert(gcd(0.75, 0.0) == 0.75);
+    EOPAssert(gcd(0.0, 0.5) == 0.5);
+    EOPAssert(gcd(Q(3, 4), Q(1, 2)) == Q(1, 4));
+    EOPAssert(gcd(Q(3, 4), Q(0, 2)) == Q(3, 4));
+    EOPAssert(gcd(Q(0, 4), Q(1, 2)) == Q(1, 2));
 
     algorithms_signed_q_and_r<int>();
     algorithms_signed_q_and_r<long>();
@@ -2089,12 +2089,12 @@ void test_ch_6()
 
     {
         int i;
-        i = int(0); increment(i); Assert(i == int(1));
-        i = int(99); increment(i); Assert(i == int(100));
+        i = int(0); increment(i); EOPAssert(i == int(1));
+        i = int(99); increment(i); EOPAssert(i == int(100));
         double x[100];
         EOPpointer(double) fx;
-        fx = x; increment(fx); Assert(fx == x + 1);
-        fx = &x[99]; increment(fx); Assert(fx == x + 100);
+        fx = x; increment(fx); EOPAssert(fx == x + 1);
+        fx = &x[99]; increment(fx); EOPAssert(fx == x + 100);
     }
 
     {
@@ -2104,202 +2104,202 @@ void test_ch_6()
         typedef iterator_type< slist<Z> >::type I;
         typedef distance_type< I >::type N; // Integer(N)
         slist_iterator<Z> f = begin(l) + N(3);
-        Assert(source(f) == Z(3));
-        Assert(f - begin(l) == N(3));
-        Assert(begin(l) - begin(l) == N(0));
+        EOPAssert(source(f) == Z(3));
+        EOPAssert(f - begin(l) == N(3));
+        EOPAssert(begin(l) - begin(l) == N(0));
 
-        Assert(for_each(begin(l), end(l),
+        EOPAssert(for_each(begin(l), end(l),
                         accumulate< plus<Z> >(plus<Z>(), Z(0))).sum == 15);
 
-        Assert(find(begin(l), end(l), Z(-1)) == end(l));
-        Assert(find(begin(l), end(l), Z(5)) == begin(l) + N(5));
+        EOPAssert(find(begin(l), end(l), Z(-1)) == end(l));
+        EOPAssert(find(begin(l), end(l), Z(5)) == begin(l) + N(5));
 
         Z b[] = {1, 1, 1};
         slist<Z> lb(counted_range<Z*>(b, sizeof(b)/sizeof(Z)));
-        Assert(find_not(begin(lb), end(lb), Z(1)) == end(lb));
-        Assert(find_not(begin(lb), end(lb), Z(0)) == begin(lb));
+        EOPAssert(find_not(begin(lb), end(lb), Z(1)) == end(lb));
+        EOPAssert(find_not(begin(lb), end(lb), Z(0)) == begin(lb));
 
-        Assert(find_if(begin(l), end(l), negative<Z>) == end(l));
-        Assert(find_if(begin(l), end(l),
+        EOPAssert(find_if(begin(l), end(l), negative<Z>) == end(l));
+        EOPAssert(find_if(begin(l), end(l),
                        make_lower_bound_predicate(3, less<Z>())) == begin(l) + N(3));
 
-        Assert(find_if_not(begin(lb), end(lb), positive<Z>) == end(lb));
-        Assert(find_if_not(begin(l), end(l), positive<Z>) == begin(l));
+        EOPAssert(find_if_not(begin(lb), end(lb), positive<Z>) == end(lb));
+        EOPAssert(find_if_not(begin(l), end(l), positive<Z>) == begin(l));
 
-        Assert(all(begin(lb), end(lb), positive<Z>));
-        Assert(none(begin(l), end(l), negative<Z>));
-        Assert(some(begin(l), end(l), positive<Z>));
-        Assert(not_all(begin(l), end(l), positive<Z>));
-        Assert(all(Z(1), Z(100), positive<Z>));
-        Assert(none(Z(1), Z(100), negative<Z>));
-        Assert(some(Z(0), Z(100), odd<Z>));
-        Assert(not_all(Z(0), Z(100), odd<Z>));
+        EOPAssert(all(begin(lb), end(lb), positive<Z>));
+        EOPAssert(none(begin(l), end(l), negative<Z>));
+        EOPAssert(some(begin(l), end(l), positive<Z>));
+        EOPAssert(not_all(begin(l), end(l), positive<Z>));
+        EOPAssert(all(Z(1), Z(100), positive<Z>));
+        EOPAssert(none(Z(1), Z(100), negative<Z>));
+        EOPAssert(some(Z(0), Z(100), odd<Z>));
+        EOPAssert(not_all(Z(0), Z(100), odd<Z>));
 
-        Assert(count_if(begin(l), end(l), even<Z>, Z(100)) == Z(100) + Z(3));
-        Assert(count_if(begin(l), end(l), even<Z>) == Z(3));
-        Assert(count_if_not(begin(l), end(l), positive<Z>, Z(-1)) == Z(-1) + Z(1));
-        Assert(count_if_not(begin(l), end(l), positive<Z>) == Z(1));
-        Assert(count(begin(l), end(l), Z(2), Z(100)) == Z(100) + Z(1));
-        Assert(count(begin(l), end(l), Z(2)) == Z(1));
-        Assert(count_not(begin(l), end(l), Z(2), Z(100)) == Z(100) + Z(5));
-        Assert(count_not(begin(l), end(l), Z(2)) == Z(5));
+        EOPAssert(count_if(begin(l), end(l), even<Z>, Z(100)) == Z(100) + Z(3));
+        EOPAssert(count_if(begin(l), end(l), even<Z>) == Z(3));
+        EOPAssert(count_if_not(begin(l), end(l), positive<Z>, Z(-1)) == Z(-1) + Z(1));
+        EOPAssert(count_if_not(begin(l), end(l), positive<Z>) == Z(1));
+        EOPAssert(count(begin(l), end(l), Z(2), Z(100)) == Z(100) + Z(1));
+        EOPAssert(count(begin(l), end(l), Z(2)) == Z(1));
+        EOPAssert(count_not(begin(l), end(l), Z(2), Z(100)) == Z(100) + Z(5));
+        EOPAssert(count_not(begin(l), end(l), Z(2)) == Z(5));
 
-        Assert(reduce_nonempty(0, 50, plus<Z>(), identity<Z>()) == Z(49*50/2));
-        Assert(reduce_nonempty(0, 1, plus<Z>(), identity<Z>()) == Z(0));
-        Assert(reduce_nonempty(begin(l), end(l), plus<Z>()) == Z(15));
-        Assert(reduce_nonempty(begin(l), successor(begin(l)), plus<Z>()) == Z(0));
+        EOPAssert(reduce_nonempty(0, 50, plus<Z>(), identity<Z>()) == Z(49*50/2));
+        EOPAssert(reduce_nonempty(0, 1, plus<Z>(), identity<Z>()) == Z(0));
+        EOPAssert(reduce_nonempty(begin(l), end(l), plus<Z>()) == Z(15));
+        EOPAssert(reduce_nonempty(begin(l), successor(begin(l)), plus<Z>()) == Z(0));
 
-        Assert(reduce(0, 0, plus<Z>(), identity<Z>(), Z(0)) == Z(0));
-        Assert(reduce(0, 50, plus<Z>(), identity<Z>(), Z(0)) == Z(49*50/2));
-        Assert(reduce(0, 1, plus<Z>(), identity<Z>(), Z(0)) == Z(0));
-        Assert(reduce(begin(l), begin(l), plus<Z>(), Z(0)) == Z(0));
-        Assert(reduce(begin(l), end(l), plus<Z>(), Z(0)) == Z(15));
-        Assert(reduce(begin(l), successor(begin(l)), plus<Z>(), Z(0)) == Z(0));
+        EOPAssert(reduce(0, 0, plus<Z>(), identity<Z>(), Z(0)) == Z(0));
+        EOPAssert(reduce(0, 50, plus<Z>(), identity<Z>(), Z(0)) == Z(49*50/2));
+        EOPAssert(reduce(0, 1, plus<Z>(), identity<Z>(), Z(0)) == Z(0));
+        EOPAssert(reduce(begin(l), begin(l), plus<Z>(), Z(0)) == Z(0));
+        EOPAssert(reduce(begin(l), end(l), plus<Z>(), Z(0)) == Z(15));
+        EOPAssert(reduce(begin(l), successor(begin(l)), plus<Z>(), Z(0)) == Z(0));
 
         Z c[] = {0, 1, 0, 2, 0, 3, 0, 4, 0, 5};
         slist<Z> lc(counted_range<Z*>(c, sizeof(c)/sizeof(Z)));
-        Assert(reduce_nonzeroes(0, 0, plus<Z>(), identity<Z>(), Z(0)) == Z(0));
-        Assert(reduce_nonzeroes(0, 50, plus<Z>(), identity<Z>(), Z(0)) == Z(49*50/2));
-        Assert(reduce_nonzeroes(0, 1, plus<Z>(), identity<Z>(), Z(0)) == Z(0));
-        Assert(reduce_nonzeroes(begin(lc), begin(lc), plus<Z>(), Z(0)) == Z(0));
-        Assert(reduce_nonzeroes(begin(lc), end(lc), plus<Z>(), Z(0)) == Z(15));
-        Assert(reduce_nonzeroes(
+        EOPAssert(reduce_nonzeroes(0, 0, plus<Z>(), identity<Z>(), Z(0)) == Z(0));
+        EOPAssert(reduce_nonzeroes(0, 50, plus<Z>(), identity<Z>(), Z(0)) == Z(49*50/2));
+        EOPAssert(reduce_nonzeroes(0, 1, plus<Z>(), identity<Z>(), Z(0)) == Z(0));
+        EOPAssert(reduce_nonzeroes(begin(lc), begin(lc), plus<Z>(), Z(0)) == Z(0));
+        EOPAssert(reduce_nonzeroes(begin(lc), end(lc), plus<Z>(), Z(0)) == Z(15));
+        EOPAssert(reduce_nonzeroes(
             begin(lc), successor(begin(lc)), plus<Z>(), Z(0)) == Z(0));
 
-        Assert(reduce(begin(l), end(l)) == Z(15));
-        Assert(reduce(begin(lb), end(lb)) == Z(3));
-        Assert(reduce(begin(lc), end(lc)) == Z(15));
+        EOPAssert(reduce(begin(l), end(l)) == Z(15));
+        EOPAssert(reduce(begin(lb), end(lb)) == Z(3));
+        EOPAssert(reduce(begin(lc), end(lc)) == Z(15));
 
         {
             pair<accumulate< plus<Z> >, iterator_type< slist<Z> >::type> p =
                 for_each_n(begin(l), size(l),
                            accumulate< plus<Z> >(plus<Z>(), Z(0)));
-            Assert(p.m0.sum == 15 && p.m1 == end(l));
+            EOPAssert(p.m0.sum == 15 && p.m1 == end(l));
         }
 
         {
             pair<iterator_type< slist<Z> >::type, N> p =
                 find_n(begin(l), size(l), Z(-1));
-            Assert(p.m0 == end(l) && p.m1 == 0);
+            EOPAssert(p.m0 == end(l) && p.m1 == 0);
             p = find_n(begin(l), size(l), Z(5));
-            Assert(p.m0 == begin(l) + N(5) && p.m1 == N(1));
+            EOPAssert(p.m0 == begin(l) + N(5) && p.m1 == N(1));
         }
 
 
-        Assert(find_if(
+        EOPAssert(find_if(
             begin(l), end(l), make_lower_bound_predicate(3, less<Z>())) != end(l));
-        Assert(find_if_unguarded(
+        EOPAssert(find_if_unguarded(
             begin(l), make_lower_bound_predicate(3, less<Z>())) == begin(l) + N(3));
 
-        Assert(find_if_not(begin(l), end(l), positive<Z>) != end(l));
-        Assert(find_if_not_unguarded(begin(l), positive<Z>) == begin(l));
+        EOPAssert(find_if_not(begin(l), end(l), positive<Z>) != end(l));
+        EOPAssert(find_if_not_unguarded(begin(l), positive<Z>) == begin(l));
 
         {
             pair<I, Z> p0 = find_mismatch(begin(l), end(l), Z(0), Z(6), equal<Z>());
-            Assert(p0.m0 == end(l) && p0.m1 == Z(6));
+            EOPAssert(p0.m0 == end(l) && p0.m1 == Z(6));
             p0 = find_mismatch(begin(l), end(l), Z(0), Z(7), equal<Z>());
-            Assert(p0.m0 == end(l) && p0.m1 == Z(6));
+            EOPAssert(p0.m0 == end(l) && p0.m1 == Z(6));
             p0 = find_mismatch(begin(l), end(l), Z(0), Z(4), equal<Z>());
-            Assert(p0.m0 == begin(l) + N(4) && p0.m1 == Z(4));
+            EOPAssert(p0.m0 == begin(l) + N(4) && p0.m1 == Z(4));
             Z d[] = {0, 1, 2, 3, -4, 5};
             slist<Z> ld(counted_range<Z*>(d, sizeof(d)/sizeof(Z)));
             pair<I, I> p1 = find_mismatch(
                 begin(l), end(l), begin(ld), end(ld), equal<Z>());
-            Assert(p1.m0 == begin(l) + N(4) && p1.m1 == begin(ld) + N(4));
+            EOPAssert(p1.m0 == begin(l) + N(4) && p1.m1 == begin(ld) + N(4));
 
         }
         {
-            Assert(find_adjacent_mismatch(begin(lb), end(lb), equal<Z>()) == end(lb));
+            EOPAssert(find_adjacent_mismatch(begin(lb), end(lb), equal<Z>()) == end(lb));
             Z e[] = {0, 0, 0, 1, 0, 0};
             slist<Z> le(counted_range<Z*>(e, sizeof(e)/sizeof(Z)));
-            Assert(find_adjacent_mismatch(begin(le), end(le), equal<Z>()) == begin(le) + N(3));
+            EOPAssert(find_adjacent_mismatch(begin(le), end(le), equal<Z>()) == begin(le) + N(3));
 
-            Assert(find_adjacent_mismatch_forward(
+            EOPAssert(find_adjacent_mismatch_forward(
                 begin(lb), end(lb), equal<Z>()) == end(lb));
-            Assert(find_adjacent_mismatch_forward(
+            EOPAssert(find_adjacent_mismatch_forward(
                 begin(le), end(le), equal<Z>()) == begin(le) + N(3));
         }
 
-        Assert(relation_preserving(begin(l), begin(l), less<Z>()));
-        Assert(relation_preserving(begin(l), end(l), less<Z>()));
+        EOPAssert(relation_preserving(begin(l), begin(l), less<Z>()));
+        EOPAssert(relation_preserving(begin(l), end(l), less<Z>()));
 
-        Assert(strictly_increasing_range(begin(l), begin(l), less<Z>()));
-        Assert(strictly_increasing_range(begin(l), end(l), less<Z>()));
-        Assert(!strictly_increasing_range(begin(lb), end(lb), less<Z>()));
-        Assert(!strictly_increasing_range(begin(lc), end(lc), less<Z>()));
+        EOPAssert(strictly_increasing_range(begin(l), begin(l), less<Z>()));
+        EOPAssert(strictly_increasing_range(begin(l), end(l), less<Z>()));
+        EOPAssert(!strictly_increasing_range(begin(lb), end(lb), less<Z>()));
+        EOPAssert(!strictly_increasing_range(begin(lc), end(lc), less<Z>()));
 
-        Assert(relation_preserving(
+        EOPAssert(relation_preserving(
             begin(l), end(l), make_complement_of_converse(less<Z>())));
         {
             less<Z> lt;
             complement_of_converse< less<Z> > leq = {lt};
-            Assert(leq(Z(0), Z(0)));
-            Assert(leq(Z(0), Z(1)));
-            Assert(!leq(Z(1), Z(0)));
+            EOPAssert(leq(Z(0), Z(0)));
+            EOPAssert(leq(Z(0), Z(1)));
+            EOPAssert(!leq(Z(1), Z(0)));
         }
 
-        Assert(increasing_range(begin(l), begin(l), less<Z>()));
-        Assert(increasing_range(begin(l), end(l), less<Z>()));
-        Assert(increasing_range(begin(lb), end(lb), less<Z>()));
-        Assert(!increasing_range(begin(lc), end(lc), less<Z>()));
+        EOPAssert(increasing_range(begin(l), begin(l), less<Z>()));
+        EOPAssert(increasing_range(begin(l), end(l), less<Z>()));
+        EOPAssert(increasing_range(begin(lb), end(lb), less<Z>()));
+        EOPAssert(!increasing_range(begin(lc), end(lc), less<Z>()));
         {
             Z f[] = {0, 0, 1, 1, 2, 3, 5, 5};
             slist<Z> lf(counted_range<Z*>(f, sizeof(f)/sizeof(Z)));
-            Assert(!strictly_increasing_range(begin(lf), end(lf), less<Z>()));
-            Assert(increasing_range(begin(lf), end(lf), less<Z>()));
+            EOPAssert(!strictly_increasing_range(begin(lf), end(lf), less<Z>()));
+            EOPAssert(increasing_range(begin(lf), end(lf), less<Z>()));
         }
 
-        Assert(partitioned(begin(l), begin(l), negative<Z>));
-        Assert(partitioned(begin(l), end(l), negative<Z>));
-        Assert(!partitioned(begin(l), end(l), zero<Z>));
-        Assert(partitioned(begin(lb), end(lb), even<Z>));
-        Assert(partitioned(begin(lb), end(lb), odd<Z>));
-        Assert(partitioned(
+        EOPAssert(partitioned(begin(l), begin(l), negative<Z>));
+        EOPAssert(partitioned(begin(l), end(l), negative<Z>));
+        EOPAssert(!partitioned(begin(l), end(l), zero<Z>));
+        EOPAssert(partitioned(begin(lb), end(lb), even<Z>));
+        EOPAssert(partitioned(begin(lb), end(lb), odd<Z>));
+        EOPAssert(partitioned(
             begin(l), end(l), make_lower_bound_predicate(3, less<Z>())));
-        Assert(partitioned(
+        EOPAssert(partitioned(
             begin(l), end(l), make_upper_bound_predicate(3, less<Z>())));
         {
             Z g[] = {0, 2, 4, 1, 3, 5};
             slist<Z> lg(counted_range<Z*>(g, sizeof(g)/sizeof(Z)));
-            Assert(partitioned(begin(lg), end(lg), odd<Z>));
-            Assert(!partitioned(begin(lg), end(lg), even<Z>));
+            EOPAssert(partitioned(begin(lg), end(lg), odd<Z>));
+            EOPAssert(!partitioned(begin(lg), end(lg), even<Z>));
         }
 
-        Assert(partition_point_n(begin(lb), size(lb), zero<Z>) == end(lb));
-        Assert(partition_point_n(begin(lb), size(lb), odd<Z>) == begin(lb));
-        Assert(partition_point_n(
+        EOPAssert(partition_point_n(begin(lb), size(lb), zero<Z>) == end(lb));
+        EOPAssert(partition_point_n(begin(lb), size(lb), odd<Z>) == begin(lb));
+        EOPAssert(partition_point_n(
             begin(l), size(l), make_lower_bound_predicate(3, less<Z>())) ==
             begin(l) + N(3));
 
-        Assert(partition_point(begin(lb), end(lb), zero<Z>) == end(lb));
-        Assert(partition_point(begin(lb), end(lb), odd<Z>) == begin(lb));
-        Assert(partition_point(
+        EOPAssert(partition_point(begin(lb), end(lb), zero<Z>) == end(lb));
+        EOPAssert(partition_point(begin(lb), end(lb), odd<Z>) == begin(lb));
+        EOPAssert(partition_point(
             begin(l), end(l), make_lower_bound_predicate(3, less<Z>())) ==
             begin(l) + N(3));
 
         { // bidirectional iterators
             Z h[] = {0, 1, 2, 3, 4, 5};
             list<Z> ah(counted_range<Z*>(h, sizeof(h)/sizeof(Z)));
-            Assert(end(ah) - 1 == begin(ah) + (size(ah) - 1));
+            EOPAssert(end(ah) - 1 == begin(ah) + (size(ah) - 1));
 
-            Assert(find_backward_if(begin(ah), end(ah), zero<Z>) == successor(begin(ah)));
-            Assert(find_backward_if(begin(ah), end(ah), negative<Z>) == begin(ah));
-            Assert(find_backward_if_unguarded(end(ah), zero<Z>) == begin(ah));
+            EOPAssert(find_backward_if(begin(ah), end(ah), zero<Z>) == successor(begin(ah)));
+            EOPAssert(find_backward_if(begin(ah), end(ah), negative<Z>) == begin(ah));
+            EOPAssert(find_backward_if_unguarded(end(ah), zero<Z>) == begin(ah));
 
-            Assert(find_backward_if_not(begin(ah), end(ah), zero<Z>) == end(ah));
-            Assert(find_backward_if_not(begin(ah), end(ah), positive<Z>) == successor(begin(ah)));
-            Assert(find_backward_if_not_unguarded(end(ah), positive<Z>) == begin(ah));
+            EOPAssert(find_backward_if_not(begin(ah), end(ah), zero<Z>) == end(ah));
+            EOPAssert(find_backward_if_not(begin(ah), end(ah), positive<Z>) == successor(begin(ah)));
+            EOPAssert(find_backward_if_not_unguarded(end(ah), positive<Z>) == begin(ah));
         }
         { // random access iterators
             Z h[] = {0, 1, 2, 3, 4, 5};
             array<Z> ah(counted_range<Z*>(h, sizeof(h)/sizeof(Z)));
-            Assert(end(ah) - 1 == begin(ah) + (size(ah) - 1));
+            EOPAssert(end(ah) - 1 == begin(ah) + (size(ah) - 1));
 
-            Assert(find_backward_if(begin(ah), end(ah), zero<Z>) == successor(begin(ah)));
-            Assert(find_backward_if(begin(ah), end(ah), negative<Z>) == begin(ah));
+            EOPAssert(find_backward_if(begin(ah), end(ah), zero<Z>) == successor(begin(ah)));
+            EOPAssert(find_backward_if(begin(ah), end(ah), negative<Z>) == begin(ah));
 
-            Assert(find_backward_if_not(begin(ah), end(ah), zero<Z>) == end(ah));
-            Assert(find_backward_if_not(begin(ah), end(ah), positive<Z>) == successor(begin(ah)));
+            EOPAssert(find_backward_if_not(begin(ah), end(ah), zero<Z>) == end(ah));
+            EOPAssert(find_backward_if_not(begin(ah), end(ah), positive<Z>) == successor(begin(ah)));
         }
 
      }
@@ -2310,10 +2310,10 @@ void test_ch_6()
     distance_type<int*>::type n = l - f;
     EOPpointer(int) m;
 
-    m = lower_bound_n(f, n, 2, less<int>()); Assert(m == a + 2);
-    m = upper_bound_n(f, n, 2, less<int>()); Assert(m == a + 4);
-    m = lower_bound_n(f, n, 3, less<int>()); Assert(m == a + 4);
-    m = upper_bound_n(f, n, 3, less<int>()); Assert(m == a + 4);
+    m = lower_bound_n(f, n, 2, less<int>()); EOPAssert(m == a + 2);
+    m = upper_bound_n(f, n, 2, less<int>()); EOPAssert(m == a + 4);
+    m = lower_bound_n(f, n, 3, less<int>()); EOPAssert(m == a + 4);
+    m = upper_bound_n(f, n, 3, less<int>()); EOPAssert(m == a + 4);
 
     {
         const int N = 9;
@@ -2329,8 +2329,8 @@ void test_ch_6()
                 print(s1);
                 print_eol();
         }
-        Assert(s0 == s1);
-        Assert(s0 == (2 * N * N * N + 3 * N * N + N) / 6);
+        EOPAssert(s0 == s1);
+        EOPAssert(s0 == (2 * N * N * N + 3 * N * N + N) / 6);
     }
 }
 
@@ -2374,34 +2374,34 @@ void algorithms_lexicographical()
     Z b[] = {0, 1, 2, 3, 4, -5};
     I f_b = b;
     I l_b = f_b + (sizeof(b) / sizeof(Z));
-    Assert(lexicographical_equivalent(f_a, l_a, begin(la), end(la), equal<Z>()));
-    Assert(lexicographical_equal(f_a, l_a, begin(la), end(la)));
-    Assert(!lexicographical_equal(f_b, l_b, begin(la), end(la)));
+    EOPAssert(lexicographical_equivalent(f_a, l_a, begin(la), end(la), equal<Z>()));
+    EOPAssert(lexicographical_equal(f_a, l_a, begin(la), end(la)));
+    EOPAssert(!lexicographical_equal(f_b, l_b, begin(la), end(la)));
 
-    Assert((size(la) == 6 &&
+    EOPAssert((size(la) == 6 &&
 	    lexicographical_equal_k<6, I, IteratorType(slist<Z>)>()(f_a, begin(la))));
 
     typedef DistanceType(I) NP;
-    Assert( lexicographical_compare(f_a, f_a, f_a, l_a, less<Z>()));
-    Assert( lexicographical_compare(f_a, f_a + NP(4), f_a, l_a, less<Z>()));
-    Assert( lexicographical_compare(f_a, f_a + NP(5), f_a, l_a, less<Z>()));
-    Assert(!lexicographical_compare(f_a, f_a + NP(6), f_a, l_a, less<Z>()));
-    Assert(!lexicographical_compare(f_a, l_a, f_a, f_a + NP(4), less<Z>()));
+    EOPAssert( lexicographical_compare(f_a, f_a, f_a, l_a, less<Z>()));
+    EOPAssert( lexicographical_compare(f_a, f_a + NP(4), f_a, l_a, less<Z>()));
+    EOPAssert( lexicographical_compare(f_a, f_a + NP(5), f_a, l_a, less<Z>()));
+    EOPAssert(!lexicographical_compare(f_a, f_a + NP(6), f_a, l_a, less<Z>()));
+    EOPAssert(!lexicographical_compare(f_a, l_a, f_a, f_a + NP(4), less<Z>()));
 
     less<Z> lt;
     comparator_3_way< less<Z> > comp = {lt};
-    Assert(lexicographical_compare_3way(f_a, l_a, f_b, l_b, comp) == -1);
-    Assert(lexicographical_compare_3way(f_a, l_a, f_a, l_a, comp) ==  0);
-    Assert(lexicographical_compare_3way(f_b, l_b, f_a, l_a, comp) ==  1);
+    EOPAssert(lexicographical_compare_3way(f_a, l_a, f_b, l_b, comp) == -1);
+    EOPAssert(lexicographical_compare_3way(f_a, l_a, f_a, l_a, comp) ==  0);
+    EOPAssert(lexicographical_compare_3way(f_b, l_b, f_a, l_a, comp) ==  1);
 
-    Assert( lexicographical_less(f_a, f_a, f_a, l_a));
-    Assert( lexicographical_less(f_a, f_a + NP(4), f_a, l_a));
-    Assert( lexicographical_less(f_a, f_a + NP(5), f_a, l_a));
-    Assert(!lexicographical_less(f_a, f_a + NP(6), f_a, l_a));
-    Assert(!lexicographical_less(f_a, l_a, f_a, f_a + NP(4)));
+    EOPAssert( lexicographical_less(f_a, f_a, f_a, l_a));
+    EOPAssert( lexicographical_less(f_a, f_a + NP(4), f_a, l_a));
+    EOPAssert( lexicographical_less(f_a, f_a + NP(5), f_a, l_a));
+    EOPAssert(!lexicographical_less(f_a, f_a + NP(6), f_a, l_a));
+    EOPAssert(!lexicographical_less(f_a, l_a, f_a, f_a + NP(4)));
 
-    Assert((!lexicographical_less_k<6, I, I>()(f_a, f_b)));
-    Assert((lexicographical_less_k<6, I, I>()(f_b, f_a)));
+    EOPAssert((!lexicographical_less_k<6, I, I>()(f_a, f_b)));
+    EOPAssert((lexicographical_less_k<6, I, I>()(f_b, f_a)));
 
 }
 
@@ -2428,29 +2428,29 @@ void algorithms_bifurcate_coordinates()
     }
 
     C r = begin(t);
-    Assert(!empty(r));
-    Assert(has_left_successor(r));
+    EOPAssert(!empty(r));
+    EOPAssert(has_left_successor(r));
     C r_l = left_successor(r);
-    Assert(!empty(r_l));
-    Assert(has_left_successor(r_l));
+    EOPAssert(!empty(r_l));
+    EOPAssert(has_left_successor(r_l));
     C r_l_l = left_successor(r_l);
-    Assert(!empty(r_l_l));
+    EOPAssert(!empty(r_l_l));
 
-    Assert(empty(begin(t0)));
-    Assert(weight_recursive(begin(t0))         == N(0));
-    Assert(weight_recursive(begin(t4))         == N(1));
-    Assert(weight_recursive(begin(t3_45))      == N(3));
-    Assert(weight_recursive(begin(t2_345_678)) == N(7));
-    Assert(weight_recursive(begin(t))          == N(15));
-    Assert(height_recursive(begin(t0))         == N(0));
-    Assert(height_recursive(begin(t4))         == N(1));
-    Assert(height_recursive(begin(t3_45))      == N(2));
-    Assert(height_recursive(begin(t2_345_678)) == N(3));
-    Assert(height_recursive(begin(t))          == N(4));
+    EOPAssert(empty(begin(t0)));
+    EOPAssert(weight_recursive(begin(t0))         == N(0));
+    EOPAssert(weight_recursive(begin(t4))         == N(1));
+    EOPAssert(weight_recursive(begin(t3_45))      == N(3));
+    EOPAssert(weight_recursive(begin(t2_345_678)) == N(7));
+    EOPAssert(weight_recursive(begin(t))          == N(15));
+    EOPAssert(height_recursive(begin(t0))         == N(0));
+    EOPAssert(height_recursive(begin(t4))         == N(1));
+    EOPAssert(height_recursive(begin(t3_45))      == N(2));
+    EOPAssert(height_recursive(begin(t2_345_678)) == N(3));
+    EOPAssert(height_recursive(begin(t))          == N(4));
 
     count_visits<C> proc;
     proc = traverse_nonempty(begin(t), proc);
-    Assert(proc.n_pre == N(15) && proc.n_in == N(15) && proc.n_post == N(15));
+    EOPAssert(proc.n_pre == N(15) && proc.n_in == N(15) && proc.n_post == N(15));
 
     //C c_r = begin(t3_45);
 
@@ -2464,37 +2464,37 @@ void algorithms_bifurcate_coordinates()
     T_X x('a', x2_345_678, T_X('i', T_X('j', T_X('k'), T_X('l')),
                                     T_X('m', T_X('n'), T_X('o'))));
 
-    Assert(bifurcate_isomorphic_nonempty(begin(t), begin(t)));
-    Assert(bifurcate_isomorphic_nonempty(begin(t), begin(s)));
-    Assert(!bifurcate_isomorphic_nonempty(begin(t), begin(t2_345_678)));
-    Assert(bifurcate_isomorphic_nonempty(begin(t), begin(x)));
-    Assert(bifurcate_isomorphic_nonempty(
+    EOPAssert(bifurcate_isomorphic_nonempty(begin(t), begin(t)));
+    EOPAssert(bifurcate_isomorphic_nonempty(begin(t), begin(s)));
+    EOPAssert(!bifurcate_isomorphic_nonempty(begin(t), begin(t2_345_678)));
+    EOPAssert(bifurcate_isomorphic_nonempty(begin(t), begin(x)));
+    EOPAssert(bifurcate_isomorphic_nonempty(
         left_successor(begin(t)), right_successor(begin(x))));
 
     T u(t);
     if (verbose) {
         print("u(t):       "); print(u); print_eol();
     }
-    Assert(t == u);
-    Assert(bifurcate_equivalent_nonempty(
+    EOPAssert(t == u);
+    EOPAssert(bifurcate_equivalent_nonempty(
         begin(t), begin(u), equal<ValueType(T)>()));
-    Assert(!bifurcate_equivalent_nonempty(
+    EOPAssert(!bifurcate_equivalent_nonempty(
         begin(t), begin(t2_345_678), equal<ValueType(T)>()));
 
     // These exercise bifurcate_compare_nonempty
-    Assert(!(t < u) && !(u < t));
-    Assert(T() < T(0));
-    Assert(!(T(0) < T()));
-    Assert(T(0) < T(1));
-    Assert(!(T(1) < T(0)));
-    Assert(T(0, T(1, T(), T()), T()) < T(1, T(), T()));
-    Assert(!(T(1, T(), T()) < T(0, T(1, T(), T()), T())));
-    Assert(T(0, T(), T()) < T(0, T(0), T()));
-    Assert(!(T(0, T(0), T()) < T(0, T(), T())));
-    Assert(T(0, T(), T()) < T(0, T(), T(0)));
-    Assert(!(T(0, T(), T(0)) < T(0, T(), T())));
-    Assert(T(0, T(0), T()) < T(0, T(0), T(0)));
-    Assert(!(T(0, T(0), T(0)) < T(0, T(0), T())));
+    EOPAssert(!(t < u) && !(u < t));
+    EOPAssert(T() < T(0));
+    EOPAssert(!(T(0) < T()));
+    EOPAssert(T(0) < T(1));
+    EOPAssert(!(T(1) < T(0)));
+    EOPAssert(T(0, T(1, T(), T()), T()) < T(1, T(), T()));
+    EOPAssert(!(T(1, T(), T()) < T(0, T(1, T(), T()), T())));
+    EOPAssert(T(0, T(), T()) < T(0, T(0), T()));
+    EOPAssert(!(T(0, T(0), T()) < T(0, T(), T())));
+    EOPAssert(T(0, T(), T()) < T(0, T(), T(0)));
+    EOPAssert(!(T(0, T(), T(0)) < T(0, T(), T())));
+    EOPAssert(T(0, T(0), T()) < T(0, T(0), T(0)));
+    EOPAssert(!(T(0, T(0), T(0)) < T(0, T(0), T())));
 }
 
 template <typename T, typename T_X>
@@ -2522,63 +2522,63 @@ void algorithms_bidirectional_bifurcate_coordinates()
 
     C root = begin(t);
 
-    Assert(has_left_successor(root));
+    EOPAssert(has_left_successor(root));
     C root_l = left_successor(root);
-    Assert(is_left_successor(root_l));
-    Assert(!is_right_successor(root_l));
+    EOPAssert(is_left_successor(root_l));
+    EOPAssert(!is_right_successor(root_l));
 
-    Assert(has_right_successor(root));
+    EOPAssert(has_right_successor(root));
     C root_r = right_successor(root);
-    Assert(is_right_successor(root_r));
-    Assert(!is_left_successor(root_r));
+    EOPAssert(is_right_successor(root_r));
+    EOPAssert(!is_left_successor(root_r));
 
-    Assert(has_left_successor(root_l));
+    EOPAssert(has_left_successor(root_l));
     C root_l_l = left_successor(root_l);
 
     count_visits<C> proc;
     proc = traverse(begin(t), proc);
-    Assert(proc.n_pre == N(15) && proc.n_in == N(15) && proc.n_post == N(15));
+    EOPAssert(proc.n_pre == N(15) && proc.n_in == N(15) && proc.n_post == N(15));
 
     C c_r = begin(t3_45);
     C c = c_r;
     visit v(pre);
     int dh;
     dh = traverse_step(v, c);
-    Assert(dh == 1 && c == left_successor(c_r) && v == pre);
+    EOPAssert(dh == 1 && c == left_successor(c_r) && v == pre);
     dh = traverse_step(v, c);
-    Assert(dh == 0 && c == left_successor(c_r) && v == in);
+    EOPAssert(dh == 0 && c == left_successor(c_r) && v == in);
     dh = traverse_step(v, c);
-    Assert(dh == 0 && c == left_successor(c_r) && v == post);
+    EOPAssert(dh == 0 && c == left_successor(c_r) && v == post);
     dh = traverse_step(v, c);
-    Assert(dh == -1 && c == c_r && v == in);
+    EOPAssert(dh == -1 && c == c_r && v == in);
     dh = traverse_step(v, c);
-    Assert(dh == 1 && c == right_successor(c_r) && v == pre);
+    EOPAssert(dh == 1 && c == right_successor(c_r) && v == pre);
     dh = traverse_step(v, c);
-    Assert(dh == 0 && c == right_successor(c_r) && v == in);
+    EOPAssert(dh == 0 && c == right_successor(c_r) && v == in);
     dh = traverse_step(v, c);
-    Assert(dh == 0 && c == right_successor(c_r) && v == post);
+    EOPAssert(dh == 0 && c == right_successor(c_r) && v == post);
     dh = traverse_step(v, c);
-    Assert(dh == -1 && c == c_r && v == post);
+    EOPAssert(dh == -1 && c == c_r && v == post);
 
-    Assert(reachable(root, root_l_l));
-    Assert(!reachable(root_l_l, root));
+    EOPAssert(reachable(root, root_l_l));
+    EOPAssert(!reachable(root_l_l, root));
 
-    Assert(weight(begin(t0))         == N(0));
-    Assert(weight(begin(t4))         == N(1));
-    Assert(weight(begin(t3_45))      == N(3));
-    Assert(weight(begin(t2_345_678)) == N(7));
-    Assert(weight(begin(t))          == N(15));
-    Assert(height(begin(t0))         == N(0));
-    Assert(height(begin(t4))         == N(1));
-    Assert(height(begin(t3_45))      == N(2));
-    Assert(height(begin(t2_345_678)) == N(3));
-    Assert(height(begin(t))          == N(4));
+    EOPAssert(weight(begin(t0))         == N(0));
+    EOPAssert(weight(begin(t4))         == N(1));
+    EOPAssert(weight(begin(t3_45))      == N(3));
+    EOPAssert(weight(begin(t2_345_678)) == N(7));
+    EOPAssert(weight(begin(t))          == N(15));
+    EOPAssert(height(begin(t0))         == N(0));
+    EOPAssert(height(begin(t4))         == N(1));
+    EOPAssert(height(begin(t3_45))      == N(2));
+    EOPAssert(height(begin(t2_345_678)) == N(3));
+    EOPAssert(height(begin(t))          == N(4));
 
     proc.n_pre = 0; proc.n_in = 0; proc.n_post = 0;
     proc = traverse(begin(t0), proc);
-    Assert(proc.n_pre == N(0) && proc.n_in == N(0) && proc.n_post == N(0));
+    EOPAssert(proc.n_pre == N(0) && proc.n_in == N(0) && proc.n_post == N(0));
     proc = traverse(begin(t), proc);
-    Assert(proc.n_pre == N(15) && proc.n_in == N(15) && proc.n_post == N(15));
+    EOPAssert(proc.n_pre == N(15) && proc.n_in == N(15) && proc.n_post == N(15));
 
     T s4(-4);
     T s3_45(-3, t4, T(-5));
@@ -2590,32 +2590,32 @@ void algorithms_bidirectional_bifurcate_coordinates()
     T_X x('a', x2_345_678, T_X('i', T_X('j', T_X('k'), T_X('l')),
                                     T_X('m', T_X('n'), T_X('o'))));
 
-    Assert(bifurcate_isomorphic_nonempty(begin(t), begin(t)));
-    Assert(bifurcate_isomorphic_nonempty(begin(t), begin(s)));
-    Assert(!bifurcate_isomorphic_nonempty(begin(t), begin(t2_345_678)));
-    Assert(bifurcate_isomorphic_nonempty(begin(t), begin(x)));
-    Assert(bifurcate_isomorphic_nonempty(
+    EOPAssert(bifurcate_isomorphic_nonempty(begin(t), begin(t)));
+    EOPAssert(bifurcate_isomorphic_nonempty(begin(t), begin(s)));
+    EOPAssert(!bifurcate_isomorphic_nonempty(begin(t), begin(t2_345_678)));
+    EOPAssert(bifurcate_isomorphic_nonempty(begin(t), begin(x)));
+    EOPAssert(bifurcate_isomorphic_nonempty(
         left_successor(begin(t)), right_successor(begin(x))));
 
-    Assert(bifurcate_isomorphic(begin(t0), begin(t0)));
-    Assert(!bifurcate_isomorphic(begin(t), begin(t0)));
-    Assert(!bifurcate_isomorphic(begin(t0), begin(t)));
-    Assert(bifurcate_isomorphic(begin(t), begin(t)));
-    Assert(bifurcate_isomorphic(begin(t), begin(s)));
-    Assert(!bifurcate_isomorphic(begin(t), begin(t2_345_678)));
-    Assert(bifurcate_isomorphic(begin(t), begin(x)));
-    Assert(bifurcate_isomorphic(
+    EOPAssert(bifurcate_isomorphic(begin(t0), begin(t0)));
+    EOPAssert(!bifurcate_isomorphic(begin(t), begin(t0)));
+    EOPAssert(!bifurcate_isomorphic(begin(t0), begin(t)));
+    EOPAssert(bifurcate_isomorphic(begin(t), begin(t)));
+    EOPAssert(bifurcate_isomorphic(begin(t), begin(s)));
+    EOPAssert(!bifurcate_isomorphic(begin(t), begin(t2_345_678)));
+    EOPAssert(bifurcate_isomorphic(begin(t), begin(x)));
+    EOPAssert(bifurcate_isomorphic(
         left_successor(begin(t)), right_successor(begin(x))));
 
     T tt(t);
-    Assert(t == tt);
-    Assert(bifurcate_equivalent_nonempty(begin(t), begin(tt), equal<Z>()));
-    Assert(!bifurcate_equivalent_nonempty(begin(t), begin(t2_345_678), equal<Z>()));
-    Assert(bifurcate_equivalent(begin(t0), begin(t0), equal<Z>()));
-    Assert(!bifurcate_equivalent(begin(t), begin(t0), equal<Z>()));
-    Assert(!bifurcate_equivalent(begin(t0), begin(t), equal<Z>()));
-    Assert(bifurcate_equivalent(begin(t), begin(tt), equal<Z>()));
-    Assert(!bifurcate_equivalent(begin(t), begin(t2_345_678), equal<Z>()));
+    EOPAssert(t == tt);
+    EOPAssert(bifurcate_equivalent_nonempty(begin(t), begin(tt), equal<Z>()));
+    EOPAssert(!bifurcate_equivalent_nonempty(begin(t), begin(t2_345_678), equal<Z>()));
+    EOPAssert(bifurcate_equivalent(begin(t0), begin(t0), equal<Z>()));
+    EOPAssert(!bifurcate_equivalent(begin(t), begin(t0), equal<Z>()));
+    EOPAssert(!bifurcate_equivalent(begin(t0), begin(t), equal<Z>()));
+    EOPAssert(bifurcate_equivalent(begin(t), begin(tt), equal<Z>()));
+    EOPAssert(!bifurcate_equivalent(begin(t), begin(t2_345_678), equal<Z>()));
 
     // Test equivalence for two coordinate types
     typedef stree<Z> U;
@@ -2624,32 +2624,32 @@ void algorithms_bidirectional_bifurcate_coordinates()
     U u3_45(3, u4, U(5));
     U u2_345_678(2, u3_45, U(6, U(7), U(8)));
     U u(1, u2_345_678, U(9, U(10, U(11), U(12)), U(13, U(14), U(15))));
-    Assert( bifurcate_equivalent_nonempty(begin(t), begin(u), equal<Z>()));
-    Assert( bifurcate_equivalent_nonempty(begin(t), begin(u), equal<Z>()));
-    Assert(!bifurcate_equivalent_nonempty(
+    EOPAssert( bifurcate_equivalent_nonempty(begin(t), begin(u), equal<Z>()));
+    EOPAssert( bifurcate_equivalent_nonempty(begin(t), begin(u), equal<Z>()));
+    EOPAssert(!bifurcate_equivalent_nonempty(
         left_successor(begin(t)), begin(u), equal<Z>()));
 
     // These exercise bifurcate_less and bifurcate_compare
-    Assert(!(t < tt) && !(tt < t));
-    Assert(T() < T(0));
-    Assert(!(T(0) < T()));
-    Assert(T(0) < T(1));
-    Assert(!(T(1) < T(0)));
-    Assert(T(0, T(1, T(), T()), T()) < T(1, T(), T()));
-    Assert(!(T(1, T(), T()) < T(0, T(1, T(), T()), T())));
-    Assert(T(0, T(), T()) < T(0, T(0), T()));
-    Assert(!(T(0, T(0), T()) < T(0, T(), T())));
-    Assert(T(0, T(), T()) < T(0, T(), T(0)));
-    Assert(!(T(0, T(), T(0)) < T(0, T(), T())));
-    Assert(T(0, T(0), T()) < T(0, T(0), T(0)));
-    Assert(!(T(0, T(0), T(0)) < T(0, T(0), T())));
+    EOPAssert(!(t < tt) && !(tt < t));
+    EOPAssert(T() < T(0));
+    EOPAssert(!(T(0) < T()));
+    EOPAssert(T(0) < T(1));
+    EOPAssert(!(T(1) < T(0)));
+    EOPAssert(T(0, T(1, T(), T()), T()) < T(1, T(), T()));
+    EOPAssert(!(T(1, T(), T()) < T(0, T(1, T(), T()), T())));
+    EOPAssert(T(0, T(), T()) < T(0, T(0), T()));
+    EOPAssert(!(T(0, T(0), T()) < T(0, T(), T())));
+    EOPAssert(T(0, T(), T()) < T(0, T(), T(0)));
+    EOPAssert(!(T(0, T(), T(0)) < T(0, T(), T())));
+    EOPAssert(T(0, T(0), T()) < T(0, T(0), T(0)));
+    EOPAssert(!(T(0, T(0), T(0)) < T(0, T(0), T())));
 
-    Assert( bifurcate_shape_compare(begin(t0), begin(t4)));
-    Assert(!bifurcate_shape_compare(begin(t4), begin(t0)));
-    Assert(!bifurcate_shape_compare(left_successor(begin(t)), right_successor(begin(t))));
-    Assert(!bifurcate_shape_compare(right_successor(begin(t)), left_successor(begin(t))));
-    Assert( bifurcate_shape_compare(begin(t2_345_678), begin(t)));
-    Assert(!bifurcate_shape_compare(begin(t), begin(t2_345_678)));
+    EOPAssert( bifurcate_shape_compare(begin(t0), begin(t4)));
+    EOPAssert(!bifurcate_shape_compare(begin(t4), begin(t0)));
+    EOPAssert(!bifurcate_shape_compare(left_successor(begin(t)), right_successor(begin(t))));
+    EOPAssert(!bifurcate_shape_compare(right_successor(begin(t)), left_successor(begin(t))));
+    EOPAssert( bifurcate_shape_compare(begin(t2_345_678), begin(t)));
+    EOPAssert(!bifurcate_shape_compare(begin(t), begin(t2_345_678)));
 }
 
 template <typename Z, typename X>
@@ -2687,16 +2687,16 @@ void algorithms_linked()
     iota(n, f);
     Ia t;
     advance_tail(t, f);
-    Assert(t == begin(a) && f == successor(t));
+    EOPAssert(t == begin(a) && f == successor(t));
 
     // ***** to do: linker_to_tail
 
     L la(a);
     L lb;
 
-    Assert(size(lb) == 0);
+    EOPAssert(size(lb) == 0);
     I last = find_last(begin(la), end(la));
-    Assert(source(last) == predecessor(n) && successor(last) == end(la));
+    EOPAssert(source(last) == predecessor(n) && successor(last) == end(la));
 
     // ***** to do: split_linked, combine_linked_nonempty
 
@@ -2705,25 +2705,25 @@ void algorithms_linked()
     // ***** rewrite these tests in terms of procedures on raw coordinates ?????
 
     reverse(la);
-    Assert(size(la) == n);
+    EOPAssert(size(la) == n);
     equal_iota_reverse(begin(la), end(la));
     reverse(la);
-    Assert(size(la) == n);
-    Assert(equal_iota(begin(la), end(la)));
+    EOPAssert(size(la) == n);
+    EOPAssert(equal_iota(begin(la), end(la)));
 
     partition(la, lb, even<Z>);
-    Assert(size(la) + size(lb) == n);
-    Assert(all(begin(la), end(la), odd<Z>));
-    Assert(all(begin(lb), end(lb), even<Z>));
+    EOPAssert(size(la) + size(lb) == n);
+    EOPAssert(all(begin(la), end(la), odd<Z>));
+    EOPAssert(all(begin(lb), end(lb), even<Z>));
 
     merge(la, lb, less<Z>());
-    Assert(size(la) == n && empty(lb));
-    Assert(equal_iota(begin(la), end(la)));
+    EOPAssert(size(la) == n && empty(lb));
+    EOPAssert(equal_iota(begin(la), end(la)));
 
     reverse(la);
     sort(la, less<Z>());
-    Assert(size(la) == n);
-    Assert(equal_iota(begin(la), end(la)));
+    EOPAssert(size(la) == n);
+    EOPAssert(equal_iota(begin(la), end(la)));
 }
 
 template<typename Z>
@@ -2770,7 +2770,7 @@ void algorithms_linked_bifurcate_coordinates()
         T t0_12(0, T(1), T(2));
         C root = begin(t0_12);
         N n = weight_recursive(root);
-        Assert(n == 3);
+        EOPAssert(n == 3);
         C null = C(); // empty(null)
         C l = left_successor(root);
         C r = right_successor(root);
@@ -2778,7 +2778,7 @@ void algorithms_linked_bifurcate_coordinates()
         C prev = null;
         
         tree_rotate(curr, prev);
-        Assert(left_successor(root) == r &&
+        EOPAssert(left_successor(root) == r &&
             right_successor(root) == null &&
             curr == l &&
             prev == root);
@@ -2790,8 +2790,8 @@ void algorithms_linked_bifurcate_coordinates()
         tree_rotate(curr, prev);
         tree_rotate(curr, prev);
         tree_rotate(curr, prev);
-        Assert(curr == root && prev == null);
-        Assert(weight_recursive(root) == n &&
+        EOPAssert(curr == root && prev == null);
+        EOPAssert(weight_recursive(root) == n &&
             source(root) == Z(0) &&
             source(left_successor(root)) == Z(1) &&
             source(right_successor(root)) == Z(2));
@@ -2803,11 +2803,11 @@ void algorithms_linked_bifurcate_coordinates()
     T t2_345_678(2, t3_45, T(6, T(7), T(8)));
     T t1__15(1, t2_345_678, T(9, T(10, T(11), T(12)), T(13, T(14), T(15))));
     // weight_rotating exercises counter
-    Assert(weight_rotating(begin(t3_45)) == N(3));
-    Assert(weight_rotating(begin(t1__15)) == N(15));
+    EOPAssert(weight_rotating(begin(t3_45)) == N(3));
+    EOPAssert(weight_rotating(begin(t1__15)) == N(15));
 
     // traverse_phased_rotating exercises phased_applicator
-    Assert(traverse_phased_rotating(
+    EOPAssert(traverse_phased_rotating(
             begin(t1__15),
             0,
             sum_source<C>()
@@ -2829,7 +2829,7 @@ void test_bifurcate_copy_Andrej()
     T tt0(0, T(), tt1);
 
     T t(tt0); // invokes bifurcate_copy
-    Assert(t == tt0);
+    EOPAssert(t == tt0);
     
 }
 
@@ -2899,7 +2899,7 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
     typedef DistanceType(I1) N1;
     N0 n = l0 - f0;
     N0 n_over_2(half_nonnegative(n));
-    Assert(n <= N0(l1 - f1));
+    EOPAssert(n <= N0(l1 - f1));
 
     // test fill_step (used for other tests)
     {
@@ -2912,8 +2912,8 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
         }
         I1 f_o = f1;
         fill_step(f_o, -1);
-        Assert(f_o == successor(f1));
-        Assert(source(f1) == -1);
+        EOPAssert(f_o == successor(f1));
+        EOPAssert(source(f1) == -1);
     }
 
     // test fill
@@ -2927,9 +2927,9 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
         }
         I1 l_o = f1 + N1(n - N0(2));
         I1 m1 = fill(successor(f1), l_o, T(0));
-        Assert(m1 == l_o);
-        Assert(all(successor(f1), m1, equal_to_x<T>(T(0))));
-        Assert(source(f1) == -1 && source(f1 + N1(n - N0(1))) == T(-1));
+        EOPAssert(m1 == l_o);
+        EOPAssert(all(successor(f1), m1, equal_to_x<T>(T(0))));
+        EOPAssert(source(f1) == -1 && source(f1 + N1(n - N0(1))) == T(-1));
 
     }
 
@@ -2944,9 +2944,9 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
         }
         N1 n1 = N1(n - N0(2));
         I1 m1 = fill_n(successor(f1), n1, T(0));
-        Assert(m1 == successor(f1) + n1);
-        Assert(all(successor(f1), m1, equal_to_x<T>(T(0))));
-        Assert(source(f1) == -1 && source(f1 + N1(n - N0(1))) == T(-1));
+        EOPAssert(m1 == successor(f1) + n1);
+        EOPAssert(all(successor(f1), m1, equal_to_x<T>(T(0))));
+        EOPAssert(source(f1) == -1 && source(f1 + N1(n - N0(1))) == T(-1));
 
     }
 
@@ -2957,9 +2957,9 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
         I1 f_o = f1;
         fill_n(f1, l1 - f1, -1);
         copy_step(f_i, f_o);
-        Assert(f_i == successor(f0));
-        Assert(f_o == successor(f1));
-        Assert(source(f1) == source(f0));
+        EOPAssert(f_i == successor(f0));
+        EOPAssert(f_o == successor(f1));
+        EOPAssert(source(f1) == source(f0));
     }
 
     // test copy, not aliased
@@ -2968,9 +2968,9 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
         I0 m0 = f0 + (n - N0(2));
         fill_n(f1, n, -1);
         I1 m1 = copy(f0, m0, successor(f1));
-        Assert(m1 == f1 + N1(n - N0(1)));
-        Assert(lexicographical_equal(f0, m0, successor(f1), m1));
-        Assert(source(f1) == -1 && source(f1 + (n - N0(1))) == -1);
+        EOPAssert(m1 == f1 + N1(n - N0(1)));
+        EOPAssert(lexicographical_equal(f0, m0, successor(f1), m1));
+        EOPAssert(source(f1) == -1 && source(f1 + (n - N0(1))) == -1);
 
     }
 
@@ -2979,9 +2979,9 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
         iota(n, f0);
         I1 m1 = copy(f0 + N0(2), l0, f1); // save original values
         I0 m0 = copy(f0 + N0(2), l0, f0);
-        Assert(m0 == f0 + (n - N0(2)));
-        Assert(lexicographical_equal(f0, m0, f1, m1));
-        Assert(source(m0) == m0 - f0 && source(successor(m0)) == successor(m0 - f0));
+        EOPAssert(m0 == f0 + (n - N0(2)));
+        EOPAssert(lexicographical_equal(f0, m0, f1, m1));
+        EOPAssert(source(m0) == m0 - f0 && source(successor(m0)) == successor(m0 - f0));
     }
 
     // test copy_bounded
@@ -2989,9 +2989,9 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
         iota(n, f0);
         fill_n(f1, n, -1);
         pair<I0, I1> pio = copy_bounded(f0, l0, f1, f1 + N1(n_over_2));
-        Assert(pio.m0 == f0 + n_over_2 && pio.m1 == f1 + N1(n_over_2));
-        Assert(lexicographical_equal(f0, pio.m0, f1, pio.m1));
-        Assert(source(f1 + N1(successor(n_over_2))) == -1);
+        EOPAssert(pio.m0 == f0 + n_over_2 && pio.m1 == f1 + N1(n_over_2));
+        EOPAssert(lexicographical_equal(f0, pio.m0, f1, pio.m1));
+        EOPAssert(source(f1 + N1(successor(n_over_2))) == -1);
     }
 
     // test count_down
@@ -3001,11 +3001,11 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
         n = N0(5);
         i = N0(0);
         while (count_down(n)) i = successor(i);
-        Assert(i == N0(5));
+        EOPAssert(i == N0(5));
         n = N0(0);
         i = N0(0);
         while (count_down(n)) i = successor(i);
-        Assert(i == N0(0));
+        EOPAssert(i == N0(0));
     }
 
     // test copy_n
@@ -3013,10 +3013,10 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
         N0 n0 = (n - N0(2));
         fill_n(f1, n, -1);
         pair<I0, I1> pio = copy_n(f0, n0, successor(f1));
-        Assert(pio.m0 == f0 + n0);
-        Assert(pio.m1 == f1 + N1(n - N0(1)));
-        Assert(lexicographical_equal(f0, f0 + n0, successor(f1), pio.m1));
-        Assert(source(f1) == -1 && source(f1 + (n - N0(1))) == -1);
+        EOPAssert(pio.m0 == f0 + n0);
+        EOPAssert(pio.m1 == f1 + N1(n - N0(1)));
+        EOPAssert(lexicographical_equal(f0, f0 + n0, successor(f1), pio.m1));
+        EOPAssert(source(f1) == -1 && source(f1 + (n - N0(1))) == -1);
     }
 
     // test copy_select
@@ -3024,16 +3024,16 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
         iota(n, f0);
         predicate_source< I0, bool (*)(const T&) > es = {even<T>};
         I1 m1 = copy_select(f0, l0, f1, es);
-        Assert(m1 - f1 == count_if(f0, l0, even<T>));
-        Assert(all(f1, m1, even<T>));
+        EOPAssert(m1 - f1 == count_if(f0, l0, even<T>));
+        EOPAssert(all(f1, m1, even<T>));
     }
 
     // test copy_if
     {
         iota(n, f0);
         I1 m1 = copy_if(f0, l0, f1, odd<T>);
-        Assert(m1 - f1 == count_if(f0, l0, odd<T>));
-        Assert(all(f1, m1, odd<T>));
+        EOPAssert(m1 - f1 == count_if(f0, l0, odd<T>));
+        EOPAssert(all(f1, m1, odd<T>));
     }
 
     // test split_copy
@@ -3045,10 +3045,10 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
         N0 n_f = count_if(f0, l0, odd<T>);
         N1 n_t = count_if(f0, l0, even<T>);
         pair<I0, I1> pft = split_copy(f0, l0, f_f, f_t, es);
-        Assert(pft.m0 - f_f == n_f);
-        Assert(pft.m1 - f_t == n_t);
-        Assert(all(f_f, pft.m0, odd<T>));
-        Assert(all(f_t, pft.m1, even<T>));
+        EOPAssert(pft.m0 - f_f == n_f);
+        EOPAssert(pft.m1 - f_t == n_t);
+        EOPAssert(all(f_f, pft.m0, odd<T>));
+        EOPAssert(all(f_t, pft.m1, even<T>));
     }
 
     // test split_copy_n
@@ -3060,10 +3060,10 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
         N0 n_f = count_if(f0, l0, odd<T>);
         N1 n_t = count_if(f0, l0, even<T>);
         pair<I0, I1> pft = split_copy_n(f0, n, f_f, f_t, es);
-        Assert(pft.m0 - f_f == n_f);
-        Assert(pft.m1 - f_t == n_t);
-        Assert(all(f_f, pft.m0, odd<T>));
-        Assert(all(f_t, pft.m1, even<T>));
+        EOPAssert(pft.m0 - f_f == n_f);
+        EOPAssert(pft.m1 - f_t == n_t);
+        EOPAssert(all(f_f, pft.m0, odd<T>));
+        EOPAssert(all(f_t, pft.m1, even<T>));
     }
 
     // test partition_copy
@@ -3074,10 +3074,10 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
         N0 n_f = count_if(f0, l0, even<T>);
         N1 n_t = count_if(f0, l0, odd<T>);
         pair<I0, I1> pft = partition_copy(f0, l0, f_f, f_t, odd<T>);
-        Assert(pft.m0 - f_f == n_f);
-        Assert(pft.m1 - f_t == n_t);
-        Assert(all(f_f, pft.m0, even<T>));
-        Assert(all(f_t, pft.m1, odd<T>));
+        EOPAssert(pft.m0 - f_f == n_f);
+        EOPAssert(pft.m1 - f_t == n_t);
+        EOPAssert(all(f_f, pft.m0, even<T>));
+        EOPAssert(all(f_t, pft.m1, odd<T>));
     }
 
     // test partition_copy_n
@@ -3088,10 +3088,10 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
         N0 n_f = count_if(f0, l0, even<T>);
         N1 n_t = count_if(f0, l0, odd<T>);
         pair<I0, I1> pft = partition_copy_n(f0, n, f_f, f_t, odd<T>);
-        Assert(pft.m0 - f_f == n_f);
-        Assert(pft.m1 - f_t == n_t);
-        Assert(all(f_f, pft.m0, even<T>));
-        Assert(all(f_t, pft.m1, odd<T>));
+        EOPAssert(pft.m0 - f_f == n_f);
+        EOPAssert(pft.m1 - f_t == n_t);
+        EOPAssert(all(f_f, pft.m0, even<T>));
+        EOPAssert(all(f_t, pft.m1, odd<T>));
     }
 
     // test combine_copy
@@ -3101,8 +3101,8 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
         less<ValueType(I0)> lt;
         relation_source< I0, I0, less<ValueType(I0)> > lts = {lt};
         I1 m1 = combine_copy(f0, m0, m0, l0, f1, lts);
-        Assert(m1 - f1 == n);
-        Assert(increasing_range(f1, m1, less<T>()));
+        EOPAssert(m1 - f1 == n);
+        EOPAssert(increasing_range(f1, m1, less<T>()));
     }
 
     // test combine_copy_n
@@ -3112,8 +3112,8 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
         less<ValueType(I0)> lt;
         relation_source< I0, I0, less<ValueType(I0)> > lts = {lt};
         triple<I0, I0, I1> t = combine_copy_n(f0, m0 - f0, m0, l0 - m0, f1, lts);
-        Assert(t.m0 == m0 && t.m1 == l0 && t.m2 - f1 == n);
-        Assert(increasing_range(f1, t.m2, less<T>()));
+        EOPAssert(t.m0 == m0 && t.m1 == l0 && t.m2 - f1 == n);
+        EOPAssert(increasing_range(f1, t.m2, less<T>()));
     }
 
     // test merge_copy
@@ -3122,8 +3122,8 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
         iota(n - n_over_2, m0);
         less<ValueType(I0)> lt;
         I1 m1 = merge_copy(f0, m0, m0, l0, f1, lt);
-        Assert(m1 - f1 == n);
-        Assert(increasing_range(f1, m1, less<T>()));
+        EOPAssert(m1 - f1 == n);
+        EOPAssert(increasing_range(f1, m1, less<T>()));
     }
 
     // test exchange_values, swap_step
@@ -3134,13 +3134,13 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
         sink(f_1) = -99;
         exchange_values(f0, f1);
 
-        Assert(f_0 == f0 && f_1 == f1);
-        Assert(source(f0) == -99 && source(f1) == 137);
+        EOPAssert(f_0 == f0 && f_1 == f1);
+        EOPAssert(source(f0) == -99 && source(f1) == 137);
 
         swap_step(f_0, f_1);
 
-        Assert(f_0 == successor(f0) && f_1 == successor(f1));
-        Assert(source(f0) == 137 && source(f1) == -99);
+        EOPAssert(f_0 == successor(f0) && f_1 == successor(f1));
+        EOPAssert(source(f0) == 137 && source(f1) == -99);
     }
 
     // test swap_ranges
@@ -3148,9 +3148,9 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
         iota(n, f0);
         fill_n(f1, n, T(-1));
         I1 m1 = swap_ranges(f0, l0, f1);
-        Assert(m1 == f1 + N1(n));
-        Assert(equal_iota(f1, m1));
-        Assert(all(f0, l0, equal_to_x<T>(-1)));
+        EOPAssert(m1 == f1 + N1(n));
+        EOPAssert(equal_iota(f1, m1));
+        EOPAssert(all(f0, l0, equal_to_x<T>(-1)));
     }
 
     // test swap_ranges_ bounded
@@ -3159,10 +3159,10 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
         N1 n1(n_over_2);
         fill_n(f1, n1, T(-1));
         pair<I0, I1> p01 = swap_ranges_bounded(f0, l0, f1, f1 + n1);
-        Assert(p01.m0 == f0 + N0(n1));
-        Assert(p01.m1 == f1 + n1);
-        Assert(equal_iota(f1, p01.m1));
-        Assert(all(f0, p01.m0, equal_to_x<T>(-1)));
+        EOPAssert(p01.m0 == f0 + N0(n1));
+        EOPAssert(p01.m1 == f1 + n1);
+        EOPAssert(equal_iota(f1, p01.m1));
+        EOPAssert(all(f0, p01.m0, equal_to_x<T>(-1)));
     }
 
     // test swap_ranges_n
@@ -3170,10 +3170,10 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
         iota(n, f0);
         fill_n(f1, n, T(-1));
         pair<I0, I1> p01 = swap_ranges_n(f0, f1, n);
-        Assert(p01.m0 == f0 + n);
-        Assert(p01.m1 == f1 + N1(n));
-        Assert(equal_iota(f1, p01.m1));
-        Assert(all(f0, l0, equal_to_x<T>(-1)));
+        EOPAssert(p01.m0 == f0 + n);
+        EOPAssert(p01.m1 == f1 + N1(n));
+        EOPAssert(equal_iota(f1, p01.m1));
+        EOPAssert(all(f0, l0, equal_to_x<T>(-1)));
     }
 }
 
@@ -3189,7 +3189,7 @@ void algorithms_copy_backward(I0 f0, I0 l0, I1 f1, I1 l1)
     typedef DistanceType(I1) N1;
     N0 n = l0 - f0;
     N0 n_over_2(half_nonnegative(n));
-    Assert(n <= N0(l1 - f1));
+    EOPAssert(n <= N0(l1 - f1));
 
     // test copy_backward_step
     {
@@ -3198,9 +3198,9 @@ void algorithms_copy_backward(I0 f0, I0 l0, I1 f1, I1 l1)
         I1 l_o = l1;
         fill_n(f1, l1 - f1, -1);
         copy_backward_step(l_i, l_o);
-        Assert(l_i == predecessor(l0));
-        Assert(l_o == predecessor(l1));
-        Assert(source(predecessor(l1)) == source(predecessor(l0)));
+        EOPAssert(l_i == predecessor(l0));
+        EOPAssert(l_o == predecessor(l1));
+        EOPAssert(source(predecessor(l1)) == source(predecessor(l0)));
     }
 
     // test copy_backward
@@ -3208,9 +3208,9 @@ void algorithms_copy_backward(I0 f0, I0 l0, I1 f1, I1 l1)
         I0 m0 = l0 - (n - N0(2));
         fill_n(f1, n, -1);
         I1 m1 = copy_backward(m0, l0, predecessor(l1));
-        Assert(m1 == l1 - N1(n - N0(1)));
-        Assert(lexicographical_equal(m0, l0, m1, predecessor(l1)));
-        Assert(source(predecessor(m1)) == -1 && source(predecessor(l1)) == -1);
+        EOPAssert(m1 == l1 - N1(n - N0(1)));
+        EOPAssert(lexicographical_equal(m0, l0, m1, predecessor(l1)));
+        EOPAssert(source(predecessor(m1)) == -1 && source(predecessor(l1)) == -1);
     }
 
     // test copy_backward_n
@@ -3219,9 +3219,9 @@ void algorithms_copy_backward(I0 f0, I0 l0, I1 f1, I1 l1)
         I0 m0 = l0 - n_minus_2;
         fill_n(f1, n, -1);
         pair<I0, I1> p = copy_backward_n(l0, n_minus_2, predecessor(l1));
-        Assert(p.m1 == l1 - N1(n - N0(1)));
-        Assert(lexicographical_equal(m0, l0, p.m1, predecessor(l1)));
-        Assert(source(predecessor(p.m1)) == -1 && source(predecessor(l1)) == -1);
+        EOPAssert(p.m1 == l1 - N1(n - N0(1)));
+        EOPAssert(lexicographical_equal(m0, l0, p.m1, predecessor(l1)));
+        EOPAssert(source(predecessor(p.m1)) == -1 && source(predecessor(l1)) == -1);
     }
 
     // test combine_copy_backward
@@ -3231,8 +3231,8 @@ void algorithms_copy_backward(I0 f0, I0 l0, I1 f1, I1 l1)
         less<ValueType(I0)> lt;
         relation_source< I0, I0, less<ValueType(I0)> > lts = {lt};
         I1 m1 = combine_copy_backward(f0, m0, m0, l0, l1, lts);
-        Assert(l1 - m1 == n);
-        Assert(increasing_range(m1, l1, less<T>()));
+        EOPAssert(l1 - m1 == n);
+        EOPAssert(increasing_range(m1, l1, less<T>()));
     }
 
     // test combine_copy_backward_n
@@ -3242,8 +3242,8 @@ void algorithms_copy_backward(I0 f0, I0 l0, I1 f1, I1 l1)
         less<ValueType(I0)> lt;
         relation_source< I0, I0, less<ValueType(I0)> > lts = {lt};
         triple<I0, I0, I1> t = combine_copy_backward_n(m0, m0 - f0, l0, l0 - m0, l1, lts);
-        Assert(t.m0 == f0 && t.m1 == m0 && l1 - t.m2 == n);
-        Assert(increasing_range(t.m2, l1, less<T>()));
+        EOPAssert(t.m0 == f0 && t.m1 == m0 && l1 - t.m2 == n);
+        EOPAssert(increasing_range(t.m2, l1, less<T>()));
     }
 
     // test merge_copy_backward
@@ -3252,8 +3252,8 @@ void algorithms_copy_backward(I0 f0, I0 l0, I1 f1, I1 l1)
         iota(n - n_over_2, m0);
         less<ValueType(I0)> lt;
         I1 m1 = merge_copy_backward(f0, m0, m0, l0, l1, lt);
-        Assert(l1 - m1 == n);
-        Assert(increasing_range(m1, l1, less<T>()));
+        EOPAssert(l1 - m1 == n);
+        EOPAssert(increasing_range(m1, l1, less<T>()));
     }
 
     // test merge_copy_backward_n
@@ -3262,8 +3262,8 @@ void algorithms_copy_backward(I0 f0, I0 l0, I1 f1, I1 l1)
         iota(n - n_over_2, m0);
         less<ValueType(I0)> lt;
         triple<I0, I0, I1> t = merge_copy_backward_n(m0, m0 - f0, l0, l0 - m0, l1, lt);
-        Assert(t.m0 == f0 && t.m1 == m0 && l1 - t.m2 == n);
-        Assert(increasing_range(t.m2, l1, less<T>()));
+        EOPAssert(t.m0 == f0 && t.m1 == m0 && l1 - t.m2 == n);
+        EOPAssert(increasing_range(t.m2, l1, less<T>()));
     }
 }
 
@@ -3279,7 +3279,7 @@ void algorithms_copy_reverse(I0 f0, I0 l0, I1 f1, I1 l1)
     typedef DistanceType(I1) N1;
     N0 n = l0 - f0;
     N0 n_over_2(half_nonnegative(n));
-    Assert(n == N0(l1 - f1));
+    EOPAssert(n == N0(l1 - f1));
 
     // test reverse_copy_step
     {
@@ -3289,9 +3289,9 @@ void algorithms_copy_reverse(I0 f0, I0 l0, I1 f1, I1 l1)
         I1 f_o = f1;
         fill_n(f1, l1 - f1, -1);
         reverse_copy_step(l_i, f_o);
-        Assert(l_i == predecessor(l0));
-        Assert(f_o == successor(f1));
-        Assert(source(f1) == source(predecessor(l0)));
+        EOPAssert(l_i == predecessor(l0));
+        EOPAssert(f_o == successor(f1));
+        EOPAssert(source(f1) == source(predecessor(l0)));
     }
 
     // test reverse_copy_backward_step
@@ -3302,9 +3302,9 @@ void algorithms_copy_reverse(I0 f0, I0 l0, I1 f1, I1 l1)
         I1 l_o = l1;
         fill_n(f1, l1 - f1, -1);
         reverse_copy_backward_step(f_i, l_o);
-        Assert(f_i == successor(f0));
-        Assert(l_o == predecessor(l1));
-        Assert(source(predecessor(l1)) == source(f0));
+        EOPAssert(f_i == successor(f0));
+        EOPAssert(l_o == predecessor(l1));
+        EOPAssert(source(predecessor(l1)) == source(f0));
     }
 
     // test reverse_copy
@@ -3314,13 +3314,13 @@ void algorithms_copy_reverse(I0 f0, I0 l0, I1 f1, I1 l1)
         fill_n(f1, l1 - f1, -1);
         I1 f_o = successor(f1);
         I1 l_o = reverse_copy(f0, l0 - N0(2), f_o);
-        Assert(l_o == predecessor(l1));
+        EOPAssert(l_o == predecessor(l1));
         N1 n_o(n - N0(2));
         while (count_down(n_o)) {
-            Assert(source(f_o) == n_o);
+            EOPAssert(source(f_o) == n_o);
             f_o = successor(f_o);
         }
-        Assert(source(f1) == -1 && source(predecessor(l1)) == -1);
+        EOPAssert(source(f1) == -1 && source(predecessor(l1)) == -1);
     }
     
     // test reverse_copy_backward
@@ -3330,13 +3330,13 @@ void algorithms_copy_reverse(I0 f0, I0 l0, I1 f1, I1 l1)
         fill_n(f1, n, -1);
         I1 l_o = predecessor(l1);
         I1 f_o = reverse_copy_backward(f0, l0 - N0(2), l_o);
-        Assert(f_o == successor(f1));
+        EOPAssert(f_o == successor(f1));
         N1 n_o(n - N0(2));
         while (count_down(n_o)) {
-            Assert(source(f_o) == n_o);
+            EOPAssert(source(f_o) == n_o);
             f_o = successor(f_o);
         }
-        Assert(source(f1) == -1 && source(predecessor(l1)) == -1);
+        EOPAssert(source(f1) == -1 && source(predecessor(l1)) == -1);
     }
 
     // test reverse_swap_step
@@ -3347,8 +3347,8 @@ void algorithms_copy_reverse(I0 f0, I0 l0, I1 f1, I1 l1)
         sink(predecessor(l_0)) = 137;
         sink(f_1) = -99;
         reverse_swap_step(l_0, f_1);
-        Assert(l_0 == predecessor(l0) && f_1 == successor(f1));
-        Assert(source(predecessor(l0)) == -99 && source(f1) == 137);
+        EOPAssert(l_0 == predecessor(l0) && f_1 == successor(f1));
+        EOPAssert(source(predecessor(l0)) == -99 && source(f1) == 137);
     }
 
     // test reverse_swap_ranges
@@ -3357,9 +3357,9 @@ void algorithms_copy_reverse(I0 f0, I0 l0, I1 f1, I1 l1)
         iota(n, f0);
         fill_n(f1, n, T(-1));
         I1 m1 = reverse_swap_ranges(f0, l0, f1);
-        Assert(m1 == f1 + N1(n));
-        Assert(equal_iota_reverse(f1, m1));
-        Assert(all(f0, l0, equal_to_x<T>(-1)));
+        EOPAssert(m1 == f1 + N1(n));
+        EOPAssert(equal_iota_reverse(f1, m1));
+        EOPAssert(all(f0, l0, equal_to_x<T>(-1)));
     }
 
     // test reverse_swap_ranges_bounded
@@ -3369,10 +3369,10 @@ void algorithms_copy_reverse(I0 f0, I0 l0, I1 f1, I1 l1)
         iota(n_over_2, f0);
         fill(f1, l1, T(-1));
         pair<I0, I1> p01 = reverse_swap_ranges_bounded(f0, m0, f1, l1);
-        Assert(p01.m0 == f0);
-        Assert(p01.m1 == f1 + N1(n_over_2));
-        Assert(equal_iota_reverse(f1, p01.m1));
-        Assert(all(f0, m0, equal_to_x<T>(-1)));
+        EOPAssert(p01.m0 == f0);
+        EOPAssert(p01.m1 == f1 + N1(n_over_2));
+        EOPAssert(equal_iota_reverse(f1, p01.m1));
+        EOPAssert(all(f0, m0, equal_to_x<T>(-1)));
     }
 
     // test reverse_swap_ranges_n
@@ -3381,10 +3381,10 @@ void algorithms_copy_reverse(I0 f0, I0 l0, I1 f1, I1 l1)
         iota(n, f0);
         fill_n(f1, n, T(-1));
         pair<I0, I1> p01 = reverse_swap_ranges_n(l0, f1, n);
-        Assert(p01.m0 == f0);
-        Assert(p01.m1 == f1 + N1(n));
-        Assert(equal_iota_reverse(f1, p01.m1));
-        Assert(all(f0, l0, equal_to_x<T>(-1)));
+        EOPAssert(p01.m0 == f0);
+        EOPAssert(p01.m1 == f1 + N1(n));
+        EOPAssert(equal_iota_reverse(f1, p01.m1));
+        EOPAssert(all(f0, l0, equal_to_x<T>(-1)));
     }
 }
 
@@ -3404,7 +3404,7 @@ void test_ch_9()
     int n = k;
     extend_sequence_n(l, n, T(-1));
 
-    Assert(size(ca) == k && size(da) == k && size(l) == k);
+    EOPAssert(size(ca) == k && size(da) == k && size(l) == k);
 
     print("      forward"); print_eol();
     print("        ***** to do: split into iterator and forward iterator\n");
@@ -3462,8 +3462,8 @@ void algorithm_cycle_to()
     I l = end(a);
     iota(k, f);
     cycle_to(f, successor_cyclic<I>(f, l));
-    Assert(source(f) == predecessor(k));
-    Assert(equal_iota(successor(f), l));
+    EOPAssert(source(f) == predecessor(k));
+    EOPAssert(equal_iota(successor(f), l));
 }
 
 template<typename T, typename N>
@@ -3473,7 +3473,7 @@ void type_temporary_buffer(N n)
     {
         temporary_buffer<T> b(n);
         DistanceType(EOPpointer(T)) m = size(b);
-        Assert(0 < m && m <= n);
+        EOPAssert(0 < m && m <= n);
         if (verbose) {
             print("size(temporary_buffer<T>(");
             print(n);
@@ -3542,7 +3542,7 @@ template<typename C>
     requires(IteratorConcept(C))
 void algorithms_rotate_Concept(int_pointer a, int n)
 {
-    Assert(n != 0);
+    EOPAssert(n != 0);
     fill_n(a, n, int(7));
     int_pointer f = a;
     int_pointer l = f + n;
@@ -3552,20 +3552,20 @@ void algorithms_rotate_Concept(int_pointer a, int n)
     }
     int_pointer c = successor(f);
     while (c != l) {
-        Assert(f != c && c != l); // guard required since we're invoking "inner" versions
+        EOPAssert(f != c && c != l); // guard required since we're invoking "inner" versions
         rotate_nontrivial(f, c, l, C());
         c = successor(c);
     }
     if (verbose) {
         print("      After rotating a: "); print_range(a, a+n); print_eol();
     }
-    if (even(n)) for (int i = 0; i < n; ++i) Assert(source(f + i) == (i + n / 2) % n);
-    else         for (int i = 0; i < n; ++i) Assert(source(f + i) == i);
+    if (even(n)) for (int i = 0; i < n; ++i) EOPAssert(source(f + i) == (i + n / 2) % n);
+    else         for (int i = 0; i < n; ++i) EOPAssert(source(f + i) == i);
 }
 
 void algorithm_rotate_forward_annotated(int_pointer a, int n)
 {
-    Assert(n != 0);
+    EOPAssert(n != 0);
     fill_n(a, n, int(7));
     int_pointer f = a;
     int_pointer l = f + n;
@@ -3575,15 +3575,15 @@ void algorithm_rotate_forward_annotated(int_pointer a, int n)
     }
     int_pointer c = successor(f);
     while (c != l) {
-        Assert(f != c && c != l); // guard required since we're invoking "inner" versions
+        EOPAssert(f != c && c != l); // guard required since we're invoking "inner" versions
         rotate_forward_annotated(f, c, l);
         c = successor(c);
     }
     if (verbose) {
         print("      After rotating a: "); print_range(a, a+n); print_eol();
     }
-    if (even(n)) for (int i = 0; i < n; ++i) Assert(source(f + i) == (i + n / 2) % n);
-    else         for (int i = 0; i < n; ++i) Assert(source(f + i) == i);
+    if (even(n)) for (int i = 0; i < n; ++i) EOPAssert(source(f + i) == (i + n / 2) % n);
+    else         for (int i = 0; i < n; ++i) EOPAssert(source(f + i) == i);
 }
 
 template<typename I, typename B>
@@ -3591,7 +3591,7 @@ template<typename I, typename B>
 void algorithms_rotate_Concept_with_buffer(I f, DistanceType(I) n, B f_b,
                                            I (*algo)(I, I, I, B))
 {
-    Assert(n != 0);
+    EOPAssert(n != 0);
     fill_n(f, n, int(7));
     I l = f + n;
     iota(n, f);
@@ -3600,7 +3600,7 @@ void algorithms_rotate_Concept_with_buffer(I f, DistanceType(I) n, B f_b,
     }
     int_pointer c = successor(f);
     while (c != l) {
-        Assert(f != c && c != l); // guard required since we're invoking "inner" versions
+        EOPAssert(f != c && c != l); // guard required since we're invoking "inner" versions
         algo(f, c, l, f_b);
         c = successor(c);
     }
@@ -3609,17 +3609,17 @@ void algorithms_rotate_Concept_with_buffer(I f, DistanceType(I) n, B f_b,
     }
     if (even(n))
         for (int i = 0; i < n; ++i)
-            Assert(source(f + i) == (i + half_nonnegative(n)) % n);
+            EOPAssert(source(f + i) == (i + half_nonnegative(n)) % n);
     else
         for (int i = 0; i < n; ++i)
-            Assert(source(f + i) == i);
+            EOPAssert(source(f + i) == i);
 }
 
 template<typename N>
     requires(Integer(N))
 void algorithm_rotate_partial(N n)
 {
-    Assert(n > N(1));
+    EOPAssert(n > N(1));
     array<N> a(twice(n), twice(n), N(-1));
     typedef IteratorType(array<N>) I;
     I f = begin(a) + n / N(4);
@@ -3628,12 +3628,12 @@ void algorithm_rotate_partial(N n)
     while (m != l) {
         iota(n, f);
         I m_prime = rotate_partial_nontrivial(f, m, l);
-        Assert(source(predecessor(f)) == N(-1) && source(l) == N(-1));
-        Assert(m_prime + (m - f) == l);
-        Assert(equal_iota(f, m_prime, m - f));
+        EOPAssert(source(predecessor(f)) == N(-1) && source(l) == N(-1));
+        EOPAssert(m_prime + (m - f) == l);
+        EOPAssert(equal_iota(f, m_prime, m - f));
         DistanceType(I) k = (l - f) % (m - f);
         rotate(m_prime, l - k, l);
-        Assert(equal_iota(m_prime, l));
+        EOPAssert(equal_iota(m_prime, l));
         m = successor(m);
     }
 }
@@ -3699,13 +3699,13 @@ void algorithms_reduce_balanced()
     Z a[] = {0, 1, 2, 3, 4, 5};
     slist<Z> l(counted_range<Z*>(a, sizeof(a)/sizeof(Z)));
 
-    Assert(reduce_balanced(0, 0, plus<Z>(), identity<Z>(), Z(0)) == Z(0));
-    Assert(reduce_balanced(0, 50, plus<Z>(), identity<Z>(), Z(0)) == Z(49*50/2));
-    Assert(reduce_balanced(0, 1, plus<Z>(), identity<Z>(), Z(0)) == Z(0));
+    EOPAssert(reduce_balanced(0, 0, plus<Z>(), identity<Z>(), Z(0)) == Z(0));
+    EOPAssert(reduce_balanced(0, 50, plus<Z>(), identity<Z>(), Z(0)) == Z(49*50/2));
+    EOPAssert(reduce_balanced(0, 1, plus<Z>(), identity<Z>(), Z(0)) == Z(0));
 
-    Assert(reduce_balanced(begin(l), begin(l), plus<Z>(), Z(0)) == Z(0));
-    Assert(reduce_balanced(begin(l), end(l), plus<Z>(), Z(0)) == Z(15));
-    Assert(reduce_balanced(begin(l), successor(begin(l)), plus<Z>(), Z(0)) == Z(0));
+    EOPAssert(reduce_balanced(begin(l), begin(l), plus<Z>(), Z(0)) == Z(0));
+    EOPAssert(reduce_balanced(begin(l), end(l), plus<Z>(), Z(0)) == Z(15));
+    EOPAssert(reduce_balanced(begin(l), successor(begin(l)), plus<Z>(), Z(0)) == Z(0));
 }
 
 bool even_int(int x) { return even<int>(x); }
@@ -3733,7 +3733,7 @@ struct partition_algorithm_tester
         p(even_int),
         b(a)
     {
-        Assert(size(b) == n);
+        EOPAssert(size(b) == n);
         iota(int(n), f);
         m_potential = potential_partition_point(f, l, even<int>);
         if (verbose) {
@@ -3752,10 +3752,10 @@ struct partition_algorithm_tester
             print_range(f, l);
             print_eol();
         }
-        Assert(m_potential == m);
-        Assert(partitioned(f, l, even<int>));
-        Assert(partitioned_at_point(f, m, l, even<int>));
-        Assert(m == partition_point(f, l, even<int>));
+        EOPAssert(m_potential == m);
+        EOPAssert(partitioned(f, l, even<int>));
+        EOPAssert(partitioned_at_point(f, m, l, even<int>));
+        EOPAssert(m == partition_point(f, l, even<int>));
     }
     void validate_false(I m) {
         if (verbose) {
@@ -3765,8 +3765,8 @@ struct partition_algorithm_tester
             print_range(f, l);
             print_eol();
         }
-        Assert(m_potential == m);
-        Assert(none(f, m, p));
+        EOPAssert(m_potential == m);
+        EOPAssert(none(f, m, p));
     }
 };
 
@@ -3779,7 +3779,7 @@ void algorithms_partition()
         // exercise
         EOPpointer(int) m = potential_partition_point(f, l, odd<int>);
         // exercise
-        Assert(partitioned_at_point(f, m, l, odd<int>));
+        EOPAssert(partitioned_at_point(f, m, l, odd<int>));
     }
 
     { // book
@@ -3822,7 +3822,7 @@ void algorithms_partition()
         partition_algorithm_tester t("stable_n_nonempty");
         typedef partition_algorithm_tester::I I;
         pair<I, I> p = partition_stable_n_nonempty(t.f, t.l - t.f, t.p);
-        Assert(p.m1 == t.l);
+        EOPAssert(p.m1 == t.l);
         t.validate(p.m0);
     }
     { // book
@@ -3830,9 +3830,9 @@ void algorithms_partition()
         typedef partition_algorithm_tester::I I;
         pair<I, I> p;
         p = partition_stable_n(t.f, 0, t.p);
-        Assert(p.m0 == t.f && p.m1 == t.f);
+        EOPAssert(p.m0 == t.f && p.m1 == t.f);
         p = partition_stable_n(t.f, t.n, t.p);
-        Assert(p.m1 == t.l);
+        EOPAssert(p.m1 == t.l);
         t.validate(p.m0);
     }
     { // additional
@@ -3840,9 +3840,9 @@ void algorithms_partition()
         typedef partition_algorithm_tester::I I;
         pair<I, I> p;
         p = advanced_partition_stable_n(t.f, 0, t.p);
-        Assert(p.m0 == t.f && p.m1 == t.f);
+        EOPAssert(p.m0 == t.f && p.m1 == t.f);
         p = advanced_partition_stable_n(t.f, t.n, t.p);
-        Assert(p.m1 == t.l);
+        EOPAssert(p.m1 == t.l);
         t.validate(p.m0);
     }
     { // for completeness
@@ -3929,11 +3929,11 @@ struct merge_case
         EOPpointer(char) f_ab = begin(tmp);
         EOPpointer(char) m_ab = copy_n(begin(a), n_a, f_ab).m1;
         EOPpointer(char) l_ab = copy_n(begin(b), n_b, m_ab).m1;
-        Assert(l_ab == end(tmp));
+        EOPAssert(l_ab == end(tmp));
 
         merger(f_ab, n_a, m_ab, n_b, r);
 
-        Assert(lexicographical_equivalent(f_ab, l_ab, begin(c), end(c), e));
+        EOPAssert(lexicographical_equivalent(f_ab, l_ab, begin(c), end(c), e));
         if (verbose) {
             print("      ");
             print(a); print(" merge "); print(b);
@@ -3946,7 +3946,7 @@ struct merge_case
         int n_a = size_unguarded(a) ;
         int n_b = size_unguarded(b);
         int n_c = size_unguarded(c);
-        Assert(n_a + n_b == n_c);
+        EOPAssert(n_a + n_b == n_c);
         subcase(a, n_a, b, n_b, c, n_c);
         if (commutative) subcase(b, n_b, a, n_a, c, n_c);
     }
@@ -4023,7 +4023,7 @@ void algorithms_sort(S& s)
     I f = begin(s);
     I l = end(s);
     N n = size(s);
-    Assert(n == l - f);
+    EOPAssert(n == l - f);
     I m;
 
     less<int> ls;
@@ -4033,7 +4033,7 @@ void algorithms_sort(S& s)
             int n_b = half_nonnegative(n);
             array<int> buffer(n_b, n_b, 0);
             m = sort_n_with_buffer(f, n, begin(buffer), greater);
-        Assert(m == l && equal_iota_reverse(f, l));
+        EOPAssert(m == l && equal_iota_reverse(f, l));
     }
     {
         iota(n, f);
@@ -4041,17 +4041,17 @@ void algorithms_sort(S& s)
             EOPpointer(int) f_b = begin(buffer);
             int n_b = size(buffer);
             m = sort_n_adaptive(f, n, f_b, n_b, greater);
-        Assert(m == l && equal_iota_reverse(f, l));
+        EOPAssert(m == l && equal_iota_reverse(f, l));
     }
     {
         iota(n, f);
             m = sort_n(f, n, greater);
-        Assert(m == l && equal_iota_reverse(f, l));
+        EOPAssert(m == l && equal_iota_reverse(f, l));
     }
     {
         iota(n, f);
             m = advanced_sort_n(f, n, greater);
-        Assert(m == l && equal_iota_reverse(f, l));
+        EOPAssert(m == l && equal_iota_reverse(f, l));
     }
 }
 
@@ -4109,13 +4109,13 @@ void concept_Linearizable(W& w)
     I l = end(w);
     N n = size(w);
     bool e = empty(w);
-    Assert(n == (l - f));
-    Assert(e == (n == 0));
+    EOPAssert(n == (l - f));
+    EOPAssert(e == (n == 0));
     for_each(f, l, nothing<T>);
 
     N i(0);
     while (f != l) {
-        Assert(addressof(w[i]) == addressof(source(f)));
+        EOPAssert(addressof(w[i]) == addressof(source(f)));
         i = successor(i);
         f = successor(f);
     }
@@ -4126,17 +4126,17 @@ template<typename S>
 void concept_Sequence(S& s0, S& s1, ValueType(S)& x)
 {
     // Precondition: s0 < s1 /\ !empty(s1) /\ x != s1[0]
-    Assert(begin(s1) != end(s1));
-    Assert(x != s1[0]);
+    EOPAssert(begin(s1) != end(s1));
+    EOPAssert(x != s1[0]);
 
     concept_Linearizable(s1);
     concept_TotallyOrdered(s0, s1);
 
     // (all s in S)(all i in [begin(s), end(s)) deref(i) is a part of s
     S s11(s1);
-    Assert(s11 == s1);
+    EOPAssert(s11 == s1);
     s11[0] = x; // change the copy
-    Assert(s11 != s1);
+    EOPAssert(s11 != s1);
 
     // Equality and total ordering are lexicographical
 }
@@ -4154,23 +4154,23 @@ void concept_ConstantSizeSequence(T0& a0, T1& a1, ValueType(T1)& x)
     concept_Sequence(a0, a1, x);
 
     // size is fixed, and agrees with Size type attribute
-    Assert(size(a0) == Size(T0));
-    Assert(size(a1) == Size(T1));
+    EOPAssert(size(a0) == Size(T0));
+    EOPAssert(size(a1) == Size(T1));
 
     // size is positive, at least for array_k
-    Assert(!empty(a0));
-    Assert(!empty(a1));
+    EOPAssert(!empty(a0));
+    EOPAssert(!empty(a1));
 
     // Iterator is EOPpointer(T)
-    Assert(begin(a0) == addressof(a0[0]));
+    EOPAssert(begin(a0) == addressof(a0[0]));
 
     // Equality behavior
-    Assert(a0 != a1);
+    EOPAssert(a0 != a1);
 
     // Total ordering behavior
     // ***** to do: move this to concept_Sequence ?????
-    Assert(a0 < a1);
-    Assert(!(a1 < a0));
+    EOPAssert(a0 < a1);
+    EOPAssert(!(a1 < a0));
 }
 
 void type_array_k()
@@ -4207,7 +4207,7 @@ void type_array_k()
             print("      a0:"); print(a0); print_eol();
             print("      a1:"); print(a1); print_eol();
         }
-        Assert(a0 != a1);
+        EOPAssert(a0 != a1);
         concept_ConstantSizeSequence(a0, a1, da0);
 
         {
@@ -4265,12 +4265,12 @@ void concept_Position(P p, BaseType(P)& s, IteratorType(P) i)
 
     // Not regular: lacks default constructor, copy constructor, assignment
     B& b = base(p);
-    Assert(addressof(b) == addressof(s));
+    EOPAssert(addressof(b) == addressof(s));
     I cur = current(p);
-    Assert(cur - begin(s) >= N(0) && end(s) - cur >= N(0));
+    EOPAssert(cur - begin(s) >= N(0) && end(s) - cur >= N(0));
         // i.e., cur \in [begin(s), end(s))
-    Assert(begin(p) == begin(s));
-    Assert(end(p) == end(s));
+    EOPAssert(begin(p) == begin(s));
+    EOPAssert(end(p) == end(s));
 }
 
 template<typename S>
@@ -4279,23 +4279,23 @@ void test_Position(S& s, IteratorType(S) i)
 {
     before<S> bef(s, i);
     concept_Position(bef, s, i);
-    Assert(current(bef) == i);
+    EOPAssert(current(bef) == i);
 
     after<S> aft(s, i);
     concept_Position(aft, s, i);
-    Assert(current(bef) == i);
+    EOPAssert(current(bef) == i);
 
     front<S> fr(s);
     concept_Position(fr, s, i);
-    Assert(current(fr) == begin(s));
+    EOPAssert(current(fr) == begin(s));
 
     back<S> bk(s);
     concept_Position(bk, s, i);
-    Assert(current(bk) == end(s));
+    EOPAssert(current(bk) == end(s));
 
     at<S> a(s, i);
     concept_Position(a, s, i);
-    Assert(current(bef) == i);
+    EOPAssert(current(bef) == i);
 }
 
 template<typename S>
@@ -4310,7 +4310,7 @@ void concept_DynamicSequence(S& s0, S& s1, ValueType(S)& x)
     // construct from linearizable
     bounded_range<I> br(begin(s1), end(s1));
     S s11(br);
-    Assert(s11 == s1);
+    EOPAssert(s11 == s1);
 
     // insert
     // insert_range
@@ -4340,29 +4340,29 @@ void type_list()
     // algorithms: reverse, partition, merge, sort
     iota(k0, begin(l0));
     reverse(l0);
-    Assert(equal_iota_reverse(begin(l0), end(l0)));
+    EOPAssert(equal_iota_reverse(begin(l0), end(l0)));
     reverse(l0);
-    Assert(equal_iota(begin(l0), end(l0)));
-    Assert(size(l0) == k0);
+    EOPAssert(equal_iota(begin(l0), end(l0)));
+    EOPAssert(size(l0) == k0);
 
     if (verbose) { print("      l0 before partition: "); print(l0); print_eol(); }
     partition(l0, l1, even<int>);
     if (verbose) { print("      l0 after: "); print(l0); print_eol(); }
     if (verbose) { print("      l1 after: "); print(l1); print_eol(); }
-    Assert(all(begin(l0), end(l0), odd<int>));
-    Assert(all(begin(l1), end(l1), even<int>));
+    EOPAssert(all(begin(l0), end(l0), odd<int>));
+    EOPAssert(all(begin(l1), end(l1), even<int>));
 
     L l2;
     L l3;
     partition(l2, l3, even<int>);
-    Assert(empty(l2) && empty(l3));
+    EOPAssert(empty(l2) && empty(l3));
 
     merge(l0, l1, less<int>());
-    Assert(equal_iota(begin(l0), end(l0)) && size(l0) == k0 && empty(l1));
+    EOPAssert(equal_iota(begin(l0), end(l0)) && size(l0) == k0 && empty(l1));
 
     reverse(l0);
     sort(l0, less<int>());
-    Assert(equal_iota(begin(l0), end(l0)) && size(l0) == k0);
+    EOPAssert(equal_iota(begin(l0), end(l0)) && size(l0) == k0);
 
     print("    ***** to do: slist, list");
     print(" (including erase, erase_first, erase_after, set_link_backward\n");
@@ -4385,22 +4385,22 @@ void type_single_extent_array(S& s0, S& s1, ValueType(S)& x)
     // reserve_basic/reserve
     array<int> a;
     typedef SizeType(array<int>) N;
-    Assert(empty(a));
-    Assert(full(a));
-    Assert(capacity(a) == N(0));
-    Assert(end(a) == end_of_storage(a));
+    EOPAssert(empty(a));
+    EOPAssert(full(a));
+    EOPAssert(capacity(a) == N(0));
+    EOPAssert(end(a) == end_of_storage(a));
     reserve(a, N(1));
-    Assert(empty(a));
-    Assert(!full(a));
-    Assert(capacity(a) == N(1));
-    Assert(end(a) + N(1) == end_of_storage(a));
+    EOPAssert(empty(a));
+    EOPAssert(!full(a));
+    EOPAssert(capacity(a) == N(1));
+    EOPAssert(end(a) + N(1) == end_of_storage(a));
     insert(back< array<int> >(a), 1);
-    Assert(size(a) == N(1));
-    Assert(end(a) == end_of_storage(a));
-    Assert(full(a));
+    EOPAssert(size(a) == N(1));
+    EOPAssert(end(a) == end_of_storage(a));
+    EOPAssert(full(a));
     erase(back< array<int> >(a));
-    Assert(empty(a));
-    Assert(full(a));
+    EOPAssert(empty(a));
+    EOPAssert(full(a));
 }
 
 void type_array()
@@ -4436,7 +4436,7 @@ void type_array()
             print("      a0:"); print(a0); print_eol();
             print("      a1:"); print(a1); print_eol();
         }
-        Assert(a0 != a1);
+        EOPAssert(a0 != a1);
         type_single_extent_array(a0, a1, ca0);
 
         {
@@ -4470,7 +4470,7 @@ void algorithm_underlying_ref_array(T0& x)
     typedef UnderlyingType(T) U;
     T t(2, 2, x);
     U u = underlying_ref(t);
-    Assert(u.p == t.p);
+    EOPAssert(u.p == t.p);
 }
 
 template<typename T, typename T0>
@@ -4484,21 +4484,21 @@ void type_underlying_iterator_array(T0& x)
     I l(end(t));
     UI uf = {f};
     UI ul = {l};
-    Assert(uf != ul);
-    Assert(predecessor(successor(uf)) == uf);
-    Assert(ul - uf == l - f);
-    Assert((uf + 1) - 1 == uf);
-    Assert(uf < ul);
-    Assert(addressof(sink(uf)) == addressof(source(uf)) &&
+    EOPAssert(uf != ul);
+    EOPAssert(predecessor(successor(uf)) == uf);
+    EOPAssert(ul - uf == l - f);
+    EOPAssert((uf + 1) - 1 == uf);
+    EOPAssert(uf < ul);
+    EOPAssert(addressof(sink(uf)) == addressof(source(uf)) &&
         addressof(sink(uf)) == addressof(deref(uf)));
-    Assert(original(uf) == f);
+    EOPAssert(original(uf) == f);
 
     while (uf != ul) {
-        Assert(source(uf).p == source(f).p);
+        EOPAssert(source(uf).p == source(f).p);
         f = successor(f);
         uf = successor(uf);
     }
-    Assert(f == l);
+    EOPAssert(f == l);
 }
 
 template<typename T, typename T0>
@@ -4508,10 +4508,10 @@ void algorithm_original_ref_array(T0& x)
     typedef UnderlyingType(T) U;
     T t0(2, 2, x);
     T t1(3, 3, x);
-    Assert(t0 < t1);
+    EOPAssert(t0 < t1);
     U u0 = underlying_ref(t0);
     U u1 = underlying_ref(t1);
-    Assert(original_ref<T>(u0) < original_ref<T>(u1));
+    EOPAssert(original_ref<T>(u0) < original_ref<T>(u1));
 }
 
 template<typename T, typename P>
@@ -4519,10 +4519,10 @@ template<typename T, typename P>
 void algorithm_underlying_predicate(T& x0, T& x1, P p)
 {
     // Precondition: !p(x0) && p(x1)
-    Assert(!p(x0) && p(x1));
+    EOPAssert(!p(x0) && p(x1));
 
     underlying_predicate<P> up = {p};
-    Assert(!up(underlying_ref(x0)) && up(underlying_ref(x1)));
+    EOPAssert(!up(underlying_ref(x0)) && up(underlying_ref(x1)));
 }
 
 template<typename T, typename R>
@@ -4531,12 +4531,12 @@ void algorithm_underlying_relation(T& x0, T& x1, R r)
 {
     // Precondition: r(x0, x1) && !r(x1, x0)
     typedef UnderlyingType(T) U;
-    Assert(r(x0, x1) && !r(x1, x0));
+    EOPAssert(r(x0, x1) && !r(x1, x0));
 
     underlying_relation<R> ur = {r};
     U& ux0(underlying_ref(x0));
     U& ux1(underlying_ref(x1));
-    Assert(ur(ux0, ux1) && !ur(ux1, ux0));
+    EOPAssert(ur(ux0, ux1) && !ur(ux1, ux0));
 }
 
 template<typename T>
@@ -4599,27 +4599,27 @@ void test_ch_12()
             int i = 1;
             int j = 2;
             swap_basic(i, j);
-            Assert(i == 2 && j == 1);
+            EOPAssert(i == 2 && j == 1);
         }
         {
             int i = 1;
             int j = 2;
             swap(i, j);
-            Assert(i == 2 && j == 1);
+            EOPAssert(i == 2 && j == 1);
         }
         {
             int i = 1;
             int j = 2;
             int k = 3;
             rotate_left(i, j, k);
-            Assert(i == 2 && j == 3 && k == 1);
+            EOPAssert(i == 2 && j == 3 && k == 1);
         }
         {
             int i = 1;
             int j = 2;
             int k = 3;
             rotate_right(i, j, k);
-            Assert(i == 3 && j == 1 && k == 2);
+            EOPAssert(i == 3 && j == 1 && k == 2);
         }
         const int N = 10;
         array<int> a0(N, N, 0);
@@ -4627,9 +4627,9 @@ void test_ch_12()
         EOPpointer(int) p0 = begin(a0);
         EOPpointer(int) p1 = begin(a1);
         swap(a0, a1);
-        Assert(all(begin(a0), end(a0), equal_to_x<int>(1)));
-        Assert(all(begin(a1), end(a1), zero<int>));
-        Assert(p0 == begin(a1) && p1 == begin(a0)); // remote parts were swapped
+        EOPAssert(all(begin(a0), end(a0), equal_to_x<int>(1)));
+        EOPAssert(all(begin(a1), end(a1), zero<int>));
+        EOPAssert(p0 == begin(a1) && p1 == begin(a0)); // remote parts were swapped
     }
 
     int i(0);

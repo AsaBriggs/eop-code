@@ -3860,13 +3860,13 @@ void rotate_forward_annotated(I f, I m, I l)
                                       DistanceType(I) b = l - m;
     while (true) {
         pair<I, I> p = swap_ranges_bounded(f, m, m, l);
-        if (p.m0 == m && p.m1 == l) { Assert(a == b);
+        if (p.m0 == m && p.m1 == l) { EOPAssert(a == b);
             return;
         }
         f = p.m0;           
-        if (f == m) {                 Assert(b > a);
+        if (f == m) {                 EOPAssert(b > a);
             m = p.m1;                 b = b - a;
-        } else {                      Assert(a > b);
+        } else {                      EOPAssert(a > b);
                                       a = a - b;
         }  
     }

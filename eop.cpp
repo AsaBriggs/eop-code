@@ -81,7 +81,7 @@ int main()
     // Chapter 11 - Partition and merging
 
     // Chapter 12 - Composite objects
-    // ***** to do: replace these with (Assert-based) tests
+    // ***** to do: replace these with (EOPAssert-based) tests
     push(c, cmd("slist", &run_slist_tests));
     push(c, cmd("list", &run_list_tests));
     push(c, cmd("stree", &run_stree_tests));

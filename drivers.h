@@ -323,7 +323,7 @@ void run_idempotent_power()
         print("idempotent_power()("); print(n); print(", multiplication modulo ");
             print(m); print(") == ");
         	print(p); print_eol();
-        Assert(p == multiplies_modulo<int>(m)(p, p));
+        EOPAssert(p == multiplies_modulo<int>(m)(p, p));
     }      
 }
 
@@ -512,7 +512,7 @@ struct verify_conservation
     verify_conservation(const T& t) : t(addressof(t)), t_0(t) { }
     ~verify_conservation()
     {
-      Assert(source(t) == t_0);
+      EOPAssert(source(t) == t_0);
     }
 };
 
@@ -643,20 +643,20 @@ void run_stree_tests()
         traverse(t, print_visit<I>(false, true, false)); print_eol();
     print("Postorder traversal of t: ");
         traverse(t, print_visit<I>(false, false, true)); print_eol();
-    Assert(t == u);
-    Assert(!(t < u) && !(u < t));
-    Assert(T() < T(0));
-    Assert(!(T(0) < T()));
-    Assert(T(0) < T(1));
-    Assert(!(T(1) < T(0)));
-    Assert(T(0, T(1, T(), T()), T()) < T(1, T(), T()));
-    Assert(!(T(1, T(), T()) < T(0, T(1, T(), T()), T())));
-    Assert(T(0, T(), T()) < T(0, T(0), T()));
-    Assert(!(T(0, T(0), T()) < T(0, T(), T())));
-    Assert(T(0, T(), T()) < T(0, T(), T(0)));
-    Assert(!(T(0, T(), T(0)) < T(0, T(), T())));
-    Assert(T(0, T(0), T()) < T(0, T(0), T(0)));
-    Assert(!(T(0, T(0), T(0)) < T(0, T(0), T())));
+    EOPAssert(t == u);
+    EOPAssert(!(t < u) && !(u < t));
+    EOPAssert(T() < T(0));
+    EOPAssert(!(T(0) < T()));
+    EOPAssert(T(0) < T(1));
+    EOPAssert(!(T(1) < T(0)));
+    EOPAssert(T(0, T(1, T(), T()), T()) < T(1, T(), T()));
+    EOPAssert(!(T(1, T(), T()) < T(0, T(1, T(), T()), T())));
+    EOPAssert(T(0, T(), T()) < T(0, T(0), T()));
+    EOPAssert(!(T(0, T(0), T()) < T(0, T(), T())));
+    EOPAssert(T(0, T(), T()) < T(0, T(), T(0)));
+    EOPAssert(!(T(0, T(), T(0)) < T(0, T(), T())));
+    EOPAssert(T(0, T(0), T()) < T(0, T(0), T(0)));
+    EOPAssert(!(T(0, T(0), T(0)) < T(0, T(0), T())));
     {
         array< T > a;
         push(a, T(0, T(0), T()));
@@ -732,20 +732,20 @@ void run_tree_tests()
         traverse(t, print_visit<I>(false, true, false)); print_eol();
     print("Postorder traversal of t: ");
         traverse(t, print_visit<I>(false, false, true)); print_eol();
-    Assert(t == u);
-    Assert(!(t < u) && !(u < t));
-    Assert(T() < T(0));
-    Assert(!(T(0) < T()));
-    Assert(T(0) < T(1));
-    Assert(!(T(1) < T(0)));
-    Assert(T(0, T(1, T(), T()), T()) < T(1, T(), T()));
-    Assert(!(T(1, T(), T()) < T(0, T(1, T(), T()), T())));
-    Assert(T(0, T(), T()) < T(0, T(0), T()));
-    Assert(!(T(0, T(0), T()) < T(0, T(), T())));
-    Assert(T(0, T(), T()) < T(0, T(), T(0)));
-    Assert(!(T(0, T(), T(0)) < T(0, T(), T())));
-    Assert(T(0, T(0), T()) < T(0, T(0), T(0)));
-    Assert(!(T(0, T(0), T(0)) < T(0, T(0), T())));
+    EOPAssert(t == u);
+    EOPAssert(!(t < u) && !(u < t));
+    EOPAssert(T() < T(0));
+    EOPAssert(!(T(0) < T()));
+    EOPAssert(T(0) < T(1));
+    EOPAssert(!(T(1) < T(0)));
+    EOPAssert(T(0, T(1, T(), T()), T()) < T(1, T(), T()));
+    EOPAssert(!(T(1, T(), T()) < T(0, T(1, T(), T()), T())));
+    EOPAssert(T(0, T(), T()) < T(0, T(0), T()));
+    EOPAssert(!(T(0, T(0), T()) < T(0, T(), T())));
+    EOPAssert(T(0, T(), T()) < T(0, T(), T(0)));
+    EOPAssert(!(T(0, T(), T(0)) < T(0, T(), T())));
+    EOPAssert(T(0, T(0), T()) < T(0, T(0), T(0)));
+    EOPAssert(!(T(0, T(0), T(0)) < T(0, T(0), T())));
     {
         array< T > a;
         push(a, T(0, T(0), T()));
@@ -918,7 +918,7 @@ void run_array_tests()
     reverse_bidirectional(begin(big), end(big));
     //sort(big, less<int>());
     sort_n_adaptive(begin(big), size(big), big_buffer, N_BIG_BUFFER, less<int>());
-    Assert(equal_iota(begin(big), end(big)));
+    EOPAssert(equal_iota(begin(big), end(big)));
 }
 
 
