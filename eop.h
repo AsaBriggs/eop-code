@@ -4082,7 +4082,7 @@ I rotate(I f, I m, I l)
     // Precondition: $\property{mutable\_bounded\_range}(f, l) \wedge m \in [f, l]$
     if (m == f) return l;
     if (m == l) return f;
-    return rotate_nontrivial(f, m, l, IteratorConcept(I)());
+    return rotate_nontrivial(f, m, l, EOPIteratorConcept(I)());
 }
 
 template<typename I>
@@ -5013,8 +5013,8 @@ struct less< counted_range<I> >
 //  /\ EOPIteratorType : Position -> Iterator
 //  /\ ValueType : Position -> Regular
 //         T |- EOPValueType(EOPIteratorType(T))
-//  /\ SizeType : Position -> Integer
-//         T |- SizeType(EOPIteratorType(T))
+//  /\ EOPSizeType : Position -> Integer
+//         T |- EOPSizeType(EOPIteratorType(T))
 //  /\ base : T -> BaseType(T)
 //  /\ current : T -> EOPIteratorType(T)
 //  /\ begin : T -> EOPIteratorType(T)
@@ -6907,7 +6907,7 @@ template<typename I>
     requires(Iterator(I))
 struct iterator_concept< underlying_iterator<I> >
 {
-    typedef IteratorConcept(I) concept;
+    typedef EOPIteratorConcept(I) concept;
 };
 
 template<typename I>

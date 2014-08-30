@@ -252,7 +252,7 @@ struct value_type
 template<typename I>
     requires(RandomAccessIterator(I))
 struct difference_type;
-
+// Unused?
 #define EOPDifferenceType(T) typename difference_type< T >::type
 
 
@@ -292,7 +292,7 @@ struct indexed_iterator_tag       {};
 struct random_access_iterator_tag {};
 
 
-// IteratorConcept : Iterator -> IteratorTag
+// EOPIteratorConcept : Iterator -> IteratorTag
 
 template<typename T>
     requires(Iterator(T))
@@ -301,30 +301,31 @@ struct iterator_concept
     typedef iterator_tag concept;
 };
 
-#define IteratorConcept(T) typename iterator_concept< T >::concept
+#define EOPIteratorConcept(T) typename iterator_concept< T >::concept
 
 
 // Chapter 12 - Composite objects
 
 
-// SizeType : Linearizeable -> Integer
+// EOPSizeType : Linearizeable -> Integer
 
 template<typename W>
     requires(Linearizable(W))
 struct size_type;
 
-#define SizeType(W) typename size_type<W>::type
+#define EOPSizeType(W) typename size_type<W>::type
 
 
-// Size : ConstantSizeSequence -> Integer
+// EOPSize : ConstantSizeSequence -> Integer
 
-// Size is a type attribute
+// EOPSize is a type attribute
 
 template<typename S>
     requires(ConstantSizeSequence(S))
 struct size_value;
 
-#define Size(S) size_value<S>::value
+// Unused expect in tests
+#define EOPSize(S) size_value<S>::value
 
 
 // BaseType : Position -> DynamicSequence

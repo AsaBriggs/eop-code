@@ -4102,7 +4102,7 @@ void concept_Linearizable(W& w)
     // Type functions
     typedef EOPIteratorType(W) I;
     typedef EOPValueType(W) T;
-    typedef SizeType(W) N;
+    typedef EOPSizeType(W) N;
 
     // Procedures and operators
     I f = begin(w);
@@ -4154,8 +4154,8 @@ void concept_ConstantSizeSequence(T0& a0, T1& a1, EOPValueType(T1)& x)
     concept_Sequence(a0, a1, x);
 
     // size is fixed, and agrees with Size type attribute
-    EOPAssert(size(a0) == Size(T0));
-    EOPAssert(size(a1) == Size(T1));
+    EOPAssert(size(a0) == EOPSize(T0));
+    EOPAssert(size(a1) == EOPSize(T1));
 
     // size is positive, at least for array_k
     EOPAssert(!empty(a0));
@@ -4261,7 +4261,7 @@ void concept_Position(P p, BaseType(P)& s, EOPIteratorType(P) i)
     typedef BaseType(P) B;
     typedef EOPIteratorType(P) I;
     typedef EOPValueType(P) T;
-    typedef SizeType(P) N;
+    typedef EOPSizeType(P) N;
 
     // Not regular: lacks default constructor, copy constructor, assignment
     B& b = base(p);
@@ -4322,9 +4322,9 @@ template<typename L>
     requires(List(L) && EOPValueType(L) == int)
 void type_list()
 {
-    const SizeType(L) k0 = 10;
+    const EOPSizeType(L) k0 = 10;
     {
-        const SizeType(L) k1 = 15;
+        const EOPSizeType(L) k1 = 15;
         L l0;
         L l1;
         extend_sequence_n(l0, k0, 0);
@@ -4384,7 +4384,7 @@ void type_single_extent_array(S& s0, S& s1, EOPValueType(S)& x)
     // full
     // reserve_basic/reserve
     array<int> a;
-    typedef SizeType(array<int>) N;
+    typedef EOPSizeType(array<int>) N;
     EOPAssert(empty(a));
     EOPAssert(full(a));
     EOPAssert(capacity(a) == N(0));
