@@ -101,7 +101,7 @@ template<typename T0, typename T1>
     requires(Regular(T0) && Regular(T1))
 struct underlying_type< pair<T0, T1> >
 {
-    typedef pair<UnderlyingType(T0), UnderlyingType(T1)> type;
+    typedef pair<EOPUnderlyingType(T0), EOPUnderlyingType(T1)> type;
 };
 
 template<typename T0, typename T1>
@@ -143,7 +143,7 @@ template<typename T0, typename T1, typename T2>
     requires(Regular(T0) && Regular(T1) && Regular(T2))
 struct underlying_type< triple<T0, T1, T2> >
 {
-    typedef triple<UnderlyingType(T0), UnderlyingType(T1), UnderlyingType(T2)> type;
+    typedef triple<EOPUnderlyingType(T0), EOPUnderlyingType(T1), EOPUnderlyingType(T2)> type;
 };
 
 template<typename T0, typename T1, typename T2>
@@ -3955,7 +3955,7 @@ void construct_all(I f, I l)
     // Postcondition:
     // $(\forall i \in [f, l)) \func{sink}(i) \text{is in a default-constructed state}$
     // We assume if an iterator is writeable, its value can be constructed
-    construct_all(f, l, NeedsConstruction(EOPValueType(I))());
+    construct_all(f, l, EOPNeedsConstruction(EOPValueType(I))());
 }
 
 template<typename I>
@@ -3975,7 +3975,7 @@ void construct_all(I f, I l, true_type)
 
 template<typename I>
     requires(Writeable(I) && ForwardIterator(I) &&
-        NeedsConstruction(EOPValueType(I)) == false_type)
+        EOPNeedsConstruction(EOPValueType(I)) == false_type)
 void construct_all(I /*f*/, I /*l*/, false_type)
 {
     // Precondition:
@@ -3993,7 +3993,7 @@ void destroy_all(I f, I l)
     // Postcondition:
     // $(\forall i \in [f, l)) \func{sink}(i) \text{refers to raw memory, not an object}$
     // We assume if an iterator is writeable, its value can be destroyed
-    destroy_all(f, l, NeedsDestruction(EOPValueType(I))());
+    destroy_all(f, l, EOPNeedsDestruction(EOPValueType(I))());
 }
 
 template<typename I>
@@ -4011,7 +4011,7 @@ void destroy_all(I f, I l, true_type)
 
 template<typename I>
     requires(Writeable(I) && ForwardIterator(I) &&
-        NeedsDestruction(EOPValueType(I)) == false_type)
+        EOPNeedsDestruction(EOPValueType(I)) == false_type)
 void destroy_all(I /*f*/, I /*l*/, false_type)
 {
     // Precondition:
@@ -4020,7 +4020,7 @@ void destroy_all(I /*f*/, I /*l*/, false_type)
     // $(\forall i \in [f, l)) \func{sink}(i) \text{is in a partially-formed state}$
 }
 
-// NeedsConstruction and NeedsDestruction should be overloaded for every POD type
+// EOPNeedsConstruction and EOPNeedsDestruction should be overloaded for every POD type
 
 template<typename T>
     requires(Regular(T))
@@ -4746,7 +4746,7 @@ template<int k, typename T>
         Regular(T))
 struct underlying_type< array_k<k, T> >
 {
-    typedef array_k<k, UnderlyingType(T)> type;
+    typedef array_k<k, EOPUnderlyingType(T)> type;
 };
 
 template<int k, typename T>
@@ -5009,13 +5009,13 @@ struct less< counted_range<I> >
 
 
 // concept Position(T) means
-//     BaseType : Position -> Linearizable
+//     EOPBaseType : Position -> Linearizable
 //  /\ EOPIteratorType : Position -> Iterator
 //  /\ ValueType : Position -> Regular
 //         T |- EOPValueType(EOPIteratorType(T))
 //  /\ EOPSizeType : Position -> Integer
 //         T |- EOPSizeType(EOPIteratorType(T))
-//  /\ base : T -> BaseType(T)
+//  /\ base : T -> EOPBaseType(T)
 //  /\ current : T -> EOPIteratorType(T)
 //  /\ begin : T -> EOPIteratorType(T)
 //         x |- begin(base(x))
@@ -5030,7 +5030,7 @@ struct less< counted_range<I> >
 
 // concept InsertPosition(T) means
 //     Position(T)
-//  /\ BaseType : Position -> DynamicSequence
+//  /\ EOPBaseType : Position -> DynamicSequence
 
 // model InsertPosition(before) /\ InsertPosition(after) /\
 //       InsertPosition(front) /\ InsertPosition(back)
@@ -5038,7 +5038,7 @@ struct less< counted_range<I> >
 
 // concept ErasePosition(T) means
 //     Position(T)
-//  /\ BaseType : Position -> DynamicSequence
+//  /\ EOPBaseType : Position -> DynamicSequence
 
 // model ErasePosition(before) /\ ErasePosition(after) /\
 //       ErasePosition(front) /\ ErasePosition(back) /\
@@ -6311,7 +6311,7 @@ template<typename T>
     requires(Regular(T))
 struct weight_type< stree<T> >
 {
-    typedef EOPWeightType(CoordinateType(stree<T>)) type;
+    typedef EOPWeightType(EOPCoordinateType(stree<T>)) type;
 };
 
 template<typename T>
@@ -6347,7 +6347,7 @@ template<typename T, typename Proc>
     requires(Regular(T) &&
         Procedure(Proc) && Arity(Proc) == 2 &&
         visit == EOPInputType(Proc, 0) &&
-        CoordinateType(stree<T>) == EOPInputType(Proc, 1))
+        EOPCoordinateType(stree<T>) == EOPInputType(Proc, 1))
 void traverse(stree<T>& x, Proc proc)
 {
     traverse_nonempty(begin(x), proc);
@@ -6557,14 +6557,14 @@ template<typename T>
     requires(Regular(T))
 struct value_type< tree<T> >
 {
-    typedef EOPValueType(CoordinateType(tree<T>)) type;
+    typedef EOPValueType(EOPCoordinateType(tree<T>)) type;
 };
 
 template<typename T>
     requires(Regular(T))
 struct weight_type< tree<T> >
 {
-    typedef EOPWeightType(CoordinateType(tree<T>)) type;
+    typedef EOPWeightType(EOPCoordinateType(tree<T>)) type;
 };
 
 template<typename T>
@@ -6599,7 +6599,7 @@ template<typename T, typename Proc>
     requires(Regular(T) &&
         Procedure(Proc) && Arity(Proc) == 2 &&
         visit == EOPInputType(Proc, 0) &&
-        CoordinateType(tree<T>) == EOPInputType(Proc, 1))
+        EOPCoordinateType(tree<T>) == EOPInputType(Proc, 1))
 void traverse(tree<T>& x, Proc proc)
 {
     traverse(begin(x), proc);
@@ -6833,16 +6833,16 @@ inline void swap_basic(T& x, T& y)
 
 template<typename T>
     requires(Regular(T))
-inline UnderlyingType(T)& underlying_ref(T& x)
+inline EOPUnderlyingType(T)& underlying_ref(T& x)
 {
-    return reinterpret_cast<UnderlyingType(T)&>(x);
+    return reinterpret_cast<EOPUnderlyingType(T)&>(x);
 }
 
 template<typename T>
     requires(Regular(T))
-inline const UnderlyingType(T)& underlying_ref(const T& x)
+inline const EOPUnderlyingType(T)& underlying_ref(const T& x)
 {
-    return reinterpret_cast<const UnderlyingType(T)&>(x);
+    return reinterpret_cast<const EOPUnderlyingType(T)&>(x);
 }
 
 template<typename T>
@@ -6856,7 +6856,7 @@ template<typename T>
     requires(Regular(T))
 inline void rotate_right(T& x, T& y, T& z)
 {
-    UnderlyingType(T) tmp = underlying_ref(z);
+    EOPUnderlyingType(T) tmp = underlying_ref(z);
     underlying_ref(z)     = underlying_ref(y);
     underlying_ref(y)     = underlying_ref(x);
     underlying_ref(x)     = tmp;
@@ -6866,7 +6866,7 @@ template<typename T>
     requires(Regular(T))
 inline void rotate_left(T& x, T& y, T& z)
 {
-    UnderlyingType(T) tmp = underlying_ref(x);
+    EOPUnderlyingType(T) tmp = underlying_ref(x);
     underlying_ref(x)     = underlying_ref(y);
     underlying_ref(y)     = underlying_ref(z);
     underlying_ref(z)     = tmp;
@@ -6893,7 +6893,7 @@ template<typename I>
     requires(Iterator(I))
 struct value_type< underlying_iterator<I> >
 {
-    typedef UnderlyingType(EOPValueType(I)) type;
+    typedef EOPUnderlyingType(EOPValueType(I)) type;
 };
 
 template<typename I>
@@ -6961,21 +6961,21 @@ bool operator<(const underlying_iterator<I>& x, const underlying_iterator<I>& y)
 
 template<typename I>
     requires(Iterator(I))
-const UnderlyingType(EOPValueType(I))& source(const underlying_iterator<I>& x)
+const EOPUnderlyingType(EOPValueType(I))& source(const underlying_iterator<I>& x)
 {
   return underlying_ref(source(x.i));
 }
 
 template<typename I>
     requires(Iterator(I))
-UnderlyingType(EOPValueType(I))& sink(underlying_iterator<I>& x)
+EOPUnderlyingType(EOPValueType(I))& sink(underlying_iterator<I>& x)
 {
   return underlying_ref(sink(x.i));
 }
 
 template<typename i>
     requires(Iterator(i))
-UnderlyingType(EOPValueType(i))& deref(underlying_iterator<i>& x)
+EOPUnderlyingType(EOPValueType(i))& deref(underlying_iterator<i>& x)
 {
   return underlying_ref(deref(x.i));
 }
@@ -7005,7 +7005,7 @@ template<typename T>
     requires(Regular(T))
 void reserve(array<T>& x, EOPDistanceType(EOPIteratorType(array<T>)) n)
 {
-    reserve_basic(reinterpret_cast<array<UnderlyingType(T)>&>(x), n);
+    reserve_basic(reinterpret_cast<array<EOPUnderlyingType(T)>&>(x), n);
 }
 
 
@@ -7015,14 +7015,14 @@ void reserve(array<T>& x, EOPDistanceType(EOPIteratorType(array<T>)) n)
 
 template<typename T>
     requires(Regular(T))
-T& original_ref(UnderlyingType(T)& x)
+T& original_ref(EOPUnderlyingType(T)& x)
 {
     return reinterpret_cast<T&>(x);
 }
 
 template<typename T>
     requires(Regular(T))
-const T& original_ref(const UnderlyingType(T)& x)
+const T& original_ref(const EOPUnderlyingType(T)& x)
 {
     return reinterpret_cast<const T&>(x);
 }
@@ -7032,7 +7032,7 @@ template<typename P>
 struct underlying_predicate
 {
     typedef EOPDomain(P) T;
-    typedef UnderlyingType(T) U;
+    typedef EOPUnderlyingType(T) U;
     typedef U input_type_0;
     typedef bool codomain_type;
 
@@ -7056,7 +7056,7 @@ template<typename R>
 struct underlying_relation
 {
     typedef EOPDomain(R) T;
-    typedef UnderlyingType(T) U;
+    typedef EOPUnderlyingType(T) U;
     typedef U input_type_0;
     typedef U input_type_1;
     typedef bool codomain_type;
@@ -7093,7 +7093,7 @@ template<typename I, typename R>
 I advanced_sort_n(I f, EOPDistanceType(I) n, R r)
 {
     // Precondition: $\property{mutable\_counted\_range}(f, n) \wedge \property{weak\_ordering}(r)$
-    temporary_buffer<UnderlyingType(EOPValueType(I))> b(half_nonnegative(n));
+    temporary_buffer<EOPUnderlyingType(EOPValueType(I))> b(half_nonnegative(n));
     return original(sort_n_adaptive(make_underlying_iterator(f), n,
                                     begin(b), size(b),
                                     make_underlying_relation(r)));

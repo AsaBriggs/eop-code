@@ -141,7 +141,7 @@ void concept_Regular(T& x)
     EOPAssert(!lt(x, x));
 
     // Underlying type
-    UnderlyingType(T) u;
+    EOPUnderlyingType(T) u;
     (void)u;
 
     // Destructor
@@ -2411,9 +2411,9 @@ void algorithms_bifurcate_coordinates()
 {
     print("    bifurcate coordinates\n");
 
-    typedef CoordinateType(T) C;
+    typedef EOPCoordinateType(T) C;
     typedef EOPWeightType(T) N;
-    typedef CoordinateType(T_X) C_X;
+    typedef EOPCoordinateType(T_X) C_X;
 
     T t0;
     T t4(4);
@@ -2504,9 +2504,9 @@ void algorithms_bidirectional_bifurcate_coordinates()
     print("    bidirectional bifurcate coordinates\n");
 
     typedef EOPValueType(T) Z;
-    typedef CoordinateType(T) C;
+    typedef EOPCoordinateType(T) C;
     typedef EOPWeightType(T) N;
-    typedef CoordinateType(T_X) C_X;
+    typedef EOPCoordinateType(T_X) C_X;
 
     T t0;
     T t4(4);
@@ -2761,7 +2761,7 @@ void algorithms_linked_bifurcate_coordinates()
     verify_conservation<int> v(stree_node_count);
 
     typedef stree<Z> T;
-    typedef CoordinateType(T) C;
+    typedef EOPCoordinateType(T) C;
     typedef EOPWeightType(C) N;
 
     // ***** to do: test tree_rotate on single-node tree 
@@ -2820,7 +2820,7 @@ void test_bifurcate_copy_Andrej()
 {
 
     typedef stree<Z> T;
-    typedef CoordinateType(T) C;
+    typedef EOPCoordinateType(T) C;
     typedef EOPWeightType(C) N;
 
     T tt4(4, T(5), T());
@@ -4256,9 +4256,9 @@ void type_counted_range(I f, EOPDistanceType(I) n)
 
 template<typename P>
     requires(Position(P))
-void concept_Position(P p, BaseType(P)& s, EOPIteratorType(P) i)
+void concept_Position(P p, EOPBaseType(P)& s, EOPIteratorType(P) i)
 {
-    typedef BaseType(P) B;
+    typedef EOPBaseType(P) B;
     typedef EOPIteratorType(P) I;
     typedef EOPValueType(P) T;
     typedef EOPSizeType(P) N;
@@ -4467,7 +4467,7 @@ template<typename T, typename T0>
     requires(T == array<T0>)
 void algorithm_underlying_ref_array(T0& x)
 {
-    typedef UnderlyingType(T) U;
+    typedef EOPUnderlyingType(T) U;
     T t(2, 2, x);
     U u = underlying_ref(t);
     EOPAssert(u.p == t.p);
@@ -4505,7 +4505,7 @@ template<typename T, typename T0>
     requires(T == array<T0>)
 void algorithm_original_ref_array(T0& x)
 {
-    typedef UnderlyingType(T) U;
+    typedef EOPUnderlyingType(T) U;
     T t0(2, 2, x);
     T t1(3, 3, x);
     EOPAssert(t0 < t1);
@@ -4530,7 +4530,7 @@ template<typename T, typename R>
 void algorithm_underlying_relation(T& x0, T& x1, R r)
 {
     // Precondition: r(x0, x1) && !r(x1, x0)
-    typedef UnderlyingType(T) U;
+    typedef EOPUnderlyingType(T) U;
     EOPAssert(r(x0, x1) && !r(x1, x0));
 
     underlying_relation<R> ur = {r};

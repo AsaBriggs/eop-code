@@ -328,13 +328,13 @@ struct size_value;
 #define EOPSize(S) size_value<S>::value
 
 
-// BaseType : Position -> DynamicSequence
+// EOPBaseType : Position -> DynamicSequence
 
 template<typename S>
     requires(DynamicSequence(S))
 struct base_type;
 
-#define BaseType(T) typename base_type<T>::type
+#define EOPBaseType(T) typename base_type<T>::type
 
 
 // concept BooleanType(T) means T represents a boolean value within the type system
@@ -399,8 +399,8 @@ struct and_
 };
 
 
-// NeedsConstruction : Regular -> BooleanType
-// NeedsDestruction  : Regular -> BooleanType
+// EOPNeedsConstruction : Regular -> BooleanType
+// EOPNeedsDestruction  : Regular -> BooleanType
 
 template<typename T>
     requires(Regular(T))
@@ -409,7 +409,7 @@ struct needs_construction_type
     typedef true_type type; // default
 };
 
-#define NeedsConstruction(T) typename needs_construction_type<T>::type
+#define EOPNeedsConstruction(T) typename needs_construction_type<T>::type
 
 template<typename T>
     requires(Regular(T))
@@ -418,7 +418,7 @@ struct needs_destruction_type
     typedef true_type type; // default
 };
 
-#define NeedsDestruction(T) typename needs_destruction_type<T>::type
+#define EOPNeedsDestruction(T) typename needs_destruction_type<T>::type
 
 template<>
 struct needs_construction_type<int>
@@ -432,20 +432,20 @@ struct needs_destruction_type<int>
     typedef false_type type;
 };
 
-// NeedsConstruction and NeedsDestruction should be similarly overloaded
+// EOPNeedsConstruction and EOPNeedsDestruction should be similarly overloaded
 // for every POD type
 
 
-// CoordinateType : Container -> Coordinate
+// EOPCoordinateType : Container -> Coordinate
 
 template<typename T>
     requires(Container(T))
 struct coordinate_type;
 
-#define CoordinateType(T) typename coordinate_type<T>::type
+#define EOPCoordinateType(T) typename coordinate_type<T>::type
 
 
-// UnderlyingType : Regular -> Regular
+// EOPUnderlyingType : Regular -> Regular
 
 template<typename T> requires(Regular(T))
 struct underlying_type
@@ -453,7 +453,7 @@ struct underlying_type
     typedef T type; // default
 };
 
-#define UnderlyingType(T) typename underlying_type<T>::type
+#define EOPUnderlyingType(T) typename underlying_type<T>::type
 
 
 #endif // TYPE_FUNCTIONS
