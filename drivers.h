@@ -39,7 +39,7 @@ template<typename F, typename P>
         UnaryPredicate(P) && EOPDomain(F) == EOPDomain(P))
 void output_orbit_structure(EOPDomain(F) x, F f, P p)
 {
-    triple<DistanceType(F), DistanceType(F), EOPDomain(F)> t =
+    triple<EOPDistanceType(F), EOPDistanceType(F), EOPDomain(F)> t =
         orbit_structure(x, f, p);
     if (!p(t.m2)) {
         print("terminating with h-1 = "); print(t.m0);
@@ -101,10 +101,10 @@ void run_additive_congruential_transformation()
 }
 
 template<typename I>
-    requires(Readable(I) && IndexedIterator(I) && EOPValueType(I) == DistanceType(I))
+    requires(Readable(I) && IndexedIterator(I) && EOPValueType(I) == EOPDistanceType(I))
 struct table_transformation
 {
-    typedef DistanceType(I) N;
+    typedef EOPDistanceType(I) N;
     typedef N input_type_0;
     typedef int codomian_type;
 
@@ -118,11 +118,11 @@ struct table_transformation
 };
 
 template<typename I>
-    requires(Readable(I) && IndexedIterator(I) && EOPValueType(I) == DistanceType(I))
+    requires(Readable(I) && IndexedIterator(I) && EOPValueType(I) == EOPDistanceType(I))
 struct table_transformation_definition_space_predicate
 {
     typedef table_transformation<I> T;
-    typedef DistanceType(I) N;
+    typedef EOPDistanceType(I) N;
     typedef N input_type_0;
     typedef bool codomain_type;
 
@@ -135,10 +135,10 @@ struct table_transformation_definition_space_predicate
 };
 
 template<typename I>
-    requires(Readable(I) && IndexedIterator(I) && EOPValueType(I) == DistanceType(I))
+    requires(Readable(I) && IndexedIterator(I) && EOPValueType(I) == EOPDistanceType(I))
 struct distance_type< table_transformation<I> >
 {
-    typedef DistanceType(I) type;
+    typedef EOPDistanceType(I) type;
 };
 
 void run_table_transformation()
@@ -414,7 +414,7 @@ template<typename T>
     requires(EuclideanSemiring(T))
 struct quo_rem
 {
-    typedef QuotientType(T) I;
+    typedef EOPQuotientType(T) I;
 
     typedef T input_type_0;
     typedef T input_type_1;
@@ -883,7 +883,7 @@ void run_array_tests()
     print_eol();
     print("sorted:  "); print(m); print_eol();
 
-    typedef DistanceType(IteratorType(matrix)) N;
+    typedef EOPDistanceType(IteratorType(matrix)) N;
     N n = max(size(m) / N(10), N(100));
     UnderlyingType(row) r;
     array<UnderlyingType(row)> buffer(n, n, r);

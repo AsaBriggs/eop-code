@@ -195,10 +195,10 @@ EOPDomain(F) power_unary(EOPDomain(F) x, N n, F f)
 
 template<typename F>
     requires(Transformation(F))
-DistanceType(F) distance(EOPDomain(F) x, EOPDomain(F) y, F f)
+EOPDistanceType(F) distance(EOPDomain(F) x, EOPDomain(F) y, F f)
 {
     // Precondition: $y$ is reachable from $x$ under $f$
-    typedef DistanceType(F) N;
+    typedef EOPDistanceType(F) N;
     N n(0);
     while (x != y) {
         x = f(x);
@@ -277,7 +277,7 @@ template<typename F>
     requires(Transformation(F))
 EOPDomain(F) convergent_point(EOPDomain(F) x0, EOPDomain(F) x1, F f)
 {
-    // Precondition: $(\exists n \in \func{DistanceType}(F))\,n \geq 0 \wedge f^n(x0) = f^n(x1)$
+    // Precondition: $(\exists n \in \func{EOPDistanceType}(F))\,n \geq 0 \wedge f^n(x0) = f^n(x1)$
     while (x0 != x1) {
         x0 = f(x0);
         x1 = f(x1);
@@ -316,7 +316,7 @@ EOPDomain(F) convergent_point_guarded(EOPDomain(F) x0,
                                    EOPDomain(F) y, F f)
 {
     // Precondition: $\func{reachable}(x0, y, f) \wedge \func{reachable}(x1, y, f)$
-    typedef DistanceType(F) N;
+    typedef EOPDistanceType(F) N;
     N d0 = distance(x0, y, f);
     N d1 = distance(x1, y, f);
     if      (d0 < d1) x1 = power_unary(x1, d1 - d0, f);
@@ -326,10 +326,10 @@ EOPDomain(F) convergent_point_guarded(EOPDomain(F) x0,
 
 template<typename F>
     requires(Transformation(F))
-triple<DistanceType(F), DistanceType(F), EOPDomain(F)>
+triple<EOPDistanceType(F), EOPDistanceType(F), EOPDomain(F)>
 orbit_structure_nonterminating_orbit(const EOPDomain(F)& x, F f)
 {
-    typedef DistanceType(F) N;
+    typedef EOPDistanceType(F) N;
     EOPDomain(F) y = connection_point_nonterminating_orbit(x, f);
     return make_triple(distance(x, y, f),
                        distance(f(y), y, f),
@@ -339,11 +339,11 @@ orbit_structure_nonterminating_orbit(const EOPDomain(F)& x, F f)
 template<typename F, typename P>
     requires(Transformation(F) &&
         UnaryPredicate(P) && EOPDomain(F) == EOPDomain(P))
-triple<DistanceType(F), DistanceType(F), EOPDomain(F)>
+triple<EOPDistanceType(F), EOPDistanceType(F), EOPDomain(F)>
 orbit_structure(const EOPDomain(F)& x, F f, P p)
 {
     // Precondition: $p(x) \Leftrightarrow \text{$f(x)$ is defined}$
-    typedef DistanceType(F) N;
+    typedef EOPDistanceType(F) N;
     EOPDomain(F) y = connection_point(x, f, p);
     N m = distance(x, y, f);
     N n(0);
@@ -1126,10 +1126,10 @@ T slow_remainder(T a, T b)
 
 template<typename T>
     requires(ArchimedeanMonoid(T))
-QuotientType(T) slow_quotient(T a, T b)
+EOPQuotientType(T) slow_quotient(T a, T b)
 {
     // Precondition: $a \geq 0 \wedge b > 0$
-    QuotientType(T) n(0);
+    EOPQuotientType(T) n(0);
     while (b <= a) {
         a = a - b;
         n = successor(n);
@@ -1312,11 +1312,11 @@ T stein_gcd_nonnegative(T a, T b)
 
 template<typename T>
     requires(ArchimedeanMonoid(T))
-pair<QuotientType(T), T>
+pair<EOPQuotientType(T), T>
 quotient_remainder_nonnegative(T a, T b)
 {
     // Precondition: $a \geq 0 \wedge b > 0$
-    typedef QuotientType(T) N;
+    typedef EOPQuotientType(T) N;
     if (a < b) return make_pair(N(0), a);
     if (a - b < b) return make_pair(N(1), a - b);
     pair<N, T> q = quotient_remainder_nonnegative(a, b + b);
@@ -1335,11 +1335,11 @@ quotient_remainder_nonnegative(T a, T b)
 
 template<typename T>
     requires(ArchimedeanMonoid(T))
-pair<QuotientType(T), T>
+pair<EOPQuotientType(T), T>
 quotient_remainder_nonnegative_fibonacci(T a, T b)
 {
     // Precondition: $a \geq 0 \wedge b > 0$
-    typedef QuotientType(T) N;
+    typedef EOPQuotientType(T) N;
     if (a < b) return make_pair(N(0), a);
     T c = b;
     N nMinus1 = N(0);
@@ -1362,11 +1362,11 @@ quotient_remainder_nonnegative_fibonacci(T a, T b)
 
 template<typename T>
     requires(HalvableMonoid(T))
-pair<QuotientType(T), T>
+pair<EOPQuotientType(T), T>
 quotient_remainder_nonnegative_iterative(T a, T b)
 {
     // Precondition: $a \geq 0 \wedge b > 0$
-    typedef QuotientType(T) N;
+    typedef EOPQuotientType(T) N;
     if (a < b) return make_pair(N(0), a);
     T c = largest_doubling(a, b);
     a = a - c;
@@ -1408,14 +1408,14 @@ EOPDomain(Op) remainder(EOPDomain(Op) a, EOPDomain(Op) b, Op rem)
 template<typename F>
     requires(HomogeneousFunction(F) && Arity(F) == 2 &&
         ArchimedeanGroup(EOPDomain(F)) &&
-        EOPCodomain(F) == pair<QuotientType(EOPDomain(F)),
+        EOPCodomain(F) == pair<EOPQuotientType(EOPDomain(F)),
                             EOPDomain(F)>)
-pair<QuotientType(EOPDomain(F)), EOPDomain(F)>
+pair<EOPQuotientType(EOPDomain(F)), EOPDomain(F)>
 quotient_remainder(EOPDomain(F) a, EOPDomain(F) b, F quo_rem) 
 {
     // Precondition: $b \neq 0$
     typedef EOPDomain(F) T;
-    pair<QuotientType(T), T> q_r;
+    pair<EOPQuotientType(T), T> q_r;
     if (a < T(0)) {
         if (b < T(0)) {
             q_r = quo_rem(-a, -b); q_r.m1 = -q_r.m1;
@@ -1457,7 +1457,7 @@ void increment(I& x)
 
 template<typename I>
     requires(Iterator(I))
-I operator+(I f, DistanceType(I) n)
+I operator+(I f, EOPDistanceType(I) n)
 {
     // Precondition: $n \geq 0 \wedge \property{weak\_range}(f, n)$
     while (!zero(n)) {
@@ -1470,10 +1470,10 @@ I operator+(I f, DistanceType(I) n)
 
 template<typename I>
     requires(Iterator(I))
-DistanceType(I) operator-(I l, I f)
+EOPDistanceType(I) operator-(I l, I f)
 {
     // Precondition: $\property{bounded\_range}(f, l)$
-    DistanceType(I) n(0);
+    EOPDistanceType(I) n(0);
     while (f != l) {
         n = successor(n);
         f = successor(f);
@@ -1593,9 +1593,9 @@ J count_if(I f, I l, P p, J j)
 template<typename I, typename P>
     requires(Readable(I) && Iterator(I) &&
         UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
-DistanceType(I) count_if(I f, I l, P p) {
+EOPDistanceType(I) count_if(I f, I l, P p) {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
-    return count_if(f, l, p, DistanceType(I)(0));
+    return count_if(f, l, p, EOPDistanceType(I)(0));
 }
 
 template<typename I, typename J>
@@ -1613,10 +1613,10 @@ J count(I f, I l, const EOPValueType(I)& x, J j)
 
 template<typename I>
     requires(Readable(I) && Iterator(I))
-DistanceType(I) count(I f, I l, const EOPValueType(I)& x)
+EOPDistanceType(I) count(I f, I l, const EOPValueType(I)& x)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
-  return count(f, l, x, DistanceType(I)(0));
+  return count(f, l, x, EOPDistanceType(I)(0));
 }
 
 template<typename I, typename J>
@@ -1634,10 +1634,10 @@ J count_not(I f, I l, const EOPValueType(I)& x, J j)
 
 template<typename I>
     requires(Readable(I) && Iterator(I))
-DistanceType(I) count_not(I f, I l, const EOPValueType(I)& x)
+EOPDistanceType(I) count_not(I f, I l, const EOPValueType(I)& x)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
-  return count_not(f, l, x, DistanceType(I)(0));
+  return count_not(f, l, x, EOPDistanceType(I)(0));
 }
 
 template<typename I, typename P, typename J>
@@ -1656,10 +1656,10 @@ J count_if_not(I f, I l, P p, J j)
 template<typename I, typename P>
     requires(Readable(I) && Iterator(I) &&
         UnaryPredicate(P) && EOPDomain(P) == EOPValueType(I))
-DistanceType(I) count_if_not(I f, I l, P p)
+EOPDistanceType(I) count_if_not(I f, I l, P p)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
-    return count_if_not(f, l, p, DistanceType(I)(0));
+    return count_if_not(f, l, p, EOPDistanceType(I)(0));
 }
 
 template<typename I, typename Op, typename F>
@@ -1780,7 +1780,7 @@ template<typename I, typename Proc>
     requires(Readable(I) && Iterator(I) &&
         Procedure(Proc) && Arity(Proc) == 1 &&
         EOPValueType(I) == EOPInputType(Proc, 0))
-pair<Proc, I> for_each_n(I f, DistanceType(I) n, Proc proc)
+pair<Proc, I> for_each_n(I f, EOPDistanceType(I) n, Proc proc)
 {
     // Precondition: $\property{readable\_weak\_range}(f, n)$
     while (!zero(n)) {
@@ -1793,7 +1793,7 @@ pair<Proc, I> for_each_n(I f, DistanceType(I) n, Proc proc)
 
 template<typename I>
     requires(Readable(I) && Iterator(I))
-pair<I, DistanceType(I)> find_n(I f, DistanceType(I) n,
+pair<I, EOPDistanceType(I)> find_n(I f, EOPDistanceType(I) n,
                                 const EOPValueType(I)& x)
 {
     // Precondition: $\property{readable\_weak\_range}(f, n)$
@@ -1925,12 +1925,12 @@ I find_adjacent_mismatch_forward(I f, I l, R r)
 template<typename I, typename P>
     requires(Readable(I) && ForwardIterator(I) &&
         UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
-I partition_point_n(I f, DistanceType(I) n, P p)
+I partition_point_n(I f, EOPDistanceType(I) n, P p)
 {
     // Precondition:
     // $\func{readable\_counted\_range}(f, n) \wedge \func{partitioned\_n}(f, n, p)$
     while (!zero(n)) {
-        DistanceType(I) h = half_nonnegative(n);
+        EOPDistanceType(I) h = half_nonnegative(n);
         I m = f + h;
         if (p(source(m))) {
             n = h;
@@ -1975,7 +1975,7 @@ inline lower_bound_predicate<R> make_lower_bound_predicate(const EOPDomain(R)& a
 template<typename I, typename R>
     requires(Readable(I) && ForwardIterator(I) &&
         Relation(R) && EOPValueType(I) == EOPDomain(R))
-I lower_bound_n(I f, DistanceType(I) n,
+I lower_bound_n(I f, EOPDistanceType(I) n,
                 const EOPValueType(I)& a, R r)
 {
     // Precondition:
@@ -2007,7 +2007,7 @@ inline upper_bound_predicate<R> make_upper_bound_predicate(const EOPDomain(R)& a
 template<typename I, typename R>
     requires(Readable(I) && ForwardIterator(I) &&
         Relation(R) && EOPValueType(I) == EOPDomain(R))
-I upper_bound_n(I f, DistanceType(I) n,
+I upper_bound_n(I f, EOPDistanceType(I) n,
                 const EOPValueType(I)& a, R r)
 {
     // Precondition:
@@ -2021,7 +2021,7 @@ I upper_bound_n(I f, DistanceType(I) n,
 
 template<typename I>
     requires(BidirectionalIterator(I))
-I operator-(I l, DistanceType(I) n)
+I operator-(I l, EOPDistanceType(I) n)
 {
     // Precondition: $n \geq 0 \wedge (\exists f \in I)\,(\func{weak\_range}(f, n) \wedge l = f+n)$
     while (!zero(n)) {
@@ -2942,12 +2942,12 @@ template<typename I, typename S, typename R>
     requires(Readable(I) &&
         ForwardLinker(S) && I == IteratorType(S) &&
         Relation(R) && EOPValueType(I) == EOPDomain(R))
-pair<I, I> sort_linked_nonempty_n(I f, DistanceType(I) n,
+pair<I, I> sort_linked_nonempty_n(I f, EOPDistanceType(I) n,
                                   R r, S set_link)
 {
     // Precondition: $\property{counted\_range}(f, n) \wedge
     //                n > 0 \wedge \func{weak\_ordering}(r)$
-    typedef DistanceType(I) N;
+    typedef EOPDistanceType(I) N;
     typedef pair<I, I> P;
     if (n == N(1)) return make_pair(f, successor(f));
     N h = half_nonnegative(n);
@@ -3170,7 +3170,7 @@ pair<I, O> copy_n(I f_i, N n, O f_o)
 
 template<typename I>
     requires(Writable(I) && Iterator(I))
-I fill_n(I f, DistanceType(I) n, const EOPValueType(I)& x)
+I fill_n(I f, EOPDistanceType(I) n, const EOPValueType(I)& x)
 {
     while (count_down(n)) fill_step(f, x);
     return f;
@@ -3205,7 +3205,7 @@ template<typename I, typename O>
     requires(Readable(I) && BidirectionalIterator(I) &&
         Writable(O) && BidirectionalIterator(O) &&
         EOPValueType(I) == EOPValueType(O))
-pair<I, O> copy_backward_n(I l_i, DistanceType(I) n, O l_o)
+pair<I, O> copy_backward_n(I l_i, EOPDistanceType(I) n, O l_o)
 {
     while (count_down(n)) copy_backward_step(l_i, l_o);
     return make_pair(l_i, l_o);
@@ -3310,7 +3310,7 @@ template<typename I, typename O_f, typename O_t, typename P>
         EOPValueType(I) == EOPValueType(O_f) &&
         EOPValueType(I) == EOPValueType(O_t) &&
         UnaryPredicate(P) && I == EOPDomain(P))
-pair<O_f, O_t> split_copy_n(I f_i, DistanceType(I) n_i, O_f f_f, O_t f_t, P p)
+pair<O_f, O_t> split_copy_n(I f_i, EOPDistanceType(I) n_i, O_f f_f, O_t f_t, P p)
 {
     // Precondition: see exercise 9.2 of Elements of Programming
     while (count_down(n_i))
@@ -3341,7 +3341,7 @@ template<typename I, typename O_f, typename O_t, typename P>
         EOPValueType(I) == EOPValueType(O_f) &&
         EOPValueType(I) == EOPValueType(O_t) &&
         UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
-pair<O_f, O_t> partition_copy_n(I f_i, DistanceType(I) n,
+pair<O_f, O_t> partition_copy_n(I f_i, EOPDistanceType(I) n,
                                 O_f f_f, O_t f_t,
                                 P p)
 {
@@ -3375,8 +3375,8 @@ template<typename I0, typename I1, typename O, typename R>
         EOPValueType(I0) == EOPValueType(O) &&
         EOPValueType(I1) == EOPValueType(O) &&
         I0 == EOPInputType(R, 1) && I1 = EOPInputType(R, 0))
-triple<I0, I1, O> combine_copy_n(I0 f_i0, DistanceType(I0) n_i0,
-                                 I1 f_i1, DistanceType(I1) n_i1,
+triple<I0, I1, O> combine_copy_n(I0 f_i0, EOPDistanceType(I0) n_i0,
+                                 I1 f_i1, EOPDistanceType(I1) n_i1,
                                  O f_o, R r) {
     // Precondition: see $\func{combine_copy}$
     while (true) {
@@ -3427,8 +3427,8 @@ template<typename I0, typename I1, typename O, typename R>
         BinaryPredicate(R) && 
         EOPValueType(I0) == EOPValueType(O) && EOPValueType(I1) == EOPValueType(O) &&
         I0 == EOPInputType(R, 1) && I1 = EOPInputType(R, 0))
-triple<I0, I1, O> combine_copy_backward_n(I0 l_i0, DistanceType(I0) n_i0,
-                           I1 l_i1, DistanceType(I1) n_i1, O l_o, R r) {
+triple<I0, I1, O> combine_copy_backward_n(I0 l_i0, EOPDistanceType(I0) n_i0,
+                           I1 l_i1, EOPDistanceType(I1) n_i1, O l_o, R r) {
     // Precondition: see $\func{combine\_copy\_backward}$
     while (true) {
         if (zero(n_i0)) {
@@ -3475,8 +3475,8 @@ template<typename I0, typename I1, typename O, typename R>
         EOPValueType(I0) == EOPValueType(O) &&
         EOPValueType(I1) == EOPValueType(O) &&
         EOPValueType(I0) == EOPDomain(R))
-triple<I0, I1, O> merge_copy_n(I0 f_i0, DistanceType(I0) n_i0,
-                               I1 f_i1, DistanceType(I1) n_i1,
+triple<I0, I1, O> merge_copy_n(I0 f_i0, EOPDistanceType(I0) n_i0,
+                               I1 f_i1, EOPDistanceType(I1) n_i1,
                                O o, R r)
 {
     // Precondition: see $\func{merge\_copy}$
@@ -3511,8 +3511,8 @@ template<typename I0, typename I1, typename O, typename R>
         Relation(R) && 
         EOPValueType(I0) == EOPValueType(O) && EOPValueType(I1) == EOPValueType(O) &&
         EOPValueType(I0) == EOPDomain(R))
-triple<I0, I1, O> merge_copy_backward_n(I0 l_i0, DistanceType(I0) n_i0,
-                           I1 l_i1, DistanceType(I1) n_i1, O l_o, R r) {
+triple<I0, I1, O> merge_copy_backward_n(I0 l_i0, EOPDistanceType(I0) n_i0,
+                           I1 l_i1, EOPDistanceType(I1) n_i1, O l_o, R r) {
     // Precondition: see $\func{merge\_copy\_backward}$
     relation_source<I1, I0, R> rs = {r};
     return combine_copy_backward_n(l_i0, n_i0, l_i1, n_i1, l_o, rs);
@@ -3676,10 +3676,10 @@ void cycle_from(I i, F f)
 
 template<typename I>
     requires(Mutable(I) && IndexedIterator(I))
-void reverse_n_indexed(I f, DistanceType(I) n)
+void reverse_n_indexed(I f, EOPDistanceType(I) n)
 {
     // Precondition: $\property{mutable\_counted\_range}(f, n)$
-    DistanceType(I) i(0);
+    EOPDistanceType(I) i(0);
     n = predecessor(n);
     while (i < n) {
         // $n = (n_\text{original} - 1) - i$
@@ -3705,7 +3705,7 @@ void reverse_bidirectional(I f, I l)
 
 template<typename I>
     requires(Mutable(I) && BidirectionalIterator(I))
-void reverse_n_bidirectional(I f, I l, DistanceType(I) n)
+void reverse_n_bidirectional(I f, I l, EOPDistanceType(I) n)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f, l) \wedge 0 \leq n \leq l - f$
     reverse_swap_ranges_n(l, f, half_nonnegative(n));
@@ -3715,7 +3715,7 @@ template<typename I, typename B>
     requires(Mutable(I) && ForwardIterator(I) &&
         Mutable(B) && BidirectionalIterator(B) &&
         EOPValueType(I) == EOPValueType(B))
-I reverse_n_with_buffer(I f_i, DistanceType(I) n, B f_b)
+I reverse_n_with_buffer(I f_i, EOPDistanceType(I) n, B f_b)
 {
     // Precondition: $\property{mutable\_counted\_range}(f_i, n)$
     // Precondition: $\property{mutable\_counted\_range}(f_b, n)$
@@ -3724,10 +3724,10 @@ I reverse_n_with_buffer(I f_i, DistanceType(I) n, B f_b)
 
 template<typename I>
     requires(Mutable(I) && ForwardIterator(I))
-I reverse_n_forward(I f, DistanceType(I) n)
+I reverse_n_forward(I f, EOPDistanceType(I) n)
 {
     // Precondition: $\property{mutable\_counted\_range}(f, n)$
-    typedef DistanceType(I) N;
+    typedef EOPDistanceType(I) N;
     if (n < N(2)) return f + n;
     N h = half_nonnegative(n);
     N n_mod_2 = n - twice(h);
@@ -3741,12 +3741,12 @@ template<typename I, typename B>
     requires(Mutable(I) && ForwardIterator(I) &&
         Mutable(B) && BidirectionalIterator(B) &&
         EOPValueType(I) == EOPValueType(B))
-I reverse_n_adaptive(I f_i, DistanceType(I) n_i,
-                     B f_b, DistanceType(I) n_b)
+I reverse_n_adaptive(I f_i, EOPDistanceType(I) n_i,
+                     B f_b, EOPDistanceType(I) n_b)
 {
     // Precondition: $\property{mutable\_counted\_range}(f_i, n_i)$
     // Precondition: $\property{mutable\_counted\_range}(f_b, n_b)$
-    typedef DistanceType(I) N;
+    typedef EOPDistanceType(I) N;
     if (n_i < N(2))
         return f_i + n_i;
     if (n_i <= n_b)
@@ -3766,8 +3766,8 @@ struct k_rotate_from_permutation_random_access
     typedef I input_type_0;
     typedef I codomain_type;
 
-    DistanceType(I) k;
-    DistanceType(I) n_minus_k;
+    EOPDistanceType(I) k;
+    EOPDistanceType(I) n_minus_k;
     I m_prime;
     k_rotate_from_permutation_random_access(I f, I m, I l) :
         k(l - m), n_minus_k(m - f), m_prime(f + (l - m))
@@ -3789,8 +3789,8 @@ struct k_rotate_from_permutation_indexed
     typedef I input_type_0;
     typedef I codomain_type;
 
-    DistanceType(I) k;
-    DistanceType(I) n_minus_k;
+    EOPDistanceType(I) k;
+    EOPDistanceType(I) n_minus_k;
     I f;
     k_rotate_from_permutation_indexed(I f, I m, I l) :
         k(l - m), n_minus_k(m - f), f(f)
@@ -3800,7 +3800,7 @@ struct k_rotate_from_permutation_indexed
     I operator()(I x)
     {
         // Precondition: $x \in [f, l)$
-        DistanceType(I) i = x - f;
+        EOPDistanceType(I) i = x - f;
         if (i < k) return x + n_minus_k;
         else       return f + (i - k);
     }
@@ -3813,7 +3813,7 @@ I rotate_cycles(I f, I m, I l, F from)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f, l) \wedge m \in [f, l]$
     // Precondition: $from$ is a from-permutation on $[f, l)$
-    typedef DistanceType(I) N;
+    typedef EOPDistanceType(I) N;
     N d = gcd<N, N>(m - f, l - m);
     while (count_down(d)) cycle_from(f + d, from);
     return f + (l - m);
@@ -3856,8 +3856,8 @@ template<typename I>
 void rotate_forward_annotated(I f, I m, I l)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f, l) \wedge f \prec m \prec l$
-                                      DistanceType(I) a = m - f;
-                                      DistanceType(I) b = l - m;
+                                      EOPDistanceType(I) a = m - f;
+                                      EOPDistanceType(I) b = l - m;
     while (true) {
         pair<I, I> p = swap_ranges_bounded(f, m, m, l);
         if (p.m0 == m && p.m1 == l) { EOPAssert(a == b);
@@ -4027,7 +4027,7 @@ template<typename T>
 struct temporary_buffer
 {
     typedef EOPpointer(T) P;
-    typedef DistanceType(P) N;
+    typedef EOPDistanceType(P) N;
     P p;
     N n;
     temporary_buffer(N n_) : n(n_)
@@ -4054,7 +4054,7 @@ private:
 
 template<typename T>
     requires(Regular(T))
-DistanceType(EOPpointer(T)) size(const temporary_buffer<T>& b)
+EOPDistanceType(EOPpointer(T)) size(const temporary_buffer<T>& b)
 {
     return b.n;
 }
@@ -4068,7 +4068,7 @@ EOPpointer(T) begin(temporary_buffer<T>& b)
 
 template<typename I>
     requires(Mutable(I) && ForwardIterator(I))
-void reverse_n_with_temporary_buffer(I f, DistanceType(I) n)
+void reverse_n_with_temporary_buffer(I f, EOPDistanceType(I) n)
 {
     // Precondition: $\property{mutable\_counted\_range}(f, n)$
     temporary_buffer<EOPValueType(I)> b(n);
@@ -4298,7 +4298,7 @@ template<typename I, typename P>
 I partition_indexed(I f, I l, P p)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f, l)$
-    typedef DistanceType(I) N;
+    typedef EOPDistanceType(I) N;
     N i(0);
     N j = l - f;
     while (true) {
@@ -4355,12 +4355,12 @@ pair<I, I> combine_ranges(const pair<I, I>& x,
 template<typename I, typename P>
     requires(Mutable(I) && ForwardIterator(I) &&
         UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
-pair<I, I> partition_stable_n_nonempty(I f, DistanceType(I) n,
+pair<I, I> partition_stable_n_nonempty(I f, EOPDistanceType(I) n,
                                        P p)
 {
     // Precondition: $\property{mutable\_counted\_range}(f, n) \wedge n > 0$
     if (one(n)) return partition_stable_singleton(f, p);
-    DistanceType(I) h = half_nonnegative(n);
+    EOPDistanceType(I) h = half_nonnegative(n);
     pair<I, I> x = partition_stable_n_nonempty(f, h, p);
     pair<I, I> y = partition_stable_n_nonempty(x.m1, n - h, p);
     return combine_ranges(x, y);
@@ -4369,7 +4369,7 @@ pair<I, I> partition_stable_n_nonempty(I f, DistanceType(I) n,
 template<typename I, typename P>
     requires(Mutable(I) && ForwardIterator(I) &&
         UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
-pair<I, I> partition_stable_n(I f, DistanceType(I) n, P p)
+pair<I, I> partition_stable_n(I f, EOPDistanceType(I) n, P p)
 {
     // Precondition: $\property{mutable\_counted\_range}(f, n)$
     if (zero(n)) return make_pair(f, f);
@@ -4550,8 +4550,8 @@ template<typename I, typename B, typename R>
         Mutable(B) && ForwardIterator(B) &&
         EOPValueType(I) == EOPValueType(B) &&
         Relation(R) && EOPValueType(I) == EOPDomain(R))
-I merge_n_with_buffer(I f0, DistanceType(I) n0,
-                      I f1, DistanceType(I) n1, B f_b, R r)
+I merge_n_with_buffer(I f0, EOPDistanceType(I) n0,
+                      I f1, EOPDistanceType(I) n1, B f_b, R r)
 {
     // Precondition: $\func{mergeable}(f_0, n_0, f_1, n_1, r)$
     // Precondition: $\property{mutable\_counted\_range}(f_b, n_0)$
@@ -4564,12 +4564,12 @@ template<typename I, typename B, typename R>
         Mutable(B) && ForwardIterator(B) &&
         EOPValueType(I) == EOPValueType(B) &&
         Relation(R) && EOPValueType(I) == EOPDomain(R))
-I sort_n_with_buffer(I f, DistanceType(I) n, B f_b, R r)
+I sort_n_with_buffer(I f, EOPDistanceType(I) n, B f_b, R r)
 {
     // Property:
     // $\property{mutable\_counted\_range}(f, n) \wedge \property{weak\_ordering}(r)$
     // Precondition: $\property{mutable\_counted\_range}(f_b, \lceil n/2 \rceil)$
-    DistanceType(I) h = half_nonnegative(n);
+    EOPDistanceType(I) h = half_nonnegative(n);
     if (zero(h)) return f + n;
     I m = sort_n_with_buffer(f, h,     f_b, r);
           sort_n_with_buffer(m, n - h, f_b, r);
@@ -4579,12 +4579,12 @@ I sort_n_with_buffer(I f, DistanceType(I) n, B f_b, R r)
 template<typename I, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
         Relation(R) && EOPValueType(I) == EOPDomain(R))
-void merge_n_step_0(I f0, DistanceType(I) n0,
-                    I f1, DistanceType(I) n1, R r,
-                    I& f0_0, DistanceType(I)& n0_0,
-                    I& f0_1, DistanceType(I)& n0_1,
-                    I& f1_0, DistanceType(I)& n1_0,
-                    I& f1_1, DistanceType(I)& n1_1)
+void merge_n_step_0(I f0, EOPDistanceType(I) n0,
+                    I f1, EOPDistanceType(I) n1, R r,
+                    I& f0_0, EOPDistanceType(I)& n0_0,
+                    I& f0_1, EOPDistanceType(I)& n0_1,
+                    I& f1_0, EOPDistanceType(I)& n1_0,
+                    I& f1_1, EOPDistanceType(I)& n1_1)
 {
     // Precondition: $\property{mergeable}(f_0, n_0, f_1, n_1, r)$
     f0_0 = f0;
@@ -4601,12 +4601,12 @@ void merge_n_step_0(I f0, DistanceType(I) n0,
 template<typename I, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
         Relation(R) && EOPValueType(I) == EOPDomain(R))
-void merge_n_step_1(I f0, DistanceType(I) n0,
-                    I f1, DistanceType(I) n1, R r,
-                    I& f0_0, DistanceType(I)& n0_0,
-                    I& f0_1, DistanceType(I)& n0_1,
-                    I& f1_0, DistanceType(I)& n1_0,
-                    I& f1_1, DistanceType(I)& n1_1)
+void merge_n_step_1(I f0, EOPDistanceType(I) n0,
+                    I f1, EOPDistanceType(I) n1, R r,
+                    I& f0_0, EOPDistanceType(I)& n0_0,
+                    I& f0_1, EOPDistanceType(I)& n0_1,
+                    I& f1_0, EOPDistanceType(I)& n1_0,
+                    I& f1_1, EOPDistanceType(I)& n1_1)
 {
     // Precondition: $\property{mergeable}(f_0, n_0, f_1, n_1, r)$
     f0_0 = f0;
@@ -4625,13 +4625,13 @@ template<typename I, typename B, typename R>
         Mutable(B) && ForwardIterator(B) &&
         EOPValueType(I) == EOPValueType(B) &&
         Relation(R) && EOPValueType(I) == EOPDomain(R))
-I merge_n_adaptive(I f0, DistanceType(I) n0,
-                   I f1, DistanceType(I) n1,
-                   B f_b, DistanceType(B) n_b, R r)
+I merge_n_adaptive(I f0, EOPDistanceType(I) n0,
+                   I f1, EOPDistanceType(I) n1,
+                   B f_b, EOPDistanceType(B) n_b, R r)
 {
     // Precondition: $\property{mergeable}(f_0, n_0, f_1, n_1, r)$
     // Precondition: $\property{mutable\_counted\_range}(f_b, n_b)$
-    typedef DistanceType(I) N;
+    typedef EOPDistanceType(I) N;
     if (zero(n0) || zero(n1)) return f0 + n0 + n1;
     if (n0 <= N(n_b))
         return merge_n_with_buffer(f0, n0, f1, n1, f_b, r);
@@ -4656,13 +4656,13 @@ template<typename I, typename B, typename R>
         Mutable(B) && ForwardIterator(B) &&
         EOPValueType(I) == EOPValueType(B) &&
         Relation(R) && EOPValueType(I) == EOPDomain(R))
-I sort_n_adaptive(I f, DistanceType(I) n,
-                  B f_b, DistanceType(B) n_b, R r)
+I sort_n_adaptive(I f, EOPDistanceType(I) n,
+                  B f_b, EOPDistanceType(B) n_b, R r)
 {
     // Precondition:
     // $\property{mutable\_counted\_range}(f, n) \wedge \property{weak\_ordering}(r)$
     // Precondition: $\property{mutable\_counted\_range}(f_b, n_b)$
-    DistanceType(I) h = half_nonnegative(n);
+    EOPDistanceType(I) h = half_nonnegative(n);
     if (zero(h)) return f + n;
     I m = sort_n_adaptive(f, h,     f_b, n_b, r);
           sort_n_adaptive(m, n - h, f_b, n_b, r);
@@ -4672,7 +4672,7 @@ I sort_n_adaptive(I f, DistanceType(I) n,
 template<typename I, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
         Relation(R) && EOPValueType(I) == EOPDomain(R))
-I sort_n(I f, DistanceType(I) n, R r)
+I sort_n(I f, EOPDistanceType(I) n, R r)
 {
     // Precondition:
     // $\property{mutable\_counted\_range}(f, n) \wedge \property{weak\_ordering}(r)$
@@ -4738,7 +4738,7 @@ template<int k, typename T>
     requires(Regular(T))
 struct size_type< array_k<k, T> >
 {
-    typedef DistanceType(EOPpointer(T)) type;
+    typedef EOPDistanceType(EOPpointer(T)) type;
 };
 
 template<int k, typename T>
@@ -4839,7 +4839,7 @@ bool linearizable_ordering(const W& x, const W& y)
 
 template<typename W>
     requires(Linearizeable(W))
-DistanceType(IteratorType(W)) size(const W& x)
+EOPDistanceType(IteratorType(W)) size(const W& x)
 {
     return end(x) - begin(x);
 }
@@ -4862,7 +4862,7 @@ struct bounded_range {
     I l;
     bounded_range() { }
     bounded_range(const I& f, const I& l) : f(f), l(l) { }
-    const EOPValueType(I)& operator[](DistanceType(I) i)
+    const EOPValueType(I)& operator[](EOPDistanceType(I) i)
     {
         // Precondition: $0 \leq i < l - f$
         return source(f + i);
@@ -4887,7 +4887,7 @@ template<typename I>
     requires(Readable(I) && Iterator(I))
 struct size_type< bounded_range<I> >
 {
-    typedef DistanceType(I) type;
+    typedef EOPDistanceType(I) type;
 };
 
 template<typename I>
@@ -4931,7 +4931,7 @@ struct less< bounded_range<I> >
 template<typename I>
     requires(Readable(I) && Iterator(I)) // should it be ForwardIterator?
 struct counted_range {
-    typedef DistanceType(I) N;
+    typedef EOPDistanceType(I) N;
     I f;
     N n;
     counted_range() { }
@@ -4961,7 +4961,7 @@ template<typename I>
     requires(Readable(I) && Iterator(I))
 struct size_type< counted_range<I> >
 {
-    typedef DistanceType(I) type;
+    typedef EOPDistanceType(I) type;
 };
 
 
@@ -4975,7 +4975,7 @@ I end(const counted_range<I>& x) { return x.f + x.n; }
 
 template<typename I>
     requires(Readable(I) && Iterator(I))
-DistanceType(I) size(const counted_range<I>& x) { return x.n; }
+EOPDistanceType(I) size(const counted_range<I>& x) { return x.n; }
 
 template<typename I>
     requires(Readable(I) && Iterator(I))
@@ -5079,7 +5079,7 @@ template<typename S>
     requires(DynamicSequence(S))
 struct size_type< before<S> >
 {
-    typedef DistanceType(IteratorType(S)) type;
+    typedef EOPDistanceType(IteratorType(S)) type;
 };
 
 template<typename S>
@@ -5145,7 +5145,7 @@ template<typename S>
     requires(DynamicSequence(S))
 struct size_type< after<S> >
 {
-    typedef DistanceType(IteratorType(S)) type;
+    typedef EOPDistanceType(IteratorType(S)) type;
 };
 
 template<typename S>
@@ -5209,7 +5209,7 @@ template<typename S>
     requires(DynamicSequence(S))
 struct size_type< front<S> >
 {
-    typedef DistanceType(IteratorType(S)) type;
+    typedef EOPDistanceType(IteratorType(S)) type;
 };
 
 template<typename S>
@@ -5273,7 +5273,7 @@ template<typename S>
     requires(DynamicSequence(S))
 struct size_type< back<S> >
 {
-    typedef DistanceType(IteratorType(S)) type;
+    typedef EOPDistanceType(IteratorType(S)) type;
 };
 
 template<typename S>
@@ -5339,7 +5339,7 @@ template<typename S>
     requires(DynamicSequence(S))
 struct size_type< at<S> >
 {
-    typedef DistanceType(IteratorType(S)) type;
+    typedef EOPDistanceType(IteratorType(S)) type;
 };
 
 template<typename S>
@@ -5473,7 +5473,7 @@ template<typename T>
     requires(Regular(T))
 struct distance_type< slist_iterator<T> >
 {
-    typedef DistanceType(slist_node<T>*) type;
+    typedef EOPDistanceType(slist_node<T>*) type;
 };
 
 template<typename T>
@@ -5596,7 +5596,7 @@ struct slist
     {
         swap(deref(this), x);
     }
-    T& operator[](DistanceType(slist_iterator<T>) i)
+    T& operator[](EOPDistanceType(slist_iterator<T>) i)
     {
         return deref(first + i);
     }
@@ -5624,7 +5624,7 @@ template<typename T>
     requires(Regular(T))
 struct size_type< slist<T> >
 {
-    typedef DistanceType(IteratorType(slist<T>)) type;
+    typedef EOPDistanceType(IteratorType(slist<T>)) type;
 };
 
 template<typename T>
@@ -5775,7 +5775,7 @@ template<typename T>
     requires(Regular(T))
 struct distance_type< list_iterator<T> >
 {
-    typedef DistanceType(list_node<T>*) type;
+    typedef EOPDistanceType(list_node<T>*) type;
 };
 
 template<typename T>
@@ -5900,7 +5900,7 @@ struct list
     {
         swap(deref(this), x);
     }
-    T& operator[](DistanceType(list_iterator<T>) i)
+    T& operator[](EOPDistanceType(list_iterator<T>) i)
     {
         return deref(begin(deref(this)) + i);
     }
@@ -5930,7 +5930,7 @@ template<typename T>
     requires(Regular(T))
 struct size_type< list<T> >
 {
-    typedef DistanceType(IteratorType(list<T>)) type;
+    typedef EOPDistanceType(IteratorType(list<T>)) type;
 };
 
 template<typename T>
@@ -6096,7 +6096,7 @@ template<typename T>
     requires(Regular(T))
 struct weight_type< stree_coordinate<T> >
 {
-    typedef DistanceType(EOPpointer(stree_node<T>)) type;
+    typedef EOPDistanceType(EOPpointer(stree_node<T>)) type;
 };
 
 template<typename T>
@@ -6395,7 +6395,7 @@ template<typename T>
     requires(Regular(T))
 struct weight_type< tree_coordinate<T> >
 {
-    typedef DistanceType(EOPpointer(tree_node<T>)) type;
+    typedef EOPDistanceType(EOPpointer(tree_node<T>)) type;
 };
 
 template<typename T>
@@ -6622,7 +6622,7 @@ struct array_prefix
 
 template<typename T>
     requires(Regular(T))
-EOPpointer(array_prefix<T>) allocate_array(DistanceType(T*) n)
+EOPpointer(array_prefix<T>) allocate_array(EOPDistanceType(T*) n)
 {
     typedef EOPpointer(array_prefix<T>) P;
     if (zero(n)) return P(0);
@@ -6645,7 +6645,7 @@ template<typename T>
     requires(Regular(T))
 struct array
 {
-    typedef DistanceType(IteratorType(array<T>)) N;
+    typedef EOPDistanceType(IteratorType(array<T>)) N;
     EOPpointer(array_prefix<T>) p;
     array() : p(0) { }
     array(N c) : p(allocate_array<T>(c)) { } // size is 0 and capacity is c
@@ -6706,7 +6706,7 @@ template<typename T>
     requires(Regular(T))
 struct size_type< array<T> >
 {
-    typedef DistanceType(IteratorType(array<T>)) type;
+    typedef EOPDistanceType(IteratorType(array<T>)) type;
 };
 
 template<typename T>
@@ -6748,7 +6748,7 @@ IteratorType(array<T>) end_of_storage(const array<T>& x)
 
 template<typename T>
     requires(Regular(T))
-DistanceType(IteratorType(array<T>)) capacity(const array<T>& x)
+EOPDistanceType(IteratorType(array<T>)) capacity(const array<T>& x)
 {
     return end_of_storage(x) - begin(x);
 }
@@ -6778,7 +6778,7 @@ template<typename T, typename U>
     requires(Regular(T) && Regular(U) && Constructible(T, U))
 back< array<T> > insert(back< array<T> > p, const U& y)
 {
-    typedef DistanceType(IteratorType(array<T>)) N;
+    typedef EOPDistanceType(IteratorType(array<T>)) N;
     N n = size(base(p));
     if (n == capacity(base(p)))
         reserve(base(p), max(N(1), n + n));
@@ -6793,8 +6793,8 @@ template<typename T, typename W>
 before< array<T> > insert_range(before< array<T> > p, const W& w)
 {
     typedef IteratorType(array<T>) I;
-    DistanceType(I) o_f = current(p) - begin(p);
-    DistanceType(I) o_m = size(p);
+    EOPDistanceType(I) o_f = current(p) - begin(p);
+    EOPDistanceType(I) o_m = size(p);
     insert_range(back< array<T> >(base(p)), w);
     return before< array<T> >(base(p), rotate(begin(p) + o_f, begin(p) + o_m, end(p)));
 }
@@ -6900,7 +6900,7 @@ template<typename I>
     requires(Iterator(I))
 struct distance_type< underlying_iterator<I> >
 {
-    typedef DistanceType(I) type;
+    typedef EOPDistanceType(I) type;
 };
 
 template<typename I>
@@ -6926,21 +6926,21 @@ underlying_iterator<I> predecessor(const underlying_iterator<I>& x)
 
 template<typename I>
     requires(Iterator(I))
-underlying_iterator<I> operator+(underlying_iterator<I> x, DistanceType(I) n)
+underlying_iterator<I> operator+(underlying_iterator<I> x, EOPDistanceType(I) n)
 {
     return make_underlying_iterator(x.i + n);
 }
 
 template<typename I>
     requires(Iterator(I))
-DistanceType(I) operator-(underlying_iterator<I> x, underlying_iterator<I> y)
+EOPDistanceType(I) operator-(underlying_iterator<I> x, underlying_iterator<I> y)
 {
     return x.i - y.i;
 }
 
 template<typename I>
     requires(Iterator(I))
-underlying_iterator<I> operator-(underlying_iterator<I> x, DistanceType(I) n)
+underlying_iterator<I> operator-(underlying_iterator<I> x, EOPDistanceType(I) n)
 {
     return make_underlying_iterator(x.i - n);
 }
@@ -6993,7 +6993,7 @@ I original(const underlying_iterator<I>& x)
 template<typename T>
     requires(Regular(T))
 void reserve_basic(array<T>& x,
-                   DistanceType(IteratorType(array<T>)) n)
+                   EOPDistanceType(IteratorType(array<T>)) n)
 {
     if (n < size(x) || n == capacity(x)) return;
     array<T> tmp(n);
@@ -7003,7 +7003,7 @@ void reserve_basic(array<T>& x,
 
 template<typename T>
     requires(Regular(T))
-void reserve(array<T>& x, DistanceType(IteratorType(array<T>)) n)
+void reserve(array<T>& x, EOPDistanceType(IteratorType(array<T>)) n)
 {
     reserve_basic(reinterpret_cast<array<UnderlyingType(T)>&>(x), n);
 }
@@ -7079,7 +7079,7 @@ inline underlying_relation<R> make_underlying_relation(const R& r)
 template<typename I, typename P>
     requires(Mutable(I) && ForwardIterator(I) &&
         UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
-pair<I, I> advanced_partition_stable_n(I f, DistanceType(I) n, P p)
+pair<I, I> advanced_partition_stable_n(I f, EOPDistanceType(I) n, P p)
 {
     typedef underlying_iterator<I> U;
     pair<U, U> tmp = partition_stable_n(make_underlying_iterator(f), n,
@@ -7090,7 +7090,7 @@ pair<I, I> advanced_partition_stable_n(I f, DistanceType(I) n, P p)
 template<typename I, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
         Relation(R) && EOPValueType(I) == EOPDomain(R))
-I advanced_sort_n(I f, DistanceType(I) n, R r)
+I advanced_sort_n(I f, EOPDistanceType(I) n, R r)
 {
     // Precondition: $\property{mutable\_counted\_range}(f, n) \wedge \property{weak\_ordering}(r)$
     temporary_buffer<UnderlyingType(EOPValueType(I))> b(half_nonnegative(n));

@@ -117,14 +117,14 @@ struct input_type_2
 
 // See the discussion of distance types in section 2.2.
 
-// DistanceType : Transformation -> Integer
+// EOPDistanceType : Transformation -> Integer
 
 template<typename F>
     requires(Transformation(F))
 struct distance_type;
 
 // If all transformations on a type T have the same distance type,
-// then DistanceType(T) is defined and returns that type.
+// then EOPDistanceType(T) is defined and returns that type.
 
 // For any fixed-size type T, there is an integral type of the same
 // size that is a valid distance type for T.
@@ -142,7 +142,7 @@ struct distance_type<long long>
 };
 
 
-#define DistanceType(T) typename distance_type< T >::type
+#define EOPDistanceType(T) typename distance_type< T >::type
 
 
 // Chapter 3 - Associative operations
@@ -214,7 +214,7 @@ struct codomain_type<S (*)(T x)>
 template<typename T>
     requires(ArchimedeanMonoid(T))
 struct quotient_type;
-#define QuotientType(T) typename quotient_type< T >::type
+#define EOPQuotientType(T) typename quotient_type< T >::type
 
 
 // Lemma: For an integral type T, QuotientType(T) has to be at least as large as T.

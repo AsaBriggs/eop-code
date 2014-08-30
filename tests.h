@@ -285,7 +285,7 @@ void concept_Transformation(F f, EOPDomain(F) x)
     y = x;
     EOPAssert(x == y);
     y = f(x);
-    typedef DistanceType(F) N;
+    typedef EOPDistanceType(F) N;
     N n(1);
     (void)n;
 }
@@ -321,7 +321,7 @@ struct distance_type< sq<T> >
 };
 
 template<typename I, typename N>
-    requires(Integer(I) && Integer(N) && DistanceType(I) = N)
+    requires(Integer(I) && Integer(N) && EOPDistanceType(I) = N)
 struct gen_orbit_predicate // definition space predicate
 {
     typedef I input_type_0;
@@ -342,7 +342,7 @@ struct gen_orbit_predicate // definition space predicate
 };
 
 template<typename I, typename N>
-    requires(Integer(I) && Integer(N) && DistanceType(I) = N)
+    requires(Integer(I) && Integer(N) && EOPDistanceType(I) = N)
 struct gen_orbit // transformation
 {
     typedef I input_type_0;
@@ -364,7 +364,7 @@ struct gen_orbit // transformation
 };
 
 template<typename I, typename N>
-    requires(Integer(I) && Integer(N) && DistanceType(I) = N)
+    requires(Integer(I) && Integer(N) && EOPDistanceType(I) = N)
 struct distance_type< gen_orbit<I, N> >
 {
     typedef N type;
@@ -372,10 +372,10 @@ struct distance_type< gen_orbit<I, N> >
 
 template<typename F>
     requires(Transformation(F))
-void algorithms_orbit(EOPDomain(F) x, DistanceType(F) h, DistanceType(F) c)
+void algorithms_orbit(EOPDomain(F) x, EOPDistanceType(F) h, EOPDistanceType(F) c)
 {
     typedef EOPDomain(F) T;
-    typedef DistanceType(F) N;
+    typedef EOPDistanceType(F) N;
     F f(x, h, c);
     EOPAssert(zero(c) == terminating(x, f, f.p));
     if (zero(h) && !zero(c)) {
@@ -1207,18 +1207,18 @@ void concept_CancellableMonoid(T& x, T& y, T& z)
 
 template<typename T>
     requires(ArchimedeanMonoid(T)) 
-void concept_ArchimedeanMonoid(T& x, T& y, T& z, QuotientType(T) n)
+void concept_ArchimedeanMonoid(T& x, T& y, T& z, EOPQuotientType(T) n)
 {
     // Precondition: x < y
     concept_CancellableMonoid(x, y, z);
-    typedef QuotientType(T) N;
+    typedef EOPQuotientType(T) N;
     concept_Integer<N>(n);
     // slow_remainder terminates for all positive arguments
 }
 
 template<typename T>
     requires(ArchimedeanGroup(T)) 
-void concept_ArchimedeanGroup(T& x, T& y, T& z, QuotientType(T) n)
+void concept_ArchimedeanGroup(T& x, T& y, T& z, EOPQuotientType(T) n)
 {
     // Precondition: x < y
     concept_ArchimedeanMonoid(x, y, z, n);
@@ -1233,7 +1233,7 @@ void algorithms_slow_q_and_r()
 {
     typedef long Z;
     plus<T> plus_T;
-    typedef QuotientType(T) N;
+    typedef EOPQuotientType(T) N;
     T max(1000);
     T a(0);
     while (a < max) {
@@ -1254,7 +1254,7 @@ void algorithms_q_and_r_nonnegative()
 {
     typedef long Z;
     plus<T> plus_T;
-    typedef QuotientType(T) N;
+    typedef EOPQuotientType(T) N;
     T max(1000);
     T a(0);
     while (a < max) {
@@ -1277,7 +1277,7 @@ void algorithms_q_and_r_nonnegative_fibonacci()
     typedef long Z;
     plus<T> plus_T;
     (void)plus_T;
-    typedef QuotientType(T) N;
+    typedef EOPQuotientType(T) N;
     T max(1000);
     T a(0);
     while (a < max) {
@@ -1301,7 +1301,7 @@ void algorithms_q_and_r_nonnegative_iterative()
 {
     typedef long Z;
     plus<T> plus_T;
-    typedef QuotientType(T) N;
+    typedef EOPQuotientType(T) N;
     T max(1000);
     T a(0);
     while (a < max) {
@@ -1484,7 +1484,7 @@ struct ag_quotient_remainder
 {
     typedef T input_type_0;
     typedef T input_type_1;
-    typedef pair<QuotientType(T), T> codomain_type;
+    typedef pair<EOPQuotientType(T), T> codomain_type;
     codomain_type operator()(T a, T b)
     {
         EOPAssert(a >= T(0) && b > T(0));
@@ -1497,7 +1497,7 @@ template<typename T>
 void algorithms_signed_q_and_r()
 {
     typedef long Z;
-    typedef QuotientType(T) N;
+    typedef EOPQuotientType(T) N;
     T min(-10);
     T max(10);
     T a(min);
@@ -1889,7 +1889,7 @@ void test_ch_5()
     algorithm_abs<long double>(1.0l);
     algorithm_abs< rational<int> >(rational<int>(1, 2));
 
-    // type_functions.h defines QuotientType for several built-in integral types
+    // type_functions.h defines EOPQuotientType for several built-in integral types
     {
         typedef int T;
         T x(0);
@@ -2381,7 +2381,7 @@ void algorithms_lexicographical()
     EOPAssert((size(la) == 6 &&
 	    lexicographical_equal_k<6, I, IteratorType(slist<Z>)>()(f_a, begin(la))));
 
-    typedef DistanceType(I) NP;
+    typedef EOPDistanceType(I) NP;
     EOPAssert( lexicographical_compare(f_a, f_a, f_a, l_a, less<Z>()));
     EOPAssert( lexicographical_compare(f_a, f_a + NP(4), f_a, l_a, less<Z>()));
     EOPAssert( lexicographical_compare(f_a, f_a + NP(5), f_a, l_a, less<Z>()));
@@ -2678,7 +2678,7 @@ void algorithms_linked()
 {
     typedef EOPValueType(L) Z;
     typedef IteratorType(L) I;
-    typedef DistanceType(I) N;
+    typedef EOPDistanceType(I) N;
     const int n = 500;
     array<Z> a(n, n, Z(0));
     typedef IteratorType(array<Z>) Ia;
@@ -2854,7 +2854,7 @@ void test_ch_8()
 
 template<typename S>
     requires(DynamicSequence(S))
-void extend_sequence_n(S& s, DistanceType(IteratorType(S)) n, const EOPValueType(S)& x)
+void extend_sequence_n(S& s, EOPDistanceType(IteratorType(S)) n, const EOPValueType(S)& x)
 {
     typedef after<S> AP;
     while (count_down(n)) insert(AP(s, begin(s)), x);
@@ -2895,8 +2895,8 @@ void algorithms_copy_forward(I0 f0, I0 l0, I1 f1, I1 l1)
 {
     // Precondition: $l0 - f0 <= l1 - f1$
     typedef EOPValueType(I0) T;
-    typedef DistanceType(I0) N0;
-    typedef DistanceType(I1) N1;
+    typedef EOPDistanceType(I0) N0;
+    typedef EOPDistanceType(I1) N1;
     N0 n = l0 - f0;
     N0 n_over_2(half_nonnegative(n));
     EOPAssert(n <= N0(l1 - f1));
@@ -3185,8 +3185,8 @@ void algorithms_copy_backward(I0 f0, I0 l0, I1 f1, I1 l1)
 {
     // Precondition: $l0 - f0 <= l1 - f1$
     typedef EOPValueType(I0) T;
-    typedef DistanceType(I0) N0;
-    typedef DistanceType(I1) N1;
+    typedef EOPDistanceType(I0) N0;
+    typedef EOPDistanceType(I1) N1;
     N0 n = l0 - f0;
     N0 n_over_2(half_nonnegative(n));
     EOPAssert(n <= N0(l1 - f1));
@@ -3275,8 +3275,8 @@ void algorithms_copy_reverse(I0 f0, I0 l0, I1 f1, I1 l1)
 {
     // Precondition: $l0 - f0 == l1 - f1$
     typedef EOPValueType(I0) T;
-    typedef DistanceType(I0) N0;
-    typedef DistanceType(I1) N1;
+    typedef EOPDistanceType(I0) N0;
+    typedef EOPDistanceType(I1) N1;
     N0 n = l0 - f0;
     N0 n_over_2(half_nonnegative(n));
     EOPAssert(n == N0(l1 - f1));
@@ -3472,7 +3472,7 @@ void type_temporary_buffer(N n)
 {
     {
         temporary_buffer<T> b(n);
-        DistanceType(EOPpointer(T)) m = size(b);
+        EOPDistanceType(EOPpointer(T)) m = size(b);
         EOPAssert(0 < m && m <= n);
         if (verbose) {
             print("size(temporary_buffer<T>(");
@@ -3491,7 +3491,7 @@ void algorithms_reverse()
     typedef int T;
     const int k = 50;
     array_k<k, int> ca;
-//    typedef DistanceType(IteratorType(array<T>)) N;
+//    typedef EOPDistanceType(IteratorType(array<T>)) N;
     typedef ptrdiff_t N;
     array<int> da = array<int>(N(k), N(k), T(0)); 
     slist<int> l;
@@ -3588,7 +3588,7 @@ void algorithm_rotate_forward_annotated(int_pointer a, int n)
 
 template<typename I, typename B>
     requires(ForwardIterator(I) && ForwardIterator(B))
-void algorithms_rotate_Concept_with_buffer(I f, DistanceType(I) n, B f_b,
+void algorithms_rotate_Concept_with_buffer(I f, EOPDistanceType(I) n, B f_b,
                                            I (*algo)(I, I, I, B))
 {
     EOPAssert(n != 0);
@@ -3631,7 +3631,7 @@ void algorithm_rotate_partial(N n)
         EOPAssert(source(predecessor(f)) == N(-1) && source(l) == N(-1));
         EOPAssert(m_prime + (m - f) == l);
         EOPAssert(equal_iota(f, m_prime, m - f));
-        DistanceType(I) k = (l - f) % (m - f);
+        EOPDistanceType(I) k = (l - f) % (m - f);
         rotate(m_prime, l - k, l);
         EOPAssert(equal_iota(m_prime, l));
         m = successor(m);
@@ -3986,8 +3986,8 @@ void merge_cases(M m)
 template<typename I, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
         Relation(R) && EOPValueType(I) == EOPDomain(R))
-I wrapped_merge_n_with_buffer(I f0, DistanceType(I) n0,
-                              I f1, DistanceType(I) n1, R r)
+I wrapped_merge_n_with_buffer(I f0, EOPDistanceType(I) n0,
+                              I f1, EOPDistanceType(I) n1, R r)
 {
     array<EOPValueType(I)> b(n0, n0, EOPValueType(I)());
     return merge_n_with_buffer(f0, n0, f1, n1, begin(b), r);
@@ -3996,10 +3996,10 @@ I wrapped_merge_n_with_buffer(I f0, DistanceType(I) n0,
 template<typename I, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
         Relation(R) && EOPValueType(I) == EOPDomain(R))
-I wrapped_merge_n_adaptive(I f0, DistanceType(I) n0,
-                           I f1, DistanceType(I) n1, R r)
+I wrapped_merge_n_adaptive(I f0, EOPDistanceType(I) n0,
+                           I f1, EOPDistanceType(I) n1, R r)
 {
-    const DistanceType(I) n = half_nonnegative(n0);
+    const EOPDistanceType(I) n = half_nonnegative(n0);
     array<EOPValueType(I)>  b(n, n, EOPValueType(I)());
     return merge_n_adaptive(f0, n0, f1, n1, begin(b), size(b), r);
 }
@@ -4017,7 +4017,7 @@ template <typename S>
 void algorithms_sort(S& s)
 {
     typedef IteratorType(S) I;
-    typedef DistanceType(I) N;
+    typedef EOPDistanceType(I) N;
     typedef EOPValueType(I) T;
 
     I f = begin(s);
@@ -4247,7 +4247,7 @@ void type_bounded_range(I f, I l)
 
 template<typename I>
     requires(Readable(I) && Iterator(I))
-void type_counted_range(I f, DistanceType(I) n)
+void type_counted_range(I f, EOPDistanceType(I) n)
 {
     typedef counted_range<I> T;
     T r(f, n);
