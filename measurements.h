@@ -283,7 +283,7 @@ void measure_sort_n_adaptive_compares()
 {
     for (int n = 64; n <= 32768; n *= 4) {
         typedef EOPpointer(int) I;
-//        typedef EOPDistanceType(IteratorType(array<T>)) N;
+//        typedef EOPDistanceType(EOPIteratorType(array<T>)) N;
         typedef ptrdiff_t N;
         array<int> a = array<int>(N(n), N(n), 0);
         iota(n, begin(a));

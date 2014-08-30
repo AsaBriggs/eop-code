@@ -2379,7 +2379,7 @@ void algorithms_lexicographical()
     EOPAssert(!lexicographical_equal(f_b, l_b, begin(la), end(la)));
 
     EOPAssert((size(la) == 6 &&
-	    lexicographical_equal_k<6, I, IteratorType(slist<Z>)>()(f_a, begin(la))));
+	    lexicographical_equal_k<6, I, EOPIteratorType(slist<Z>)>()(f_a, begin(la))));
 
     typedef EOPDistanceType(I) NP;
     EOPAssert( lexicographical_compare(f_a, f_a, f_a, l_a, less<Z>()));
@@ -2677,11 +2677,11 @@ template<typename L>
 void algorithms_linked()
 {
     typedef EOPValueType(L) Z;
-    typedef IteratorType(L) I;
+    typedef EOPIteratorType(L) I;
     typedef EOPDistanceType(I) N;
     const int n = 500;
     array<Z> a(n, n, Z(0));
-    typedef IteratorType(array<Z>) Ia;
+    typedef EOPIteratorType(array<Z>) Ia;
 
     Ia f = begin(a);
     iota(n, f);
@@ -2854,7 +2854,7 @@ void test_ch_8()
 
 template<typename S>
     requires(DynamicSequence(S))
-void extend_sequence_n(S& s, EOPDistanceType(IteratorType(S)) n, const EOPValueType(S)& x)
+void extend_sequence_n(S& s, EOPDistanceType(EOPIteratorType(S)) n, const EOPValueType(S)& x)
 {
     typedef after<S> AP;
     while (count_down(n)) insert(AP(s, begin(s)), x);
@@ -3491,7 +3491,7 @@ void algorithms_reverse()
     typedef int T;
     const int k = 50;
     array_k<k, int> ca;
-//    typedef EOPDistanceType(IteratorType(array<T>)) N;
+//    typedef EOPDistanceType(EOPIteratorType(array<T>)) N;
     typedef ptrdiff_t N;
     array<int> da = array<int>(N(k), N(k), T(0)); 
     slist<int> l;
@@ -3621,7 +3621,7 @@ void algorithm_rotate_partial(N n)
 {
     EOPAssert(n > N(1));
     array<N> a(twice(n), twice(n), N(-1));
-    typedef IteratorType(array<N>) I;
+    typedef EOPIteratorType(array<N>) I;
     I f = begin(a) + n / N(4);
     I l = f + n;
     I m = f + 1;
@@ -4016,7 +4016,7 @@ template <typename S>
     requires(Sequence(S) && Integer(EOPValueType(S)))
 void algorithms_sort(S& s)
 {
-    typedef IteratorType(S) I;
+    typedef EOPIteratorType(S) I;
     typedef EOPDistanceType(I) N;
     typedef EOPValueType(I) T;
 
@@ -4100,7 +4100,7 @@ void concept_Linearizable(W& w)
     concept_Regular(w);
 
     // Type functions
-    typedef IteratorType(W) I;
+    typedef EOPIteratorType(W) I;
     typedef EOPValueType(W) T;
     typedef SizeType(W) N;
 
@@ -4256,10 +4256,10 @@ void type_counted_range(I f, EOPDistanceType(I) n)
 
 template<typename P>
     requires(Position(P))
-void concept_Position(P p, BaseType(P)& s, IteratorType(P) i)
+void concept_Position(P p, BaseType(P)& s, EOPIteratorType(P) i)
 {
     typedef BaseType(P) B;
-    typedef IteratorType(P) I;
+    typedef EOPIteratorType(P) I;
     typedef EOPValueType(P) T;
     typedef SizeType(P) N;
 
@@ -4275,7 +4275,7 @@ void concept_Position(P p, BaseType(P)& s, IteratorType(P) i)
 
 template<typename S>
     requires(DynamicSequence(S))
-void test_Position(S& s, IteratorType(S) i)
+void test_Position(S& s, EOPIteratorType(S) i)
 {
     before<S> bef(s, i);
     concept_Position(bef, s, i);
@@ -4303,7 +4303,7 @@ template<typename S>
 void concept_DynamicSequence(S& s0, S& s1, EOPValueType(S)& x)
 {
     // Precondition: s0 < s1 /\ x != s1[0]
-    typedef IteratorType(S) I;
+    typedef EOPIteratorType(S) I;
 
     concept_Sequence(s0, s1, x);
 
@@ -4477,7 +4477,7 @@ template<typename T, typename T0>
     requires(T == array<T0>)
 void type_underlying_iterator_array(T0& x)
 {
-    typedef IteratorType(T) I;
+    typedef EOPIteratorType(T) I;
     typedef underlying_iterator<I> UI;
     T t(2, 2, x);
     I f(begin(t));

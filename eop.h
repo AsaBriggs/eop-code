@@ -2728,7 +2728,7 @@ template<typename S>
     requires(ForwardLinker(S))
 struct linker_to_tail
 {
-    typedef IteratorType(S) I;
+    typedef EOPIteratorType(S) I;
     typedef I& input_type_0;
     typedef I& input_type_1;
     typedef void codomain_type;
@@ -2763,7 +2763,7 @@ I find_last(I f, I l)
 }
 
 template<typename I, typename S, typename Pred>
-    requires(ForwardLinker(S) && I == IteratorType(S) &&
+    requires(ForwardLinker(S) && I == EOPIteratorType(S) &&
         UnaryPseudoPredicate(Pred) && I == EOPDomain(Pred))
 pair< pair<I, I>, pair<I, I> >
 split_linked(I f, I l, Pred p, S set_link)
@@ -2795,7 +2795,7 @@ s4: return make_pair(make_pair(h0, t0), make_pair(h1, t1));
 
 
 template<typename I, typename S, typename R>
-    requires(ForwardLinker(S) && I == IteratorType(S) &&
+    requires(ForwardLinker(S) && I == EOPIteratorType(S) &&
         PseudoRelation(R) && I == EOPDomain(R))
 triple<I, I, I>
 combine_linked_nonempty(I f0, I l0, I f1, I l1, R r, S set_link)
@@ -2825,7 +2825,7 @@ template<typename S>
     requires(ForwardLinker(S))
 struct linker_to_head
 {
-    typedef IteratorType(S) I;
+    typedef EOPIteratorType(S) I;
     typedef I& input_type_0;
     typedef I& input_type_1;
     typedef void codomain_type;
@@ -2834,7 +2834,7 @@ struct linker_to_head
     void operator()(I& h, I& f)
     {
         // Precondition: $\func{successor}(f)$ is defined
-        IteratorType(S) tmp = successor(f);
+        EOPIteratorType(S) tmp = successor(f);
         set_link(f, h);
         h = f;
         f = tmp;
@@ -2850,7 +2850,7 @@ inline linker_to_head<S> make_linker_to_head(const S& s)
 }
 
 template<typename I, typename S>
-    requires(ForwardLinker(S) && I == IteratorType(S))
+    requires(ForwardLinker(S) && I == EOPIteratorType(S))
 I reverse_append(I f, I l, I h, S set_link)
 {
     // Precondition: $\property{bounded\_range}(f, l) \wedge h \notin [f, l)$
@@ -2884,7 +2884,7 @@ inline predicate_source<I, P> make_predicate_source(const P& p)
 }
 
 template<typename I, typename S, typename P>
-    requires(ForwardLinker(S) && I == IteratorType(S) &&
+    requires(ForwardLinker(S) && I == EOPIteratorType(S) &&
         UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 pair< pair<I, I>, pair<I, I> >
 partition_linked(I f, I l, P p, S set_link)
@@ -2923,7 +2923,7 @@ inline relation_source<I0, I1, R> make_relation_source(const R& r)
 
 template<typename I, typename S, typename R>
     requires(Readable(I) &&
-        ForwardLinker(S) && I == IteratorType(S) &&
+        ForwardLinker(S) && I == EOPIteratorType(S) &&
         Relation(R) && EOPValueType(I) == EOPDomain(R))
 pair<I, I> merge_linked_nonempty(I f0, I l0, I f1, I l1,
                                  R r, S set_link)
@@ -2940,7 +2940,7 @@ pair<I, I> merge_linked_nonempty(I f0, I l0, I f1, I l1,
 
 template<typename I, typename S, typename R>
     requires(Readable(I) &&
-        ForwardLinker(S) && I == IteratorType(S) &&
+        ForwardLinker(S) && I == EOPIteratorType(S) &&
         Relation(R) && EOPValueType(I) == EOPDomain(R))
 pair<I, I> sort_linked_nonempty_n(I f, EOPDistanceType(I) n,
                                   R r, S set_link)
@@ -4817,7 +4817,7 @@ bool empty(const array_k<k, T>&) // unused parameter name dropped to avoid warni
 //     requires(Linearizable(W))
 // struct value_type
 // {
-//     typedef EOPValueType(IteratorType(W)) type;
+//     typedef EOPValueType(EOPIteratorType(W)) type;
 // };
 
 // Instead, each type W that models Linearizable must provide
@@ -4839,7 +4839,7 @@ bool linearizable_ordering(const W& x, const W& y)
 
 template<typename W>
     requires(Linearizeable(W))
-EOPDistanceType(IteratorType(W)) size(const W& x)
+EOPDistanceType(EOPIteratorType(W)) size(const W& x)
 {
     return end(x) - begin(x);
 }
@@ -5010,16 +5010,16 @@ struct less< counted_range<I> >
 
 // concept Position(T) means
 //     BaseType : Position -> Linearizable
-//  /\ IteratorType : Position -> Iterator
+//  /\ EOPIteratorType : Position -> Iterator
 //  /\ ValueType : Position -> Regular
-//         T |- EOPValueType(IteratorType(T))
+//         T |- EOPValueType(EOPIteratorType(T))
 //  /\ SizeType : Position -> Integer
-//         T |- SizeType(IteratorType(T))
+//         T |- SizeType(EOPIteratorType(T))
 //  /\ base : T -> BaseType(T)
-//  /\ current : T -> IteratorType(T)
-//  /\ begin : T -> IteratorType(T)
+//  /\ current : T -> EOPIteratorType(T)
+//  /\ begin : T -> EOPIteratorType(T)
 //         x |- begin(base(x))
-//  /\ end : T -> IteratorType(T)
+//  /\ end : T -> EOPIteratorType(T)
 //         x |- end(base(x))
 
 
@@ -5048,7 +5048,7 @@ template<typename S>
     requires(DynamicSequence(S))
 struct before
 {
-    typedef IteratorType(S) I;
+    typedef EOPIteratorType(S) I;
     EOPpointer(S) s;
     I i;
     before(S& s, I i) : s(&s), i(i) { }
@@ -5065,7 +5065,7 @@ template<typename S>
     requires(DynamicSequence(S))
 struct iterator_type< before<S> >
 {
-    typedef IteratorType(S) type;
+    typedef EOPIteratorType(S) type;
 };
 
 template<typename S>
@@ -5079,7 +5079,7 @@ template<typename S>
     requires(DynamicSequence(S))
 struct size_type< before<S> >
 {
-    typedef EOPDistanceType(IteratorType(S)) type;
+    typedef EOPDistanceType(EOPIteratorType(S)) type;
 };
 
 template<typename S>
@@ -5091,21 +5091,21 @@ S& base(before<S>& p)
 
 template<typename S>
     requires(DynamicSequence(S))
-IteratorType(S) current(before<S>& p)
+EOPIteratorType(S) current(before<S>& p)
 {
     return p.i;
 }
 
 template<typename S>
     requires(DynamicSequence(S))
-IteratorType(S) begin(before<S>& p)
+EOPIteratorType(S) begin(before<S>& p)
 {
     return begin(base(p));
 }
 
 template<typename S>
     requires(DynamicSequence(S))
-IteratorType(S) end(before<S>& p)
+EOPIteratorType(S) end(before<S>& p)
 {
     return end(base(p));
 }
@@ -5114,7 +5114,7 @@ template<typename S>
     requires(DynamicSequence(S))
 struct after
 {
-    typedef IteratorType(S) I;
+    typedef EOPIteratorType(S) I;
     EOPpointer(S) s;
     I i;
     after(S& s, I i) : s(&s), i(i) { }
@@ -5131,7 +5131,7 @@ template<typename S>
     requires(DynamicSequence(S))
 struct iterator_type< after<S> >
 {
-    typedef IteratorType(S) type;
+    typedef EOPIteratorType(S) type;
 };
 
 template<typename S>
@@ -5145,7 +5145,7 @@ template<typename S>
     requires(DynamicSequence(S))
 struct size_type< after<S> >
 {
-    typedef EOPDistanceType(IteratorType(S)) type;
+    typedef EOPDistanceType(EOPIteratorType(S)) type;
 };
 
 template<typename S>
@@ -5157,21 +5157,21 @@ S& base(after<S>& p)
 
 template<typename S>
     requires(DynamicSequence(S))
-IteratorType(S) current(after<S>& p)
+EOPIteratorType(S) current(after<S>& p)
 {
     return p.i;
 }
 
 template<typename S>
     requires(DynamicSequence(S))
-IteratorType(S) begin(after<S>& p)
+EOPIteratorType(S) begin(after<S>& p)
 {
     return begin(base(p));
 }
 
 template<typename S>
     requires(DynamicSequence(S))
-IteratorType(S) end(after<S>& p)
+EOPIteratorType(S) end(after<S>& p)
 {
     return end(base(p));
 }
@@ -5195,7 +5195,7 @@ template<typename S>
     requires(DynamicSequence(S))
 struct iterator_type< front<S> >
 {
-    typedef IteratorType(S) type;
+    typedef EOPIteratorType(S) type;
 };
 
 template<typename S>
@@ -5209,7 +5209,7 @@ template<typename S>
     requires(DynamicSequence(S))
 struct size_type< front<S> >
 {
-    typedef EOPDistanceType(IteratorType(S)) type;
+    typedef EOPDistanceType(EOPIteratorType(S)) type;
 };
 
 template<typename S>
@@ -5221,21 +5221,21 @@ S& base(front<S>& p)
 
 template<typename S>
     requires(DynamicSequence(S))
-IteratorType(S) current(front<S>& p)
+EOPIteratorType(S) current(front<S>& p)
 {
     return begin(p);
 }
 
 template<typename S>
     requires(DynamicSequence(S))
-IteratorType(S) begin(front<S>& p)
+EOPIteratorType(S) begin(front<S>& p)
 {
     return begin(base(p));
 }
 
 template<typename S>
     requires(DynamicSequence(S))
-IteratorType(S) end(front<S>& p)
+EOPIteratorType(S) end(front<S>& p)
 {
     return end(base(p));
 }
@@ -5259,7 +5259,7 @@ template<typename S>
     requires(DynamicSequence(S))
 struct iterator_type< back<S> >
 {
-    typedef IteratorType(S) type;
+    typedef EOPIteratorType(S) type;
 };
 
 template<typename S>
@@ -5273,7 +5273,7 @@ template<typename S>
     requires(DynamicSequence(S))
 struct size_type< back<S> >
 {
-    typedef EOPDistanceType(IteratorType(S)) type;
+    typedef EOPDistanceType(EOPIteratorType(S)) type;
 };
 
 template<typename S>
@@ -5285,21 +5285,21 @@ S& base(back<S>& p)
 
 template<typename S>
     requires(DynamicSequence(S))
-IteratorType(S) current(back<S>& p)
+EOPIteratorType(S) current(back<S>& p)
 {
     return end(p);
 }
 
 template<typename S>
     requires(DynamicSequence(S))
-IteratorType(S) begin(back<S>& p)
+EOPIteratorType(S) begin(back<S>& p)
 {
     return begin(base(p));
 }
 
 template<typename S>
     requires(DynamicSequence(S))
-IteratorType(S) end(back<S>& p)
+EOPIteratorType(S) end(back<S>& p)
 {
     return end(base(p));
 }
@@ -5308,7 +5308,7 @@ template<typename S>
     requires(DynamicSequence(S))
 struct at
 {
-    typedef IteratorType(S) I;
+    typedef EOPIteratorType(S) I;
     EOPpointer(S) s;
     I i;
     at(S& s, I i) : s(&s), i(i) { }
@@ -5325,7 +5325,7 @@ template<typename S>
     requires(DynamicSequence(S))
 struct iterator_type< at<S> >
 {
-    typedef IteratorType(S) type;
+    typedef EOPIteratorType(S) type;
 };
 
 template<typename S>
@@ -5339,7 +5339,7 @@ template<typename S>
     requires(DynamicSequence(S))
 struct size_type< at<S> >
 {
-    typedef EOPDistanceType(IteratorType(S)) type;
+    typedef EOPDistanceType(EOPIteratorType(S)) type;
 };
 
 template<typename S>
@@ -5351,21 +5351,21 @@ S& base(at<S>& p)
 
 template<typename S>
     requires(DynamicSequence(S))
-IteratorType(S) current(at<S>& p)
+EOPIteratorType(S) current(at<S>& p)
 {
     return p.i;
 }
 
 template<typename S>
     requires(DynamicSequence(S))
-IteratorType(S) begin(at<S>& p)
+EOPIteratorType(S) begin(at<S>& p)
 {
     return begin(base(p));
 }
 
 template<typename S>
     requires(DynamicSequence(S))
-IteratorType(S) end(at<S>& p)
+EOPIteratorType(S) end(at<S>& p)
 {
     return end(base(p));
 }
@@ -5388,7 +5388,7 @@ template<typename P>
     requires(InsertPosition(P))
 struct iterator_type< insert_iterator<P> >
 {
-    typedef IteratorType(P) type;
+    typedef EOPIteratorType(P) type;
 };
 
 template<typename P>
@@ -5624,26 +5624,26 @@ template<typename T>
     requires(Regular(T))
 struct size_type< slist<T> >
 {
-    typedef EOPDistanceType(IteratorType(slist<T>)) type;
+    typedef EOPDistanceType(EOPIteratorType(slist<T>)) type;
 };
 
 template<typename T>
     requires(Regular(T))
 struct underlying_type< slist<T> >
 {
-    typedef slist_iterator<T> type; // or IteratorType(slist<T>)
+    typedef slist_iterator<T> type; // or EOPIteratorType(slist<T>)
 };
 
 template<typename T>
     requires(Regular(T))
-IteratorType(slist<T>) begin(const slist<T>& x)
+EOPIteratorType(slist<T>) begin(const slist<T>& x)
 {
     return x.first;
 }
 
 template<typename T>
     requires(Regular(T))
-IteratorType(slist<T>) end(const slist<T>&)
+EOPIteratorType(slist<T>) end(const slist<T>&)
 {
     return slist_iterator<T>();
 }
@@ -5692,7 +5692,7 @@ template<typename T>
     requires(Regular(T))
 void reverse(slist<T>& x)
 {
-    typedef IteratorType(slist<T>) I;
+    typedef EOPIteratorType(slist<T>) I;
     x.first = reverse_append(begin(x), end(x), end(x), forward_linker<I>());
 }
 
@@ -5700,7 +5700,7 @@ template<typename T, typename P>
     requires(Regular(T) && UnaryPredicate(P) && EOPDomain(P) == T)
 void partition(slist<T>& x, slist<T>& y, P p)
 {
-    typedef IteratorType(slist<T>) I;
+    typedef EOPIteratorType(slist<T>) I;
     pair< pair<I, I>, pair<I, I> > pp =
         partition_linked(begin(x), end(x), p, forward_linker<I>());
     x.first = pp.m0.m0;
@@ -5717,7 +5717,7 @@ template<typename T, typename R>
 void merge(slist<T>& x, slist<T>& y, R r)
 {
     // Precondition: $\func{weak\_ordering}(r)$
-    typedef IteratorType(slist<T>) I;
+    typedef EOPIteratorType(slist<T>) I;
     if (empty(y)) return;
     if (empty(x)) { swap(x, y); return; }
     x.first = merge_linked_nonempty(
@@ -5731,7 +5731,7 @@ template<typename T, typename R>
 void sort(slist<T>& x, R r)
 {
     // Precondition: $\func{weak\_ordering}(r)$
-    typedef IteratorType(slist<T>) I;
+    typedef EOPIteratorType(slist<T>) I;
     pair<I, I> p = sort_linked_nonempty_n(begin(x), size(x), r, forward_linker<I>());
     x.first = p.m0;
 }
@@ -5930,26 +5930,26 @@ template<typename T>
     requires(Regular(T))
 struct size_type< list<T> >
 {
-    typedef EOPDistanceType(IteratorType(list<T>)) type;
+    typedef EOPDistanceType(EOPIteratorType(list<T>)) type;
 };
 
 template<typename T>
     requires(Regular(T))
 struct underlying_type< list<T> >
 {
-    typedef list_iterator<T> type; // or IteratorType(list<T>)
+    typedef list_iterator<T> type; // or EOPIteratorType(list<T>)
 };
 
 template<typename T>
     requires(Regular(T))
-IteratorType(list<T>) begin(const list<T>& x)
+EOPIteratorType(list<T>) begin(const list<T>& x)
 {
     return successor(x.dummy);
 }
 
 template<typename T>
     requires(Regular(T))
-IteratorType(list<T>) end(const list<T>& x)
+EOPIteratorType(list<T>) end(const list<T>& x)
 {
     return x.dummy;
 }
@@ -6000,7 +6000,7 @@ template<typename T>
     requires(Regular(T))
 void reverse(list<T>& x)
 {
-    typedef IteratorType(list<T>) I;
+    typedef EOPIteratorType(list<T>) I;
     I i = reverse_append(begin(x), end(x), end(x), bidirectional_linker<I>());
     set_link_bidirectional(x.dummy, i);
 }
@@ -6009,7 +6009,7 @@ template<typename T, typename P>
     requires(Regular(T) && UnaryPredicate(P) && EOPDomain(P) == T)
 void partition(list<T>& x, list<T>& y, P p)
 {
-    typedef IteratorType(list<T>) I;
+    typedef EOPIteratorType(list<T>) I;
     bidirectional_linker<I> set_link;
     pair< pair<I, I>, pair<I, I> > pp =
         partition_linked(begin(x), end(x), p, set_link);
@@ -6026,7 +6026,7 @@ template<typename T, typename R>
 void merge(list<T>& x, list<T>& y, R r)
 {
     // Precondition: $\func{weak\_ordering}(r)$
-    typedef IteratorType(list<T>) I;
+    typedef EOPIteratorType(list<T>) I;
     bidirectional_linker<I> set_link;
     if (empty(y)) return;
     if (empty(x)) { swap(x, y); return; }
@@ -6043,7 +6043,7 @@ template<typename T, typename R>
 void sort(list<T>& x, R r)
 {
     // Precondition: $\func{weak\_ordering}(r)$
-    typedef IteratorType(list<T>) I;
+    typedef EOPIteratorType(list<T>) I;
     pair<I, I> p = sort_linked_nonempty_n(begin(x), size(x), r, forward_linker<I>());
     // See the end of section 8.3 of Elements of Programming
     // for the explanation of this relinking code:
@@ -6645,7 +6645,7 @@ template<typename T>
     requires(Regular(T))
 struct array
 {
-    typedef EOPDistanceType(IteratorType(array<T>)) N;
+    typedef EOPDistanceType(EOPIteratorType(array<T>)) N;
     EOPpointer(array_prefix<T>) p;
     array() : p(0) { }
     array(N c) : p(allocate_array<T>(c)) { } // size is 0 and capacity is c
@@ -6706,7 +6706,7 @@ template<typename T>
     requires(Regular(T))
 struct size_type< array<T> >
 {
-    typedef EOPDistanceType(IteratorType(array<T>)) type;
+    typedef EOPDistanceType(EOPIteratorType(array<T>)) type;
 };
 
 template<typename T>
@@ -6718,37 +6718,37 @@ struct underlying_type< array<T> >
 
 template<typename T>
     requires(Regular(T))
-IteratorType(array<T>) begin(const array<T>& x)
+EOPIteratorType(array<T>) begin(const array<T>& x)
 {
     typedef EOPpointer(array_prefix<T>) P;
-    typedef IteratorType(array<T>) I;
+    typedef EOPIteratorType(array<T>) I;
     if (x.p == P(0)) return I(0);
     return I(addressof(source(x.p).a));
 }
 
 template<typename T>
     requires(Regular(T))
-IteratorType(array<T>) end(const array<T>& x)
+EOPIteratorType(array<T>) end(const array<T>& x)
 {
     typedef EOPpointer(array_prefix<T>) P;
-    typedef IteratorType(array<T>) I;
+    typedef EOPIteratorType(array<T>) I;
     if (x.p == P(0)) return I(0);
     return I(source(x.p).m);
 }
 
 template<typename T>
     requires(Regular(T))
-IteratorType(array<T>) end_of_storage(const array<T>& x)
+EOPIteratorType(array<T>) end_of_storage(const array<T>& x)
 {
     typedef EOPpointer(array_prefix<T>) P;
-    typedef IteratorType(array<T>) I;
+    typedef EOPIteratorType(array<T>) I;
     if (x.p == P(0)) return I(0);
     return I(source(x.p).l);
 }
 
 template<typename T>
     requires(Regular(T))
-EOPDistanceType(IteratorType(array<T>)) capacity(const array<T>& x)
+EOPDistanceType(EOPIteratorType(array<T>)) capacity(const array<T>& x)
 {
     return end_of_storage(x) - begin(x);
 }
@@ -6778,7 +6778,7 @@ template<typename T, typename U>
     requires(Regular(T) && Regular(U) && Constructible(T, U))
 back< array<T> > insert(back< array<T> > p, const U& y)
 {
-    typedef EOPDistanceType(IteratorType(array<T>)) N;
+    typedef EOPDistanceType(EOPIteratorType(array<T>)) N;
     N n = size(base(p));
     if (n == capacity(base(p)))
         reserve(base(p), max(N(1), n + n));
@@ -6792,7 +6792,7 @@ template<typename T, typename W>
         Linearizable(W) && Constructible(T, EOPValueType(W)))
 before< array<T> > insert_range(before< array<T> > p, const W& w)
 {
-    typedef IteratorType(array<T>) I;
+    typedef EOPIteratorType(array<T>) I;
     EOPDistanceType(I) o_f = current(p) - begin(p);
     EOPDistanceType(I) o_m = size(p);
     insert_range(back< array<T> >(base(p)), w);
@@ -6993,7 +6993,7 @@ I original(const underlying_iterator<I>& x)
 template<typename T>
     requires(Regular(T))
 void reserve_basic(array<T>& x,
-                   EOPDistanceType(IteratorType(array<T>)) n)
+                   EOPDistanceType(EOPIteratorType(array<T>)) n)
 {
     if (n < size(x) || n == capacity(x)) return;
     array<T> tmp(n);
@@ -7003,7 +7003,7 @@ void reserve_basic(array<T>& x,
 
 template<typename T>
     requires(Regular(T))
-void reserve(array<T>& x, EOPDistanceType(IteratorType(array<T>)) n)
+void reserve(array<T>& x, EOPDistanceType(EOPIteratorType(array<T>)) n)
 {
     reserve_basic(reinterpret_cast<array<UnderlyingType(T)>&>(x), n);
 }

@@ -270,14 +270,14 @@ struct weight_type;
 // Chapter 8 - Coordinates with mutable successors
 
 
-// IteratorType : ForwardLinker -> ForwardIterator
-// IteratorType : BackwardLinker -> BidirectionalIterator
+// EOPIteratorType : ForwardLinker -> ForwardIterator
+// EOPIteratorType : BackwardLinker -> BidirectionalIterator
 
 template<typename T>
-    requires(ImplementsIteratorType(T))
+    requires(ImplementsEOPIteratorType(T))
 struct iterator_type;
 
-#define IteratorType(T) typename iterator_type< T >::type
+#define EOPIteratorType(T) typename iterator_type< T >::type
 
 
 // Chapter 10 - Rearrangements

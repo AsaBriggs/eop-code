@@ -883,7 +883,7 @@ void run_array_tests()
     print_eol();
     print("sorted:  "); print(m); print_eol();
 
-    typedef EOPDistanceType(IteratorType(matrix)) N;
+    typedef EOPDistanceType(EOPIteratorType(matrix)) N;
     N n = max(size(m) / N(10), N(100));
     UnderlyingType(row) r;
     array<UnderlyingType(row)> buffer(n, n, r);
