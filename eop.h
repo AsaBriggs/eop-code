@@ -4026,7 +4026,7 @@ template<typename T>
     requires(Regular(T))
 struct temporary_buffer
 {
-    typedef pointer(T) P;
+    typedef EOPpointer(T) P;
     typedef DistanceType(P) N;
     P p;
     N n;
@@ -4054,14 +4054,14 @@ private:
 
 template<typename T>
     requires(Regular(T))
-DistanceType(pointer(T)) size(const temporary_buffer<T>& b)
+DistanceType(EOPpointer(T)) size(const temporary_buffer<T>& b)
 {
     return b.n;
 }
 
 template<typename T>
     requires(Regular(T))
-pointer(T) begin(temporary_buffer<T>& b)
+EOPpointer(T) begin(temporary_buffer<T>& b)
 {
     return b.p;
 }
@@ -4443,7 +4443,7 @@ struct counter_machine
     Op op;
     T z;
     T f[64];
-    pointer(T) l;
+    EOPpointer(T) l;
     counter_machine(Op op, T const& z) :
         op(op), z(z), l(f) { }
     void operator()(T const& x)
@@ -4724,7 +4724,7 @@ template<int k, typename T>
     requires(Regular(T))
 struct iterator_type< array_k<k, T> >
 {
-    typedef pointer(T) type;
+    typedef EOPpointer(T) type;
 };
 
 template<int k, typename T>
@@ -4738,7 +4738,7 @@ template<int k, typename T>
     requires(Regular(T))
 struct size_type< array_k<k, T> >
 {
-    typedef DistanceType(pointer(T)) type;
+    typedef DistanceType(EOPpointer(T)) type;
 };
 
 template<int k, typename T>
@@ -4751,28 +4751,28 @@ struct underlying_type< array_k<k, T> >
 
 template<int k, typename T>
     requires(Regular(T))
-pointer(T) begin(array_k<k, T>& x)
+EOPpointer(T) begin(array_k<k, T>& x)
 {
     return addressof(x.a[0]);
 }
 
 template<int k, typename T>
     requires(Regular(T))
-const pointer(T) begin(const array_k<k, T>& x)
+const EOPpointer(T) begin(const array_k<k, T>& x)
 {
     return addressof(x.a[0]);
 }
 
 template<int k, typename T>
     requires(Regular(T))
-pointer(T) end(array_k<k, T>& x)
+EOPpointer(T) end(array_k<k, T>& x)
 {
     return begin(x) + k;
 }
 
 template<int k, typename T>
     requires(Regular(T))
-const pointer(T) end(const array_k<k, T>& x)
+const EOPpointer(T) end(const array_k<k, T>& x)
 {
     return begin(x) + k;
 }
@@ -5049,7 +5049,7 @@ template<typename S>
 struct before
 {
     typedef IteratorType(S) I;
-    pointer(S) s;
+    EOPpointer(S) s;
     I i;
     before(S& s, I i) : s(&s), i(i) { }
 };
@@ -5115,7 +5115,7 @@ template<typename S>
 struct after
 {
     typedef IteratorType(S) I;
-    pointer(S) s;
+    EOPpointer(S) s;
     I i;
     after(S& s, I i) : s(&s), i(i) { }
 };
@@ -5180,7 +5180,7 @@ template<typename S>
     requires(DynamicSequence(S))
 struct front
 {
-    pointer(S) s;
+    EOPpointer(S) s;
     front(S& s) : s(&s) { }
 };
 
@@ -5244,7 +5244,7 @@ template<typename S>
     requires(DynamicSequence(S))
 struct back
 {
-    pointer(S) s;
+    EOPpointer(S) s;
     back(S& s) : s(&s) { }
 };
 
@@ -5309,7 +5309,7 @@ template<typename S>
 struct at
 {
     typedef IteratorType(S) I;
-    pointer(S) s;
+    EOPpointer(S) s;
     I i;
     at(S& s, I i) : s(&s), i(i) { }
 };
@@ -5447,8 +5447,8 @@ template<typename T>
 struct slist_node
 {
     T value;
-    pointer(slist_node) forward_link;
-    slist_node(const T& v, pointer(slist_node) f) : value(v), forward_link(f) { }
+    EOPpointer(slist_node) forward_link;
+    slist_node(const T& v, EOPpointer(slist_node) f) : value(v), forward_link(f) { }
 };
 
 static int slist_node_count = 0; /* ***** TESTING ***** */
@@ -5457,9 +5457,9 @@ template<typename T>
     requires(Regular(T))
 struct slist_iterator
 {
-    pointer(slist_node<T>) p;
+    EOPpointer(slist_node<T>) p;
     slist_iterator() : p(0) { }
-    slist_iterator(pointer(slist_node<T>) p) : p(p) { }
+    slist_iterator(EOPpointer(slist_node<T>) p) : p(p) { }
 };
 
 template<typename T>
@@ -5745,11 +5745,11 @@ template<typename T>
 struct list_node
 {
     T value;
-    pointer(list_node) forward_link;
-    pointer(list_node) backward_link;
+    EOPpointer(list_node) forward_link;
+    EOPpointer(list_node) backward_link;
     list_node(
         const T& v,
-        pointer(list_node) f, pointer(list_node) b) :
+        EOPpointer(list_node) f, EOPpointer(list_node) b) :
         value(v), forward_link(f), backward_link(b) { }
 };
 
@@ -5759,9 +5759,9 @@ template<typename T>
     requires(Regular(T))
 struct list_iterator
 {
-    pointer(list_node<T>) p;
+    EOPpointer(list_node<T>) p;
     list_iterator() : p(0) { }
-    list_iterator(pointer(list_node<T>) p) : p(p) { }
+    list_iterator(EOPpointer(list_node<T>) p) : p(p) { }
 };
 
 template<typename T>
@@ -6066,7 +6066,7 @@ template<typename T>
     requires(Regular(T))
 struct stree_node
 {
-    typedef pointer(stree_node) Link;
+    typedef EOPpointer(stree_node) Link;
     T value;
     Link left_successor_link;
     Link right_successor_link;
@@ -6080,9 +6080,9 @@ template<typename T>
     requires(Regular(T))
 struct stree_coordinate
 {
-    pointer(stree_node<T>) ptr;
+    EOPpointer(stree_node<T>) ptr;
     stree_coordinate() : ptr(0) { }
-    stree_coordinate(pointer(stree_node<T>) ptr) : ptr(ptr) { }
+    stree_coordinate(EOPpointer(stree_node<T>) ptr) : ptr(ptr) { }
 };
 
 template<typename T>
@@ -6096,14 +6096,14 @@ template<typename T>
     requires(Regular(T))
 struct weight_type< stree_coordinate<T> >
 {
-    typedef DistanceType(pointer(stree_node<T>)) type;
+    typedef DistanceType(EOPpointer(stree_node<T>)) type;
 };
 
 template<typename T>
     requires(Regular(T))
 bool empty(stree_coordinate<T> c)
 {
-    typedef pointer(stree_node<T>) I;
+    typedef EOPpointer(stree_node<T>) I;
     return c.ptr == I(0);
 }
 
@@ -6361,7 +6361,7 @@ template<typename T>
     requires(Regular(T))
 struct tree_node
 {
-    typedef pointer(tree_node) Link;
+    typedef EOPpointer(tree_node) Link;
     T value;
     Link left_successor_link;
     Link right_successor_link;
@@ -6379,9 +6379,9 @@ template<typename T>
     requires(Regular(T))
 struct tree_coordinate
 {
-    pointer(tree_node<T>) ptr;
+    EOPpointer(tree_node<T>) ptr;
     tree_coordinate() : ptr(0) { }
-    tree_coordinate(pointer(tree_node<T>) ptr) : ptr(ptr) { }
+    tree_coordinate(EOPpointer(tree_node<T>) ptr) : ptr(ptr) { }
 };
 
 template<typename T>
@@ -6395,7 +6395,7 @@ template<typename T>
     requires(Regular(T))
 struct weight_type< tree_coordinate<T> >
 {
-    typedef DistanceType(pointer(tree_node<T>)) type;
+    typedef DistanceType(EOPpointer(tree_node<T>)) type;
 };
 
 template<typename T>
@@ -6613,8 +6613,8 @@ template<typename T>
     requires(Regular(T))
 struct array_prefix
 {
-    pointer(T) m;
-    pointer(T) l;
+    EOPpointer(T) m;
+    EOPpointer(T) l;
     T  a;
     // Invariant: $[addressof(a), m)$ are constructed elements
     // Invariant: $[m, l)$ are unconstructed (reserve) elements
@@ -6622,13 +6622,13 @@ struct array_prefix
 
 template<typename T>
     requires(Regular(T))
-pointer(array_prefix<T>) allocate_array(DistanceType(T*) n)
+EOPpointer(array_prefix<T>) allocate_array(DistanceType(T*) n)
 {
-    typedef pointer(array_prefix<T>) P;
+    typedef EOPpointer(array_prefix<T>) P;
     if (zero(n)) return P(0);
     int bsize = int(predecessor(n)) * sizeof(T);
     P p = P(malloc(sizeof(array_prefix<T>) + bsize));
-    pointer(T) f = &sink(p).a;
+    EOPpointer(T) f = &sink(p).a;
     sink(p).m = f;
     sink(p).l = f + n;
     return p;
@@ -6636,7 +6636,7 @@ pointer(array_prefix<T>) allocate_array(DistanceType(T*) n)
 
 template<typename T>
     requires(Regular(T))
-void deallocate_array(pointer(array_prefix<T>) p)
+void deallocate_array(EOPpointer(array_prefix<T>) p)
 {
     free(p);
 }
@@ -6646,7 +6646,7 @@ template<typename T>
 struct array
 {
     typedef DistanceType(IteratorType(array<T>)) N;
-    pointer(array_prefix<T>) p;
+    EOPpointer(array_prefix<T>) p;
     array() : p(0) { }
     array(N c) : p(allocate_array<T>(c)) { } // size is 0 and capacity is c
     array(N s, N c, const T& x)
@@ -6692,7 +6692,7 @@ template<typename T>
     requires(Regular(T))
 struct iterator_type< array<T> >
 {
-    typedef pointer(T) type;
+    typedef EOPpointer(T) type;
 };
 
 template<typename T>
@@ -6713,14 +6713,14 @@ template<typename T>
     requires(Regular(T))
 struct underlying_type< array<T> >
 {
-    typedef struct { pointer(array_prefix<T>) p; } type;
+    typedef struct { EOPpointer(array_prefix<T>) p; } type;
 };
 
 template<typename T>
     requires(Regular(T))
 IteratorType(array<T>) begin(const array<T>& x)
 {
-    typedef pointer(array_prefix<T>) P;
+    typedef EOPpointer(array_prefix<T>) P;
     typedef IteratorType(array<T>) I;
     if (x.p == P(0)) return I(0);
     return I(addressof(source(x.p).a));
@@ -6730,7 +6730,7 @@ template<typename T>
     requires(Regular(T))
 IteratorType(array<T>) end(const array<T>& x)
 {
-    typedef pointer(array_prefix<T>) P;
+    typedef EOPpointer(array_prefix<T>) P;
     typedef IteratorType(array<T>) I;
     if (x.p == P(0)) return I(0);
     return I(source(x.p).m);
@@ -6740,7 +6740,7 @@ template<typename T>
     requires(Regular(T))
 IteratorType(array<T>) end_of_storage(const array<T>& x)
 {
-    typedef pointer(array_prefix<T>) P;
+    typedef EOPpointer(array_prefix<T>) P;
     typedef IteratorType(array<T>) I;
     if (x.p == P(0)) return I(0);
     return I(source(x.p).l);

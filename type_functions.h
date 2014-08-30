@@ -56,7 +56,7 @@
 // specializing:
           
 // template<typename T>
-// struct value_type<pointer(T)>
+// struct value_type<EOPpointer(T)>
 // {
 //     typedef T type;
 // };

@@ -151,7 +151,7 @@ void run_table_transformation()
         typedef size_type< T_0 >::type N_0;
         typedef array<N_0> T;
         typedef size_type< T   >::type N; // hopefully N = N_0
-        typedef iterator_type< T >::type I; // i.e., pointer(int)
+        typedef iterator_type< T >::type I; // i.e., EOPpointer(int)
         T a;
         while (true) {
   	        N x;
@@ -209,8 +209,8 @@ struct LCG // linear congruential generator
 
 
     T m, a, b, x0;
-    const pointer(char) name;
-    LCG(T m, T a, T b, T x0, const pointer(char) name) :
+    const EOPpointer(char) name;
+    LCG(T m, T a, T b, T x0, const EOPpointer(char) name) :
         m(m), a(a), b(b), x0(x0), name(name) { }
     T operator()(T x) { return (a * x + b) % m; }
 };
@@ -263,7 +263,7 @@ void run_lcg_transformation()
     print("Enter an index (out of range to end)"
           " and a seed (negative to use default):\n");
     int i(0);
-    pointer(LCG) p = begin(lcg);
+    EOPpointer(LCG) p = begin(lcg);
     while (i < size(lcg)) {
         print("  "); print(i); print(" "); print(source(p + i).name); print_eol();
         i = successor(i);
@@ -858,7 +858,7 @@ void run_array_tests()
 
     array<int> v;
     int buf[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-    insert_range(back< array<int> >(v), counted_range< pointer(int) >(buf, 9));
+    insert_range(back< array<int> >(v), counted_range< EOPpointer(int) >(buf, 9));
     print("v: "); print(v); print_eol();
     array< array<int> > vv(12, 12, v);
     print("vv: "); print(vv); print_eol();
@@ -895,7 +895,7 @@ void run_array_tests()
     array<int> copy_of_a(a);
     print_eol();
     print("array: "); print_range(begin(a), end(a)); print_eol();
-    typedef pointer(int) I;
+    typedef EOPpointer(int) I;
 
     print("merge: "); print_range(begin(a), end(a)); print_eol();
     pair<int*, int*> p = partition_stable_n(begin(a), 6, odd<int>);

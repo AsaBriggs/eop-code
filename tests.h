@@ -218,7 +218,7 @@ void test_tuples()
     type_pair<int, char>(0, 0, 'a', 'z');
 
     char a[] = {'a', 'Z'};
-    type_pair<P, pointer(char)>(make_pair(0, 'a'), make_pair(1, 'Z'), &(a[0]), &(a[1]));
+    type_pair<P, EOPpointer(char)>(make_pair(0, 'a'), make_pair(1, 'Z'), &(a[0]), &(a[1]));
 
     array<int> a0;
     array<int> a1(3, 3, 0);
@@ -809,14 +809,14 @@ void algorithm_select_1_4()
     T t_2_3 = {2, 3};
     T t_3_4 = {3, 4};
     T t[] = {t_1_1, t_2_2, t_2_3, t_3_4};
-    pointer(T) l = t + sizeof(t) / sizeof(T);
+    EOPpointer(T) l = t + sizeof(t) / sizeof(T);
     do {
         if (verbose) {
             print("      2nd of ("); print_range(t, l); print(") is ");
         }
         T r = select_1_4(t[0], t[1], t[2], t[3],
                          key_ordering< first<int, int>, less<int> >(first<int, int>(), less<int>()));
-        pointer(T) f = find_if(t, l, eq_first<int, int>(2));
+        EOPpointer(T) f = find_if(t, l, eq_first<int, int>(2));
         Assert(f != l && source(f) == r);
         if (verbose) {
             print(r);
@@ -834,14 +834,14 @@ void algorithm_select_1_4_stability_indices()
     T t_2_3 = {2, 3};
     T t_3_4 = {3, 4};
     T t[] = {t_1_1, t_2_2, t_2_3, t_3_4};
-    pointer(T) l = t + sizeof(t) / sizeof(T);
+    EOPpointer(T) l = t + sizeof(t) / sizeof(T);
     do {
         if (verbose) {
             print("      2nd of ("); print_range(t, l); print(") is ");
         }
         T r = select_1_4<0,1,2,3>(t[0], t[1], t[2], t[3],
                                   key_ordering< first<int, int>, less<int> >(first<int, int>(), less<int>()));
-        pointer(T) f = find_if(t, l, eq_first<int, int>(2));
+        EOPpointer(T) f = find_if(t, l, eq_first<int, int>(2));
         Assert(f != l && source(f) == r);
         if (verbose) {
             print(r);
@@ -2092,7 +2092,7 @@ void test_ch_6()
         i = int(0); increment(i); Assert(i == int(1));
         i = int(99); increment(i); Assert(i == int(100));
         double x[100];
-        pointer(double) fx;
+        EOPpointer(double) fx;
         fx = x; increment(fx); Assert(fx == x + 1);
         fx = &x[99]; increment(fx); Assert(fx == x + 100);
     }
@@ -2305,10 +2305,10 @@ void test_ch_6()
      }
 
     int a[] = {0, 1, 2, 2, 4, 4, 5};
-    pointer(int) f = a;
-    pointer(int) l = a + sizeof(a) / sizeof(int);
+    EOPpointer(int) f = a;
+    EOPpointer(int) l = a + sizeof(a) / sizeof(int);
     distance_type<int*>::type n = l - f;
-    pointer(int) m;
+    EOPpointer(int) m;
 
     m = lower_bound_n(f, n, 2, less<int>()); Assert(m == a + 2);
     m = upper_bound_n(f, n, 2, less<int>()); Assert(m == a + 4);
@@ -2367,7 +2367,7 @@ void algorithms_lexicographical()
     verify_conservation<int> v(slist_node_count);
 
     Z a[] = {0, 1, 2, 3, 4, 5};
-    typedef pointer(Z) I;
+    typedef EOPpointer(Z) I;
     I f_a = a;
     I l_a = f_a + (sizeof(a) / sizeof(Z));
     slist<Z> la(counted_range<Z*>(a, sizeof(a) / sizeof(Z)));
@@ -3472,7 +3472,7 @@ void type_temporary_buffer(N n)
 {
     {
         temporary_buffer<T> b(n);
-        DistanceType(pointer(T)) m = size(b);
+        DistanceType(EOPpointer(T)) m = size(b);
         Assert(0 < m && m <= n);
         if (verbose) {
             print("size(temporary_buffer<T>(");
@@ -3536,7 +3536,7 @@ void algorithms_reverse()
     equal_iota_reverse(begin(l), end(l));
 }
 
-typedef pointer(int) int_pointer;
+typedef EOPpointer(int) int_pointer;
 
 template<typename C>
     requires(IteratorConcept(C))
@@ -3655,7 +3655,7 @@ void algorithms_rotate()
     //   rotate_forward_nontrivial
     //   rotate_with_buffer_nontrivial
     //   rotate_with_buffer_backward_nontrivial
-    typedef pointer(int) I;
+    typedef EOPpointer(int) I;
     int a[8];
     int b[8];
     for (int n = 6; n < 8; ++n) {
@@ -3714,9 +3714,9 @@ typedef bool (*int_pred_type)(int);
 
 struct partition_algorithm_tester
 {
-    typedef pointer(int) I;
+    typedef EOPpointer(int) I;
     typedef distance_type<I>::type N;
-    const pointer(char) name;
+    const EOPpointer(char) name;
     array_k<6, int> a;
     I f;
     I l;
@@ -3724,7 +3724,7 @@ struct partition_algorithm_tester
     bool (*p)(int);
     slist<int> b;
     I m_potential;
-    partition_algorithm_tester(const pointer(char) name) :
+    partition_algorithm_tester(const EOPpointer(char) name) :
         name(name),
         a(),
         f(begin(a)),
@@ -3774,10 +3774,10 @@ void algorithms_partition()
 {
     {
         int a[] = {0, 2, 4, 1, 3, 5};
-        pointer(int) f = a;
-        pointer(int) l = a + sizeof(a) / sizeof(int);
+        EOPpointer(int) f = a;
+        EOPpointer(int) l = a + sizeof(a) / sizeof(int);
         // exercise
-        pointer(int) m = potential_partition_point(f, l, odd<int>);
+        EOPpointer(int) m = potential_partition_point(f, l, odd<int>);
         // exercise
         Assert(partitioned_at_point(f, m, l, odd<int>));
     }
@@ -3885,7 +3885,7 @@ struct equal_ignoring_case
     }
 };
 
-int size_unguarded(const pointer(char) a)
+int size_unguarded(const EOPpointer(char) a)
 {
     int n(0);
     while (source(a) != char(0)) {
@@ -3895,9 +3895,9 @@ int size_unguarded(const pointer(char) a)
     return n;
 }
 
-const pointer(char) begin(const pointer(char) a) { return a; }
+const EOPpointer(char) begin(const EOPpointer(char) a) { return a; }
 
-const pointer(char) end(const pointer(char) a) { return begin(a) + size_unguarded(a); }
+const EOPpointer(char) end(const EOPpointer(char) a) { return begin(a) + size_unguarded(a); }
 
 template<typename M, typename R, typename E>
     requires(WrappedMerger(M) &&
@@ -3905,9 +3905,9 @@ template<typename M, typename R, typename E>
         Relation(E) && Domain(E) == char)
 struct merge_case
 {
-    typedef pointer(const char) input_type_0;
-    typedef pointer(const char) input_type_1;
-    typedef pointer(const char) input_type_2;
+    typedef EOPpointer(const char) input_type_0;
+    typedef EOPpointer(const char) input_type_1;
+    typedef EOPpointer(const char) input_type_2;
     typedef void codomain_type;
 
     M merger;
@@ -3921,14 +3921,14 @@ struct merge_case
         // Precondition: $\property{equivalence}(e)
     }
     void subcase(
-        const pointer(char) a, int n_a,
-        const pointer(char) b, int n_b,
-        const pointer(char) c, int n_c)
+        const EOPpointer(char) a, int n_a,
+        const EOPpointer(char) b, int n_b,
+        const EOPpointer(char) c, int n_c)
     {
         array<char> tmp(n_c, n_c, char(0));
-        pointer(char) f_ab = begin(tmp);
-        pointer(char) m_ab = copy_n(begin(a), n_a, f_ab).m1;
-        pointer(char) l_ab = copy_n(begin(b), n_b, m_ab).m1;
+        EOPpointer(char) f_ab = begin(tmp);
+        EOPpointer(char) m_ab = copy_n(begin(a), n_a, f_ab).m1;
+        EOPpointer(char) l_ab = copy_n(begin(b), n_b, m_ab).m1;
         Assert(l_ab == end(tmp));
 
         merger(f_ab, n_a, m_ab, n_b, r);
@@ -3941,7 +3941,7 @@ struct merge_case
             print_eol();
         }
     }
-    void operator()(pointer(const char) a, pointer(const char) b, pointer(const char) c)
+    void operator()(EOPpointer(const char) a, EOPpointer(const char) b, EOPpointer(const char) c)
     {
         int n_a = size_unguarded(a) ;
         int n_b = size_unguarded(b);
@@ -4006,7 +4006,7 @@ I wrapped_merge_n_adaptive(I f0, DistanceType(I) n0,
 
 void algorithms_merge()
 {
-    typedef pointer(char) I;
+    typedef EOPpointer(char) I;
 
     merge_cases(wrapped_merge_n_with_buffer<I, less_ignoring_case>);
     merge_cases(wrapped_merge_n_adaptive<I, less_ignoring_case>);
@@ -4038,7 +4038,7 @@ void algorithms_sort(S& s)
     {
         iota(n, f);
             array<int> buffer(50, 50, 0);
-            pointer(int) f_b = begin(buffer);
+            EOPpointer(int) f_b = begin(buffer);
             int n_b = size(buffer);
             m = sort_n_adaptive(f, n, f_b, n_b, greater);
         Assert(m == l && equal_iota_reverse(f, l));
@@ -4161,7 +4161,7 @@ void concept_ConstantSizeSequence(T0& a0, T1& a1, ValueType(T1)& x)
     Assert(!empty(a0));
     Assert(!empty(a1));
 
-    // Iterator is pointer(T)
+    // Iterator is EOPpointer(T)
     Assert(begin(a0) == addressof(a0[0]));
 
     // Equality behavior
@@ -4624,8 +4624,8 @@ void test_ch_12()
         const int N = 10;
         array<int> a0(N, N, 0);
         array<int> a1(N, N, 1);
-        pointer(int) p0 = begin(a0);
-        pointer(int) p1 = begin(a1);
+        EOPpointer(int) p0 = begin(a0);
+        EOPpointer(int) p1 = begin(a1);
         swap(a0, a1);
         Assert(all(begin(a0), end(a0), equal_to_x<int>(1)));
         Assert(all(begin(a1), end(a1), zero<int>));

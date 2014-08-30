@@ -14,7 +14,7 @@
 
 // Definitions of type functions and global functions from concepts
 // Readable, Writeable, Mutable, Iterator, BidirectionalIterator
-// for types const T& and pointer(T) from
+// for types const T& and EOPpointer(T) from
 // Elements of Programming
 // by Alexander Stepanov and Paul McJones
 // Addison-Wesley Professional, 2009
@@ -32,14 +32,14 @@
 
 template<typename T>
     requires(Regular(T))
-struct value_type<pointer(T)>
+struct value_type<EOPpointer(T)>
 {
     typedef T type;
 };
 
 template<typename T>
     requires(Regular(T))
-const T& source(pointer(T) x)
+const T& source(EOPpointer(T) x)
 {
     return *x;
 }
@@ -53,28 +53,28 @@ const T& source(const T& x)
 
 template<typename T>
     requires(Regular(T))
-struct distance_type<pointer(T)>
+struct distance_type<EOPpointer(T)>
 {
     typedef ptrdiff_t type;
 };
 
 template<typename T>
     requires(Regular(T))
-pointer(T) successor(pointer(T) x)
+EOPpointer(T) successor(EOPpointer(T) x)
 {
     return x + ptrdiff_t(1);
 }
 
 template<typename T>
     requires(Regular(T))
-pointer(T) predecessor(pointer(T) x)
+EOPpointer(T) predecessor(EOPpointer(T) x)
 {
     return x - ptrdiff_t(1);
 }
 
 template<typename T>
     requires(Regular(T))
-T& sink(pointer(T) x)
+T& sink(EOPpointer(T) x)
 {
     return *x;
 }
@@ -88,7 +88,7 @@ T& sink(T& x)
 
 template<typename T>
     requires(Regular(T))
-T& deref(pointer(T) x)
+T& deref(EOPpointer(T) x)
 {
     return *x;
 }

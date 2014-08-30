@@ -40,14 +40,14 @@
 
 // Intrinsics
 
-//  pointer(T) and addressof(x) are introduced to give us a simple
+//  EOPpointer(T) and addressof(x) are introduced to give us a simple
 //  linear notation and allow simple top-down parsing. They are
 //  implemented as:
 
-#define pointer(T) T*
+#define EOPpointer(T) T*
 
 template<typename T>
-pointer(T) addressof(T& x)
+EOPpointer(T) addressof(T& x)
 {
     return &x;
 }
