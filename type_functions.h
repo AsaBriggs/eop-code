@@ -18,8 +18,8 @@
 // Addison-Wesley Professional, 2009
 
 
-#ifndef TYPE_FUNCTIONS
-#define TYPE_FUNCTIONS
+#ifndef EOP_TYPE_FUNCTIONS
+#define EOP_TYPE_FUNCTIONS
 
 
 #include "intrinsics.h"
@@ -456,4 +456,4 @@ struct underlying_type
 #define EOPUnderlyingType(T) typename underlying_type<T>::type
 
 
-#endif // TYPE_FUNCTIONS
+#endif // EOP_TYPE_FUNCTIONS
