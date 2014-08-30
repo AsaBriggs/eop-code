@@ -583,7 +583,7 @@ template<typename C>
      requires(EmptyLinkedBifurcateCoordinate(C))
 struct serializer
 {
-    typedef WeightType(C) N;
+    typedef EOPWeightType(C) N;
     typedef C input_type_0;
     typedef void codomain_type;
 

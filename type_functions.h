@@ -247,25 +247,24 @@ struct value_type
 #define EOPValueType(T) typename value_type< T >::type
 
 
-// DifferenceType : RandomAccessIterator -> Integer
+// EOPDifferenceType : RandomAccessIterator -> Integer
 
 template<typename I>
     requires(RandomAccessIterator(I))
 struct difference_type;
 
-#define DifferenceType(T) typename difference_type< T >::type
+#define EOPDifferenceType(T) typename difference_type< T >::type
 
 
 // Chapter 7 - Coordinate structures
 
-
-// WeightType : BifurcateCoordinate -> Integer
+// EOPWeightType : BifurcateCoordinate -> Integer
 
 template<typename T>
     requires(WeakBifurcateCoordinate(T))
 struct weight_type;
 
-#define WeightType(T) typename weight_type< T >::type
+#define EOPWeightType(T) typename weight_type< T >::type
 
 
 // Chapter 8 - Coordinates with mutable successors

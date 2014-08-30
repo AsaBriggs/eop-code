@@ -2091,10 +2091,10 @@ I find_backward_if_not_unguarded(I l, P p)
 
 template<typename C>
     requires(BifurcateCoordinate(C))
-WeightType(C) weight_recursive(C c)
+EOPWeightType(C) weight_recursive(C c)
 {
     // Precondition: $\property{tree}(c)$
-    typedef WeightType(C) N;
+    typedef EOPWeightType(C) N;
     if (empty(c)) return N(0);
     N l(0);
     N r(0);
@@ -2107,10 +2107,10 @@ WeightType(C) weight_recursive(C c)
 
 template<typename C>
     requires(BifurcateCoordinate(C))
-WeightType(C) height_recursive(C c)
+EOPWeightType(C) height_recursive(C c)
 {
     // Precondition: $\property{tree}(c)$
-    typedef WeightType(C) N;
+    typedef EOPWeightType(C) N;
     if (empty(c)) return N(0);
     N l(0);
     N r(0);
@@ -2197,10 +2197,10 @@ bool reachable(C x, C y)
 
 template<typename C>
     requires(BidirectionalBifurcateCoordinate(C))
-WeightType(C) weight(C c)
+EOPWeightType(C) weight(C c)
 {
     // Precondition: $\property{tree}(c)$
-    typedef WeightType(C) N;
+    typedef EOPWeightType(C) N;
     if (empty(c)) return N(0);
     C root = c;
     visit v = pre;
@@ -2214,10 +2214,10 @@ WeightType(C) weight(C c)
 
 template<typename C>
     requires(BidirectionalBifurcateCoordinate(C))
-WeightType(C) height(C c)
+EOPWeightType(C) height(C c)
 {
     // Precondition: $\property{tree}(c)$
-    typedef WeightType(C) N;
+    typedef EOPWeightType(C) N;
     if (empty(c)) return N(0);
     C root = c;
     visit v = pre;
@@ -3024,10 +3024,10 @@ inline counter<T, N> make_counter(const N& n)
 
 template<typename C>
     requires(EmptyLinkedBifurcateCoordinate(C))
-WeightType(C) weight_rotating(C c)
+EOPWeightType(C) weight_rotating(C c)
 {
     // Precondition: $\property{tree}(c)$
-    typedef WeightType(C) N;
+    typedef EOPWeightType(C) N;
     return traverse_rotating(c, make_counter<C>(N(0))).n / N(3);
 }
 
@@ -6311,7 +6311,7 @@ template<typename T>
     requires(Regular(T))
 struct weight_type< stree<T> >
 {
-    typedef WeightType(CoordinateType(stree<T>)) type;
+    typedef EOPWeightType(CoordinateType(stree<T>)) type;
 };
 
 template<typename T>
@@ -6564,7 +6564,7 @@ template<typename T>
     requires(Regular(T))
 struct weight_type< tree<T> >
 {
-    typedef WeightType(CoordinateType(tree<T>)) type;
+    typedef EOPWeightType(CoordinateType(tree<T>)) type;
 };
 
 template<typename T>

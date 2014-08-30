@@ -2412,7 +2412,7 @@ void algorithms_bifurcate_coordinates()
     print("    bifurcate coordinates\n");
 
     typedef CoordinateType(T) C;
-    typedef WeightType(T) N;
+    typedef EOPWeightType(T) N;
     typedef CoordinateType(T_X) C_X;
 
     T t0;
@@ -2505,7 +2505,7 @@ void algorithms_bidirectional_bifurcate_coordinates()
 
     typedef EOPValueType(T) Z;
     typedef CoordinateType(T) C;
-    typedef WeightType(T) N;
+    typedef EOPWeightType(T) N;
     typedef CoordinateType(T_X) C_X;
 
     T t0;
@@ -2762,7 +2762,7 @@ void algorithms_linked_bifurcate_coordinates()
 
     typedef stree<Z> T;
     typedef CoordinateType(T) C;
-    typedef WeightType(C) N;
+    typedef EOPWeightType(C) N;
 
     // ***** to do: test tree_rotate on single-node tree 
 
@@ -2821,7 +2821,7 @@ void test_bifurcate_copy_Andrej()
 
     typedef stree<Z> T;
     typedef CoordinateType(T) C;
-    typedef WeightType(C) N;
+    typedef EOPWeightType(C) N;
 
     T tt4(4, T(5), T());
     T tt2(2, T(3), tt4);
