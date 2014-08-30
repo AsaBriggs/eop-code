@@ -104,7 +104,7 @@ struct input_type_2
 #define EOPInputType1(T) typename input_type_1< T >::type
 #define EOPInputType2(T) typename input_type_2< T >::type
 
-#define EOPInputType(T, n) EOPInputType ## n
+#define EOPInputType(T, n) EOPInputType ## n(T)
 
 
 // EOPDomain : HomogeneousFunction -> Regular
