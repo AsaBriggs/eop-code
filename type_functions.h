@@ -107,9 +107,9 @@ struct input_type_2
 #define EOPInputType(T, n) EOPInputType ## n
 
 
-// Domain : HomogeneousFunction -> Regular
+// EOPDomain : HomogeneousFunction -> Regular
 
-#define Domain(T) EOPInputType0(T)
+#define EOPDomain(T) EOPInputType0(T)
 
 
 // Chapter 2 - Transformations and their orbits

@@ -35,11 +35,11 @@
 
 
 template<typename F, typename P>
-    requires(Transformation(F) && T == Domain(F) &&
-        UnaryPredicate(P) && Domain(F) == Domain(P))
-void output_orbit_structure(Domain(F) x, F f, P p)
+    requires(Transformation(F) && T == EOPDomain(F) &&
+        UnaryPredicate(P) && EOPDomain(F) == EOPDomain(P))
+void output_orbit_structure(EOPDomain(F) x, F f, P p)
 {
-    triple<DistanceType(F), DistanceType(F), Domain(F)> t =
+    triple<DistanceType(F), DistanceType(F), EOPDomain(F)> t =
         orbit_structure(x, f, p);
     if (!p(t.m2)) {
         print("terminating with h-1 = "); print(t.m0);
@@ -794,7 +794,7 @@ template<typename R, typename I>
     requires(Relation(R) && Mutable(I) && Integer(EOPValueType(I)))
 struct instrumented_less
 {
-    typedef Domain(R) T;
+    typedef EOPDomain(R) T;
     typedef T input_type_0;
     typedef T input_type_1;
     typedef bool codomain_type;

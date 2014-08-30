@@ -276,9 +276,9 @@ void test_ch_1()
 
 template<typename F>
     requires(Transformation(F))
-void concept_Transformation(F f, Domain(F) x)
+void concept_Transformation(F f, EOPDomain(F) x)
 {
-    typedef Domain(F) X;
+    typedef EOPDomain(F) X;
     typedef EOPCodomain(F) Y;
     // X == Y
     Y y;
@@ -292,9 +292,9 @@ void concept_Transformation(F f, Domain(F) x)
 
 template<typename P>
     requires(UnaryPredicate(P))
-void concept_UnaryPredicate(P p, Domain(P) x)
+void concept_UnaryPredicate(P p, EOPDomain(P) x)
 {
-    typedef Domain(P) X;
+    typedef EOPDomain(P) X;
     X x0;
     X x1;
     if (p(x)) x0 = x;
@@ -372,9 +372,9 @@ struct distance_type< gen_orbit<I, N> >
 
 template<typename F>
     requires(Transformation(F))
-void algorithms_orbit(Domain(F) x, DistanceType(F) h, DistanceType(F) c)
+void algorithms_orbit(EOPDomain(F) x, DistanceType(F) h, DistanceType(F) c)
 {
-    typedef Domain(F) T;
+    typedef EOPDomain(F) T;
     typedef DistanceType(F) N;
     F f(x, h, c);
     EOPAssert(zero(c) == terminating(x, f, f.p));
@@ -487,9 +487,9 @@ void test_ch_2()
 
 template<typename Op>
     requires(BinaryOperation(Op))
-void concept_BinaryOperation(Op op, Domain(Op) x)
+void concept_BinaryOperation(Op op, EOPDomain(Op) x)
 {
-    typedef Domain(Op) X;
+    typedef EOPDomain(Op) X;
     typedef EOPCodomain(Op) Y;
     // X == Y
     Y y;
@@ -645,9 +645,9 @@ void test_ch_3()
 
 template<typename R>
     requires(Relation(R))
-void concept_Relation(R r, Domain(R) x)
+void concept_Relation(R r, EOPDomain(R) x)
 {
-    typedef Domain(R) X;
+    typedef EOPDomain(R) X;
     X y;
     X z;
     if (r(x, x)) y = x;
@@ -656,7 +656,7 @@ void concept_Relation(R r, Domain(R) x)
 
 template<typename R>
     requires(Relation(R))
-void property_transitive(R r, Domain(R) x, Domain(R) y, Domain(R) z)
+void property_transitive(R r, EOPDomain(R) x, EOPDomain(R) y, EOPDomain(R) z)
 {
     concept_Relation(r, x);
     EOPAssert(!r(x, y) || !r(y, z) || r(x, z));
@@ -664,9 +664,9 @@ void property_transitive(R r, Domain(R) x, Domain(R) y, Domain(R) z)
 
 template<typename R>
     requires(Relation(R))
-void property_total_ordering(R r, const Domain(R)& x0,
-                                  const Domain(R)& x1,
-                                  const Domain(R)& x2)
+void property_total_ordering(R r, const EOPDomain(R)& x0,
+                                  const EOPDomain(R)& x1,
+                                  const EOPDomain(R)& x2)
 {
     // Precondition: total_ordering(r) /\ r(x0, x1) /\ r(x1, x2)
 
@@ -680,9 +680,9 @@ void property_total_ordering(R r, const Domain(R)& x0,
 
 template<typename R>
     requires(Relation(R))
-void property_reflexive_total_ordering(R r, const Domain(R)& x0,
-                                            const Domain(R)& x1,
-                                            const Domain(R)& x2)
+void property_reflexive_total_ordering(R r, const EOPDomain(R)& x0,
+                                            const EOPDomain(R)& x1,
+                                            const EOPDomain(R)& x2)
 {
     // Precondition: total_ordering(r) /\ r(x0, x1) /\ r(x1, x2)
 
@@ -782,10 +782,10 @@ bool next_permutation(I f, I l, R r)
 
 template<typename F, typename R>
     requires(UnaryFunction(F) && Relation(R) &&
-        EOPCodomain(F) == Domain(R))
+        EOPCodomain(F) == EOPDomain(R))
 struct key_ordering
 {
-    typedef Domain(F) T;
+    typedef EOPDomain(F) T;
     typedef T input_type_0;
     typedef T input_type_1;
     typedef bool codomain_type;
@@ -1360,7 +1360,7 @@ double remainder(double x, double y)
 }
 
 
-// concept IntegralDomain(T) means
+// concept IntegralEOPDomain(T) means
 //     CommutativeSemiring(T) 
 //  /\ (all a,b in T) a*b = T(0) => (a = T(0) \/ b = T(0)) 
 
@@ -1372,7 +1372,7 @@ double remainder(double x, double y)
 // for the construction of a field of quotients from an integral domain.
 
 template<typename N>
-    requires(IntegralDomain(N))
+    requires(IntegralEOPDomain(N))
 struct rational
 {
     typedef rational T;
@@ -1387,42 +1387,42 @@ struct rational
 };
 
 template<typename N>
-    requires(IntegralDomain(N))
+    requires(IntegralEOPDomain(N))
 struct quotient_type< rational<N> >
 {
     typedef N type;
 };
 
 template<typename N>
-    requires(IntegralDomain(N))
+    requires(IntegralEOPDomain(N))
 rational<N> operator+(const rational<N>& x, const rational<N>& y)
 {
     return rational<N>(y.q * x.p + x.q * y.p, x.q * y.q);
 }
 
 template<typename N>
-    requires(IntegralDomain(N))
+    requires(IntegralEOPDomain(N))
 rational<N> operator-(const rational<N>& x)
 {
     return rational<N>(-x.p, x.q);
 }
 
 template<typename N>
-    requires(IntegralDomain(N))
+    requires(IntegralEOPDomain(N))
 rational<N> operator-(const rational<N>& x, const rational<N>& y)
 {
     return x + (-y);
 }
 
 template<typename N>
-    requires(IntegralDomain(N))
+    requires(IntegralEOPDomain(N))
 rational<N> operator*(const rational<N>& x, const rational<N>& y)
 {
     return rational<N>(x.p * y.p, x.q * y.q);
 }
 
 template<typename N>
-    requires(IntegralDomain(N))
+    requires(IntegralEOPDomain(N))
 rational<N> multiplicative_inverse(const rational<N>& x)
 {
     // Precondition: $x.p \neq 0$
@@ -1430,7 +1430,7 @@ rational<N> multiplicative_inverse(const rational<N>& x)
 }
 
 template<typename N>
-    requires(IntegralDomain(N))
+    requires(IntegralEOPDomain(N))
 rational<N> operator/(const rational<N>& x, const rational<N>& y)
 {
     return rational<N>(x.p * y.q, x.q * y.p);
@@ -1440,35 +1440,35 @@ rational<N> operator/(const rational<N>& x, const rational<N>& y)
 // Multiplication for rational<N> as a semimodule over integers
 
 template<typename N>
-    requires(IntegralDomain(N))
+    requires(IntegralEOPDomain(N))
 rational<N> operator*(const N& n, const rational<N>& x)
 {
     return rational<N>(n * x.p, x.q);
 }
 
 template<typename N>
-    requires(IntegralDomain(N))
+    requires(IntegralEOPDomain(N))
 rational<N> remainder(const rational<N>& x, const rational<N>& y)
 {
     return remainder_nonnegative(x, y);
 }
 
 template<typename N>
-    requires(IntegralDomain(N))
+    requires(IntegralEOPDomain(N))
 bool operator==(const rational<N>& x, const rational<N>& y)
 {
     return x.p * y.q == y.p * x.q;
 }
 
 template<typename N>
-    requires(IntegralDomain(N))
+    requires(IntegralEOPDomain(N))
 bool operator<(const rational<N>& x, const rational<N>& y)
 {
     return x.p * y.q < y.p * x.q;
 }
 
 template<typename N>
-    requires(IntegralDomain(N))
+    requires(IntegralEOPDomain(N))
 void print(const rational<N>& x)
 {
     if (zero(x.p)) print("0");
@@ -1732,7 +1732,7 @@ polynomial<T> operator+(const polynomial<T>& f, const polynomial<T>& g)
 
 template<typename T, typename F>
     requires(Ring(T) && Transformation(F) &&
-        T == Domain(F))
+        T == EOPDomain(F))
 void transform_coefficients_in_place(polynomial<T>& f, F trans)
 {
     typedef EOPIndexType(polynomial<T>) I;
@@ -2063,7 +2063,7 @@ template<typename Op>
     requires(BinaryOperation(Op))
 struct accumulate
 {
-    typedef Domain(Op) T;
+    typedef EOPDomain(Op) T;
     typedef T input_type_0;
     typedef void codomain_type;
 
@@ -3901,8 +3901,8 @@ const EOPpointer(char) end(const EOPpointer(char) a) { return begin(a) + size_un
 
 template<typename M, typename R, typename E>
     requires(WrappedMerger(M) &&
-        Relation(R) && Domain(R) == char &&
-        Relation(E) && Domain(E) == char)
+        Relation(R) && EOPDomain(R) == char &&
+        Relation(E) && EOPDomain(E) == char)
 struct merge_case
 {
     typedef EOPpointer(const char) input_type_0;
@@ -3985,7 +3985,7 @@ void merge_cases(M m)
 }
 template<typename I, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
-        Relation(R) && EOPValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == EOPDomain(R))
 I wrapped_merge_n_with_buffer(I f0, DistanceType(I) n0,
                               I f1, DistanceType(I) n1, R r)
 {
@@ -3995,7 +3995,7 @@ I wrapped_merge_n_with_buffer(I f0, DistanceType(I) n0,
 
 template<typename I, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
-        Relation(R) && EOPValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == EOPDomain(R))
 I wrapped_merge_n_adaptive(I f0, DistanceType(I) n0,
                            I f1, DistanceType(I) n1, R r)
 {
@@ -4515,7 +4515,7 @@ void algorithm_original_ref_array(T0& x)
 }
 
 template<typename T, typename P>
-    requires(Predicate(P) && T == Domain(P))
+    requires(Predicate(P) && T == EOPDomain(P))
 void algorithm_underlying_predicate(T& x0, T& x1, P p)
 {
     // Precondition: !p(x0) && p(x1)
@@ -4526,7 +4526,7 @@ void algorithm_underlying_predicate(T& x0, T& x1, P p)
 }
 
 template<typename T, typename R>
-    requires(Relation(R) && T == Domain(R))
+    requires(Relation(R) && T == EOPDomain(R))
 void algorithm_underlying_relation(T& x0, T& x1, R r)
 {
     // Precondition: r(x0, x1) && !r(x1, x0)

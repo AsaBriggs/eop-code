@@ -55,7 +55,7 @@ int square(int n) { return n * n; }
 
 template<typename Op>
     requires(BinaryOperation(Op))
-Domain(Op) square(Domain(Op) const& x, Op op)
+EOPDomain(Op) square(EOPDomain(Op) const& x, Op op)
 {
     return op(x, x);
 }
@@ -182,7 +182,7 @@ double euclidean_norm(double x, double y, double z) {
 
 template<typename F, typename N>
     requires(Transformation(F) && Integer(N))
-Domain(F) power_unary(Domain(F) x, N n, F f)
+EOPDomain(F) power_unary(EOPDomain(F) x, N n, F f)
 {                  
     // Precondition:
     // $n \geq 0 \wedge (\forall i \in N)\,0 < i \leq n \Rightarrow f^i(x)$ is defined
@@ -195,7 +195,7 @@ Domain(F) power_unary(Domain(F) x, N n, F f)
 
 template<typename F>
     requires(Transformation(F))
-DistanceType(F) distance(Domain(F) x, Domain(F) y, F f)
+DistanceType(F) distance(EOPDomain(F) x, EOPDomain(F) y, F f)
 {
     // Precondition: $y$ is reachable from $x$ under $f$
     typedef DistanceType(F) N;
@@ -209,13 +209,13 @@ DistanceType(F) distance(Domain(F) x, Domain(F) y, F f)
 
 template<typename F, typename P>
     requires(Transformation(F) && UnaryPredicate(P) &&
-        Domain(F) == Domain(P))
-Domain(F) collision_point(const Domain(F)& x, F f, P p)
+        EOPDomain(F) == EOPDomain(P))
+EOPDomain(F) collision_point(const EOPDomain(F)& x, F f, P p)
 {
     // Precondition: $p(x) \Leftrightarrow \text{$f(x)$ is defined}$
     if (!p(x)) return x;
-    Domain(F) slow = x;        // $slow = f^0(x)$
-    Domain(F) fast = f(x);     // $fast = f^1(x)$
+    EOPDomain(F) slow = x;        // $slow = f^0(x)$
+    EOPDomain(F) fast = f(x);     // $fast = f^1(x)$
                                // $n \gets 0$ (completed iterations)
     while (fast != slow) {     // $slow = f^n(x) \wedge fast = f^{2 n + 1}(x)$
         slow = f(slow);        // $slow = f^{n+1}(x) \wedge fast = f^{2 n + 1}(x)$
@@ -231,8 +231,8 @@ Domain(F) collision_point(const Domain(F)& x, F f, P p)
 
 template<typename F, typename P>
     requires(Transformation(F) && UnaryPredicate(P) && 
-        Domain(F) == Domain(P))
-bool terminating(const Domain(F)& x, F f, P p)
+        EOPDomain(F) == EOPDomain(P))
+bool terminating(const EOPDomain(F)& x, F f, P p)
 {
     // Precondition: $p(x) \Leftrightarrow \text{$f(x)$ is defined}$
     return !p(collision_point(x, f, p));
@@ -240,11 +240,11 @@ bool terminating(const Domain(F)& x, F f, P p)
 
 template<typename F>
     requires(Transformation(F))
-Domain(F)
-collision_point_nonterminating_orbit(const Domain(F)& x, F f)
+EOPDomain(F)
+collision_point_nonterminating_orbit(const EOPDomain(F)& x, F f)
 {
-    Domain(F) slow = x;        // $slow = f^0(x)$
-    Domain(F) fast = f(x);     // $fast = f^1(x)$
+    EOPDomain(F) slow = x;        // $slow = f^0(x)$
+    EOPDomain(F) fast = f(x);     // $fast = f^1(x)$
                                // $n \gets 0$ (completed iterations)
     while (fast != slow) {     // $slow = f^n(x) \wedge fast = f^{2 n + 1}(x)$
         slow = f(slow);        // $slow = f^{n+1}(x) \wedge fast = f^{2 n + 1}(x)$
@@ -258,24 +258,24 @@ collision_point_nonterminating_orbit(const Domain(F)& x, F f)
 
 template<typename F>
     requires(Transformation(F))
-bool circular_nonterminating_orbit(const Domain(F)& x, F f)
+bool circular_nonterminating_orbit(const EOPDomain(F)& x, F f)
 {
     return x == f(collision_point_nonterminating_orbit(x, f));
 }
 
 template<typename F, typename P>
     requires(Transformation(F) && UnaryPredicate(P) &&
-        Domain(F) == Domain(P))
-bool circular(const Domain(F)& x, F f, P p)
+        EOPDomain(F) == EOPDomain(P))
+bool circular(const EOPDomain(F)& x, F f, P p)
 {
     // Precondition: $p(x) \Leftrightarrow \text{$f(x)$ is defined}$
-    Domain(F) y = collision_point(x, f, p);
+    EOPDomain(F) y = collision_point(x, f, p);
     return p(y) && x == f(y);
 }
 
 template<typename F>
     requires(Transformation(F))
-Domain(F) convergent_point(Domain(F) x0, Domain(F) x1, F f)
+EOPDomain(F) convergent_point(EOPDomain(F) x0, EOPDomain(F) x1, F f)
 {
     // Precondition: $(\exists n \in \func{DistanceType}(F))\,n \geq 0 \wedge f^n(x0) = f^n(x1)$
     while (x0 != x1) {
@@ -287,8 +287,8 @@ Domain(F) convergent_point(Domain(F) x0, Domain(F) x1, F f)
 
 template<typename F>
     requires(Transformation(F))
-Domain(F)
-connection_point_nonterminating_orbit(const Domain(F)& x, F f)
+EOPDomain(F)
+connection_point_nonterminating_orbit(const EOPDomain(F)& x, F f)
 {
     return convergent_point(
         x,
@@ -298,11 +298,11 @@ connection_point_nonterminating_orbit(const Domain(F)& x, F f)
 
 template<typename F, typename P>
     requires(Transformation(F) && UnaryPredicate(P) &&
-        Domain(F) == Domain(P))
-Domain(F) connection_point(const Domain(F)& x, F f, P p)
+        EOPDomain(F) == EOPDomain(P))
+EOPDomain(F) connection_point(const EOPDomain(F)& x, F f, P p)
 {
     // Precondition: $p(x) \Leftrightarrow \text{$f(x)$ is defined}$
-    Domain(F) y = collision_point(x, f, p);
+    EOPDomain(F) y = collision_point(x, f, p);
     if (!p(y)) return y;
     return convergent_point(x, f(y), f);
 }
@@ -311,9 +311,9 @@ Domain(F) connection_point(const Domain(F)& x, F f, P p)
 
 template<typename F>
     requires(Transformation(F))
-Domain(F) convergent_point_guarded(Domain(F) x0,
-                                   Domain(F) x1,
-                                   Domain(F) y, F f)
+EOPDomain(F) convergent_point_guarded(EOPDomain(F) x0,
+                                   EOPDomain(F) x1,
+                                   EOPDomain(F) y, F f)
 {
     // Precondition: $\func{reachable}(x0, y, f) \wedge \func{reachable}(x1, y, f)$
     typedef DistanceType(F) N;
@@ -326,11 +326,11 @@ Domain(F) convergent_point_guarded(Domain(F) x0,
 
 template<typename F>
     requires(Transformation(F))
-triple<DistanceType(F), DistanceType(F), Domain(F)>
-orbit_structure_nonterminating_orbit(const Domain(F)& x, F f)
+triple<DistanceType(F), DistanceType(F), EOPDomain(F)>
+orbit_structure_nonterminating_orbit(const EOPDomain(F)& x, F f)
 {
     typedef DistanceType(F) N;
-    Domain(F) y = connection_point_nonterminating_orbit(x, f);
+    EOPDomain(F) y = connection_point_nonterminating_orbit(x, f);
     return make_triple(distance(x, y, f),
                        distance(f(y), y, f),
                        y);
@@ -338,13 +338,13 @@ orbit_structure_nonterminating_orbit(const Domain(F)& x, F f)
 
 template<typename F, typename P>
     requires(Transformation(F) &&
-        UnaryPredicate(P) && Domain(F) == Domain(P))
-triple<DistanceType(F), DistanceType(F), Domain(F)>
-orbit_structure(const Domain(F)& x, F f, P p)
+        UnaryPredicate(P) && EOPDomain(F) == EOPDomain(P))
+triple<DistanceType(F), DistanceType(F), EOPDomain(F)>
+orbit_structure(const EOPDomain(F)& x, F f, P p)
 {
     // Precondition: $p(x) \Leftrightarrow \text{$f(x)$ is defined}$
     typedef DistanceType(F) N;
-    Domain(F) y = connection_point(x, f, p);
+    EOPDomain(F) y = connection_point(x, f, p);
     N m = distance(x, y, f);
     N n(0);
     if (p(y)) n = distance(f(y), y, f);
@@ -361,7 +361,7 @@ orbit_structure(const Domain(F)& x, F f, P p)
 
 template<typename I, typename Op>
     requires(Integer(I) && BinaryOperation(Op))
-Domain(Op) power_left_associated(Domain(Op) a, I n, Op op)
+EOPDomain(Op) power_left_associated(EOPDomain(Op) a, I n, Op op)
 {
     // Precondition: $n > 0$
     if (n == I(1)) return a;
@@ -370,7 +370,7 @@ Domain(Op) power_left_associated(Domain(Op) a, I n, Op op)
 
 template<typename I, typename Op>
     requires(Integer(I) && BinaryOperation(Op))
-Domain(Op) power_right_associated(Domain(Op) a, I n, Op op)
+EOPDomain(Op) power_right_associated(EOPDomain(Op) a, I n, Op op)
 {
     // Precondition: $n > 0$
     if (n == I(1)) return a;
@@ -379,7 +379,7 @@ Domain(Op) power_right_associated(Domain(Op) a, I n, Op op)
 
 template<typename I, typename Op>
     requires(Integer(I) && BinaryOperation(Op))
-Domain(Op) power_0(Domain(Op) a, I n, Op op)
+EOPDomain(Op) power_0(EOPDomain(Op) a, I n, Op op)
 {
     // Precondition: $\func{associative}(op) \wedge n > 0$
     if (n == I(1)) return a;
@@ -390,18 +390,18 @@ Domain(Op) power_0(Domain(Op) a, I n, Op op)
 
 template<typename I, typename Op>
     requires(Integer(I) && BinaryOperation(Op))
-Domain(Op) power_1(Domain(Op) a, I n, Op op)
+EOPDomain(Op) power_1(EOPDomain(Op) a, I n, Op op)
 {
     // Precondition: $\func{associative}(op) \wedge n > 0$
     if (n == I(1)) return a;
-    Domain(Op) r = power_1(op(a, a), n / I(2), op);
+    EOPDomain(Op) r = power_1(op(a, a), n / I(2), op);
     if (n % I(2) != I(0)) r = op(r, a);
     return r;
 }
 
 template<typename I, typename Op>
     requires(Integer(I) && BinaryOperation(Op))
-Domain(Op) power_accumulate_0(Domain(Op) r, Domain(Op) a, I n,
+EOPDomain(Op) power_accumulate_0(EOPDomain(Op) r, EOPDomain(Op) a, I n,
                               Op op)
 {
     // Precondition: $\func{associative}(op) \wedge n \geq 0$
@@ -412,7 +412,7 @@ Domain(Op) power_accumulate_0(Domain(Op) r, Domain(Op) a, I n,
 
 template<typename I, typename Op>
     requires(Integer(I) && BinaryOperation(Op))
-Domain(Op) power_accumulate_1(Domain(Op) r, Domain(Op) a, I n,
+EOPDomain(Op) power_accumulate_1(EOPDomain(Op) r, EOPDomain(Op) a, I n,
                               Op op)
 {
     // Precondition: $\func{associative}(op) \wedge n \geq 0$
@@ -424,7 +424,7 @@ Domain(Op) power_accumulate_1(Domain(Op) r, Domain(Op) a, I n,
 
 template<typename I, typename Op>
     requires(Integer(I) && BinaryOperation(Op))
-Domain(Op) power_accumulate_2(Domain(Op) r, Domain(Op) a, I n,
+EOPDomain(Op) power_accumulate_2(EOPDomain(Op) r, EOPDomain(Op) a, I n,
                               Op op)
 {
     // Precondition: $\func{associative}(op) \wedge n \geq 0$
@@ -437,7 +437,7 @@ Domain(Op) power_accumulate_2(Domain(Op) r, Domain(Op) a, I n,
 
 template<typename I, typename Op>
     requires(Integer(I) && BinaryOperation(Op))
-Domain(Op) power_accumulate_3(Domain(Op) r, Domain(Op) a, I n,
+EOPDomain(Op) power_accumulate_3(EOPDomain(Op) r, EOPDomain(Op) a, I n,
                               Op op)
 {
     // Precondition: $\func{associative}(op) \wedge n \geq 0$
@@ -452,7 +452,7 @@ Domain(Op) power_accumulate_3(Domain(Op) r, Domain(Op) a, I n,
 
 template<typename I, typename Op>
     requires(Integer(I) && BinaryOperation(Op))
-Domain(Op) power_accumulate_4(Domain(Op) r, Domain(Op) a, I n,
+EOPDomain(Op) power_accumulate_4(EOPDomain(Op) r, EOPDomain(Op) a, I n,
                               Op op)
 {
     // Precondition: $\func{associative}(op) \wedge n \geq 0$
@@ -468,8 +468,8 @@ Domain(Op) power_accumulate_4(Domain(Op) r, Domain(Op) a, I n,
 
 template<typename I, typename Op>
     requires(Integer(I) && BinaryOperation(Op))
-Domain(Op) power_accumulate_positive_0(Domain(Op) r,
-                                       Domain(Op) a, I n,
+EOPDomain(Op) power_accumulate_positive_0(EOPDomain(Op) r,
+                                       EOPDomain(Op) a, I n,
                                        Op op)
 {
     // Precondition: $\func{associative}(op) \wedge n > 0$
@@ -485,7 +485,7 @@ Domain(Op) power_accumulate_positive_0(Domain(Op) r,
 
 template<typename I, typename Op>
     requires(Integer(I) && BinaryOperation(Op))
-Domain(Op) power_accumulate_5(Domain(Op) r, Domain(Op) a, I n,
+EOPDomain(Op) power_accumulate_5(EOPDomain(Op) r, EOPDomain(Op) a, I n,
                               Op op)
 {
     // Precondition: $\func{associative}(op) \wedge n \geq 0$
@@ -495,7 +495,7 @@ Domain(Op) power_accumulate_5(Domain(Op) r, Domain(Op) a, I n,
 
 template<typename I, typename Op>
     requires(Integer(I) && BinaryOperation(Op))
-Domain(Op) power_2(Domain(Op) a, I n, Op op)
+EOPDomain(Op) power_2(EOPDomain(Op) a, I n, Op op)
 {
     // Precondition: $\func{associative}(op) \wedge n > 0$
     return power_accumulate_5(a, a, n - I(1), op);
@@ -503,7 +503,7 @@ Domain(Op) power_2(Domain(Op) a, I n, Op op)
 
 template<typename I, typename Op>
     requires(Integer(I) && BinaryOperation(Op))
-Domain(Op) power_3(Domain(Op) a, I n, Op op)
+EOPDomain(Op) power_3(EOPDomain(Op) a, I n, Op op)
 {
     // Precondition: $\func{associative}(op) \wedge n > 0$
     while (n % I(2) == I(0)) {
@@ -518,8 +518,8 @@ Domain(Op) power_3(Domain(Op) a, I n, Op op)
 
 template<typename I, typename Op>
     requires(Integer(I) && BinaryOperation(Op))
-Domain(Op) power_accumulate_positive(Domain(Op) r,
-                                     Domain(Op) a, I n,
+EOPDomain(Op) power_accumulate_positive(EOPDomain(Op) r,
+                                     EOPDomain(Op) a, I n,
                                      Op op)
 {
     // Precondition: $\func{associative}(op) \wedge \func{positive}(n)$
@@ -535,7 +535,7 @@ Domain(Op) power_accumulate_positive(Domain(Op) r,
 
 template<typename I, typename Op>
     requires(Integer(I) && BinaryOperation(Op))
-Domain(Op) power_accumulate(Domain(Op) r, Domain(Op) a, I n,
+EOPDomain(Op) power_accumulate(EOPDomain(Op) r, EOPDomain(Op) a, I n,
                             Op op)
 {
     // Precondition: $\func{associative}(op) \wedge \neg \func{negative}(n)$
@@ -545,7 +545,7 @@ Domain(Op) power_accumulate(Domain(Op) r, Domain(Op) a, I n,
 
 template<typename I, typename Op>
     requires(Integer(I) && BinaryOperation(Op))
-Domain(Op) power(Domain(Op) a, I n, Op op)
+EOPDomain(Op) power(EOPDomain(Op) a, I n, Op op)
 {
     // Precondition: $\func{associative}(op) \wedge \func{positive}(n)$
     while (even(n)) {
@@ -559,7 +559,7 @@ Domain(Op) power(Domain(Op) a, I n, Op op)
 
 template<typename I, typename Op>
     requires(Integer(I) && BinaryOperation(Op))
-Domain(Op) power(Domain(Op) a, I n, Op op, Domain(Op) id)
+EOPDomain(Op) power(EOPDomain(Op) a, I n, Op op, EOPDomain(Op) id)
 {
     // Precondition: $\func{associative}(op) \wedge \neg \func{negative}(n)$
     if (zero(n)) return id;
@@ -620,7 +620,7 @@ template<typename R>
     requires(Relation(R))
 struct complement
 {
-    typedef Domain(R) T;
+    typedef EOPDomain(R) T;
     typedef T input_type_0;
     typedef T input_type_1;
     typedef bool codomain_type;
@@ -644,7 +644,7 @@ template<typename R>
     requires(Relation(R))
 struct converse
 {
-    typedef Domain(R) T;
+    typedef EOPDomain(R) T;
     typedef T input_type_0;
     typedef T input_type_1;
     typedef bool codomain_type;
@@ -668,7 +668,7 @@ template<typename R>
     requires(Relation(R))
 struct complement_of_converse
 {
-    typedef Domain(R) T;
+    typedef EOPDomain(R) T;
     typedef T input_type_0;
     typedef T input_type_1;
     typedef bool codomain_type;
@@ -692,7 +692,7 @@ template<typename R>
    requires(Relation(R))
 struct symmetric_complement
 {
-    typedef Domain(R) T;
+    typedef EOPDomain(R) T;
     typedef T input_type_0;
     typedef T input_type_1;
     typedef bool codomain_type;
@@ -714,8 +714,8 @@ inline symmetric_complement<R> make_symmetric_complement(const R& r)
 
 template<typename R>
     requires(Relation(R))
-const Domain(R)& select_0_2(const Domain(R)& a,
-                            const Domain(R)& b, R r)
+const EOPDomain(R)& select_0_2(const EOPDomain(R)& a,
+                            const EOPDomain(R)& b, R r)
 {
     // Precondition: $\func{weak\_ordering}(r)$
     if (r(b, a)) return b;
@@ -724,8 +724,8 @@ const Domain(R)& select_0_2(const Domain(R)& a,
 
 template<typename R>
     requires(Relation(R))
-const Domain(R)& select_1_2(const Domain(R)& a,
-                            const Domain(R)& b, R r)
+const EOPDomain(R)& select_1_2(const EOPDomain(R)& a,
+                            const EOPDomain(R)& b, R r)
 {
     // Precondition: $\func{weak\_ordering}(r)$
     if (r(b, a)) return a;
@@ -734,27 +734,27 @@ const Domain(R)& select_1_2(const Domain(R)& a,
 
 template<typename R>
     requires(Relation(R))
-const Domain(R)& select_0_3(const Domain(R)& a,
-                            const Domain(R)& b,
-                            const Domain(R)& c, R r)
+const EOPDomain(R)& select_0_3(const EOPDomain(R)& a,
+                            const EOPDomain(R)& b,
+                            const EOPDomain(R)& c, R r)
 {
     return select_0_2(select_0_2(a, b, r), c, r);
 }
 
 template<typename R>
     requires(Relation(R))
-const Domain(R)& select_2_3(const Domain(R)& a,
-                            const Domain(R)& b,
-                            const Domain(R)& c, R r)
+const EOPDomain(R)& select_2_3(const EOPDomain(R)& a,
+                            const EOPDomain(R)& b,
+                            const EOPDomain(R)& c, R r)
 {
     return select_1_2(select_1_2(a, b, r), c, r);
 }
 
 template<typename R>
     requires(Relation(R))
-const Domain(R)& select_1_3_ab(const Domain(R)& a,
-                               const Domain(R)& b,
-                               const Domain(R)& c, R r)
+const EOPDomain(R)& select_1_3_ab(const EOPDomain(R)& a,
+                               const EOPDomain(R)& b,
+                               const EOPDomain(R)& c, R r)
 {
     if (!r(c, b)) return b;     // $a$, $b$, $c$ are sorted
     return select_1_2(a, c, r); // $b$ is not the median
@@ -762,9 +762,9 @@ const Domain(R)& select_1_3_ab(const Domain(R)& a,
 
 template<typename R>
     requires(Relation(R))
-const Domain(R)& select_1_3(const Domain(R)& a,
-                            const Domain(R)& b,
-                            const Domain(R)& c, R r)
+const EOPDomain(R)& select_1_3(const EOPDomain(R)& a,
+                            const EOPDomain(R)& b,
+                            const EOPDomain(R)& c, R r)
 {
     if (r(b, a)) return select_1_3_ab(b, a, c, r);
     return              select_1_3_ab(a, b, c, r);
@@ -772,30 +772,30 @@ const Domain(R)& select_1_3(const Domain(R)& a,
 
 template<typename R>
     requires(Relation(R))
-const Domain(R)& select_1_4_ab_cd(const Domain(R)& a,
-                                  const Domain(R)& b,
-                                  const Domain(R)& c,
-                                  const Domain(R)& d, R r) {
+const EOPDomain(R)& select_1_4_ab_cd(const EOPDomain(R)& a,
+                                  const EOPDomain(R)& b,
+                                  const EOPDomain(R)& c,
+                                  const EOPDomain(R)& d, R r) {
     if (r(c, a)) return select_0_2(a, d, r);
     return              select_0_2(b, c, r);
 }
 
 template<typename R>
     requires(Relation(R))
-const Domain(R)& select_1_4_ab(const Domain(R)& a,
-                               const Domain(R)& b,
-                               const Domain(R)& c,
-                               const Domain(R)& d, R r) {
+const EOPDomain(R)& select_1_4_ab(const EOPDomain(R)& a,
+                               const EOPDomain(R)& b,
+                               const EOPDomain(R)& c,
+                               const EOPDomain(R)& d, R r) {
     if (r(d, c)) return select_1_4_ab_cd(a, b, d, c, r);
     return              select_1_4_ab_cd(a, b, c, d, r);
 }
 
 template<typename R>
     requires(Relation(R))
-const Domain(R)& select_1_4(const Domain(R)& a,
-                            const Domain(R)& b,
-                            const Domain(R)& c,
-                            const Domain(R)& d, R r) {
+const EOPDomain(R)& select_1_4(const EOPDomain(R)& a,
+                            const EOPDomain(R)& b,
+                            const EOPDomain(R)& c,
+                            const EOPDomain(R)& d, R r) {
     if (r(b, a)) return select_1_4_ab(b, a, c, d, r);
     return              select_1_4_ab(a, b, c, d, r);
 }
@@ -813,7 +813,7 @@ template<typename R>
     requires(Relation(R))
 struct compare_strict_or_reflexive<true, R> // strict
 {
-    typedef Domain(R) T;
+    typedef EOPDomain(R) T;
     typedef T input_type_0;
     typedef T input_type_1;
     typedef bool codomain_type;
@@ -829,7 +829,7 @@ template<typename R>
     requires(Relation(R))
 struct compare_strict_or_reflexive<false, R> // reflexive
 {
-    typedef Domain(R) T;
+    typedef EOPDomain(R) T;
     typedef T input_type_0;
     typedef T input_type_1;
     typedef R input_type_2;
@@ -844,8 +844,8 @@ struct compare_strict_or_reflexive<false, R> // reflexive
 
 template<int ia, int ib, typename R>
     requires(Relation(R))
-const Domain(R)& select_0_2(const Domain(R)& a,
-                            const Domain(R)& b, R r)
+const EOPDomain(R)& select_0_2(const EOPDomain(R)& a,
+                            const EOPDomain(R)& b, R r)
 {
     compare_strict_or_reflexive<(ia < ib), R> cmp;
     if (cmp(b, a, r)) return b;
@@ -854,8 +854,8 @@ const Domain(R)& select_0_2(const Domain(R)& a,
 
 template<int ia, int ib, typename R>
     requires(Relation(R))
-const Domain(R)& select_1_2(const Domain(R)& a,
-                            const Domain(R)& b, R r)
+const EOPDomain(R)& select_1_2(const EOPDomain(R)& a,
+                            const EOPDomain(R)& b, R r)
 {
     compare_strict_or_reflexive<(ia < ib), R> cmp;
     if (cmp(b, a, r)) return a;
@@ -864,10 +864,10 @@ const Domain(R)& select_1_2(const Domain(R)& a,
 
 template<int ia, int ib, int ic, int id, typename R>
     requires(Relation(R))
-const Domain(R)& select_1_4_ab_cd(const Domain(R)& a,
-                                  const Domain(R)& b,
-                                  const Domain(R)& c,
-                                  const Domain(R)& d, R r)
+const EOPDomain(R)& select_1_4_ab_cd(const EOPDomain(R)& a,
+                                  const EOPDomain(R)& b,
+                                  const EOPDomain(R)& c,
+                                  const EOPDomain(R)& d, R r)
 {
     compare_strict_or_reflexive<(ia < ic), R> cmp;
     if (cmp(c, a, r)) return
@@ -878,10 +878,10 @@ const Domain(R)& select_1_4_ab_cd(const Domain(R)& a,
 
 template<int ia, int ib, int ic, int id, typename R>
     requires(Relation(R))
-const Domain(R)& select_1_4_ab(const Domain(R)& a,
-                            const Domain(R)& b,
-                            const Domain(R)& c,
-                            const Domain(R)& d, R r)
+const EOPDomain(R)& select_1_4_ab(const EOPDomain(R)& a,
+                            const EOPDomain(R)& b,
+                            const EOPDomain(R)& c,
+                            const EOPDomain(R)& d, R r)
 {
     compare_strict_or_reflexive<(ic < id), R> cmp;
     if (cmp(d, c, r)) return
@@ -892,10 +892,10 @@ const Domain(R)& select_1_4_ab(const Domain(R)& a,
 
 template<int ia, int ib, int ic, int id, typename R>
     requires(Relation(R))
-const Domain(R)& select_1_4(const Domain(R)& a,
-                            const Domain(R)& b,
-                            const Domain(R)& c,
-                            const Domain(R)& d, R r)
+const EOPDomain(R)& select_1_4(const EOPDomain(R)& a,
+                            const EOPDomain(R)& b,
+                            const EOPDomain(R)& c,
+                            const EOPDomain(R)& d, R r)
 {
     compare_strict_or_reflexive<(ia < ib), R> cmp;
     if (cmp(b, a, r)) return
@@ -906,11 +906,11 @@ const Domain(R)& select_1_4(const Domain(R)& a,
 
 template<int ia, int ib, int ic, int id, int ie, typename R>
     requires(Relation(R))
-const Domain(R)& select_2_5_ab_cd(const Domain(R)& a,
-                                  const Domain(R)& b,
-                                  const Domain(R)& c,
-                                  const Domain(R)& d,
-                                  const Domain(R)& e, R r)
+const EOPDomain(R)& select_2_5_ab_cd(const EOPDomain(R)& a,
+                                  const EOPDomain(R)& b,
+                                  const EOPDomain(R)& c,
+                                  const EOPDomain(R)& d,
+                                  const EOPDomain(R)& e, R r)
 {
     compare_strict_or_reflexive<(ia < ic), R> cmp;
     if (cmp(c, a, r)) return
@@ -921,11 +921,11 @@ const Domain(R)& select_2_5_ab_cd(const Domain(R)& a,
 
 template<int ia, int ib, int ic, int id, int ie, typename R>
     requires(Relation(R))
-const Domain(R)& select_2_5_ab(const Domain(R)& a,
-                               const Domain(R)& b,
-                               const Domain(R)& c,
-                               const Domain(R)& d,
-                               const Domain(R)& e, R r)
+const EOPDomain(R)& select_2_5_ab(const EOPDomain(R)& a,
+                               const EOPDomain(R)& b,
+                               const EOPDomain(R)& c,
+                               const EOPDomain(R)& d,
+                               const EOPDomain(R)& e, R r)
 {
     compare_strict_or_reflexive<(ic < id), R> cmp;
     if (cmp(d, c, r)) return
@@ -938,11 +938,11 @@ const Domain(R)& select_2_5_ab(const Domain(R)& a,
 
 template<int ia, int ib, int ic, int id, int ie, typename R>
     requires(Relation(R))
-const Domain(R)& select_2_5(const Domain(R)& a,
-                            const Domain(R)& b,
-                            const Domain(R)& c,
-                            const Domain(R)& d,
-                            const Domain(R)& e, R r)
+const EOPDomain(R)& select_2_5(const EOPDomain(R)& a,
+                            const EOPDomain(R)& b,
+                            const EOPDomain(R)& c,
+                            const EOPDomain(R)& d,
+                            const EOPDomain(R)& e, R r)
 {
     compare_strict_or_reflexive<(ia < ib), R> cmp;
     if (cmp(b, a, r)) return
@@ -957,11 +957,11 @@ const Domain(R)& select_2_5(const Domain(R)& a,
 
 template<typename R>
     requires(Relation(R))
-const Domain(R)& median_5(const Domain(R)& a,
-                          const Domain(R)& b,
-                          const Domain(R)& c,
-                          const Domain(R)& d,
-                          const Domain(R)& e, R r)
+const EOPDomain(R)& median_5(const EOPDomain(R)& a,
+                          const EOPDomain(R)& b,
+                          const EOPDomain(R)& c,
+                          const EOPDomain(R)& d,
+                          const EOPDomain(R)& e, R r)
 {
     return select_2_5<0,1,2,3,4>(a, b, c, d, e, r);
 }
@@ -1074,7 +1074,7 @@ template<typename Op>
     requires(SemigroupOperation(Op)) // ***** or MultiplicativeSemigroup ?????
 struct multiplies_transformation
 {
-    typedef Domain(Op) T;
+    typedef EOPDomain(Op) T;
     typedef T input_type_0;
     typedef T codomain_type;
 
@@ -1088,7 +1088,7 @@ struct multiplies_transformation
 
 template<typename Op>
     requires(SemigroupOperation(Op)) // ***** or MultiplicativeSemigroup ?????
-inline multiplies_transformation<Op> make_multiplies_transformation(const Domain(Op)& x, const Op& op)
+inline multiplies_transformation<Op> make_multiplies_transformation(const EOPDomain(Op)& x, const Op& op)
 {
     multiplies_transformation<Op> tmp = {x, op};
     return tmp;
@@ -1384,11 +1384,11 @@ quotient_remainder_nonnegative_iterative(T a, T b)
 
 template<typename Op>
     requires(BinaryOperation(Op) &&
-        ArchimedeanGroup(Domain(Op)))
-Domain(Op) remainder(Domain(Op) a, Domain(Op) b, Op rem)
+        ArchimedeanGroup(EOPDomain(Op)))
+EOPDomain(Op) remainder(EOPDomain(Op) a, EOPDomain(Op) b, Op rem)
 {
     // Precondition: $b \neq 0$
-    typedef Domain(Op) T;
+    typedef EOPDomain(Op) T;
     T r;
     if (a < T(0))
         if (b < T(0)) {
@@ -1407,14 +1407,14 @@ Domain(Op) remainder(Domain(Op) a, Domain(Op) b, Op rem)
 
 template<typename F>
     requires(HomogeneousFunction(F) && Arity(F) == 2 &&
-        ArchimedeanGroup(Domain(F)) &&
-        EOPCodomain(F) == pair<QuotientType(Domain(F)),
-                            Domain(F)>)
-pair<QuotientType(Domain(F)), Domain(F)>
-quotient_remainder(Domain(F) a, Domain(F) b, F quo_rem) 
+        ArchimedeanGroup(EOPDomain(F)) &&
+        EOPCodomain(F) == pair<QuotientType(EOPDomain(F)),
+                            EOPDomain(F)>)
+pair<QuotientType(EOPDomain(F)), EOPDomain(F)>
+quotient_remainder(EOPDomain(F) a, EOPDomain(F) b, F quo_rem) 
 {
     // Precondition: $b \neq 0$
-    typedef Domain(F) T;
+    typedef EOPDomain(F) T;
     pair<QuotientType(T), T> q_r;
     if (a < T(0)) {
         if (b < T(0)) {
@@ -1515,7 +1515,7 @@ I find_not(I f, I l, const EOPValueType(I)& x)
 
 template<typename I, typename P>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 I find_if(I f, I l, P p)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
@@ -1525,7 +1525,7 @@ I find_if(I f, I l, P p)
 
 template<typename I,  typename P>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 I find_if_not(I f, I l, P p)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
@@ -1538,7 +1538,7 @@ I find_if_not(I f, I l, P p)
 
 template<typename I,  typename P>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 bool all(I f, I l, P p)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
@@ -1547,7 +1547,7 @@ bool all(I f, I l, P p)
 
 template<typename I,  typename P>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 bool none(I f, I l, P p)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
@@ -1556,7 +1556,7 @@ bool none(I f, I l, P p)
 
 template<typename I,  typename P>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 bool not_all(I f, I l, P p)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
@@ -1565,7 +1565,7 @@ bool not_all(I f, I l, P p)
 
 template<typename I,  typename P>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 bool some(I f, I l, P p)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
@@ -1575,7 +1575,7 @@ bool some(I f, I l, P p)
 template<typename I, typename P, typename J>
     requires(Readable(I) && Iterator(I) &&
         UnaryPredicate(P) && Iterator(J) &&
-        EOPValueType(I) == Domain(P))
+        EOPValueType(I) == EOPDomain(P))
 J count_if(I f, I l, P p, J j)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
@@ -1592,7 +1592,7 @@ J count_if(I f, I l, P p, J j)
 
 template<typename I, typename P>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 DistanceType(I) count_if(I f, I l, P p) {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
     return count_if(f, l, p, DistanceType(I)(0));
@@ -1642,7 +1642,7 @@ DistanceType(I) count_not(I f, I l, const EOPValueType(I)& x)
 
 template<typename I, typename P, typename J>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && Domain(P) == EOPValueType(I) &&
+        UnaryPredicate(P) && EOPDomain(P) == EOPValueType(I) &&
         Iterator(J))
 J count_if_not(I f, I l, P p, J j)
 {
@@ -1655,7 +1655,7 @@ J count_if_not(I f, I l, P p, J j)
 }
 template<typename I, typename P>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && Domain(P) == EOPValueType(I))
+        UnaryPredicate(P) && EOPDomain(P) == EOPValueType(I))
 DistanceType(I) count_if_not(I f, I l, P p)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
@@ -1665,13 +1665,13 @@ DistanceType(I) count_if_not(I f, I l, P p)
 template<typename I, typename Op, typename F>
     requires(Iterator(I) && BinaryOperation(Op) && 
         UnaryFunction(F) &&
-        I == Domain(F) && EOPCodomain(F) == Domain(Op))
-Domain(Op) reduce_nonempty(I f, I l, Op op, F fun)
+        I == EOPDomain(F) && EOPCodomain(F) == EOPDomain(Op))
+EOPDomain(Op) reduce_nonempty(I f, I l, Op op, F fun)
 {
     // Precondition: $\property{bounded\_range}(f, l) \wedge f \neq l$
     // Precondition: $\property{partially\_associative}(op)$
     // Precondition: $(\forall x \in [f, l))\,fun(x)$ is defined
-    Domain(Op) r = fun(f);
+    EOPDomain(Op) r = fun(f);
     f = successor(f);
     while (f != l) {
         r = op(r, fun(f)); 
@@ -1682,12 +1682,12 @@ Domain(Op) reduce_nonempty(I f, I l, Op op, F fun)
 
 template<typename I, typename Op>
     requires(Readable(I) && Iterator(I) && BinaryOperation(Op) && 
-        EOPValueType(I) == Domain(Op))
-Domain(Op) reduce_nonempty(I f, I l, Op op)
+        EOPValueType(I) == EOPDomain(Op))
+EOPDomain(Op) reduce_nonempty(I f, I l, Op op)
 {
     // Precondition: $\property{readable\_bounded\_range}(f, l) \wedge f \neq l$
     // Precondition: $\property{partially\_associative}(op)$
-    Domain(Op) r = source(f);
+    EOPDomain(Op) r = source(f);
     f = successor(f);
     while (f != l) {
         r = op(r, source(f)); 
@@ -1699,8 +1699,8 @@ Domain(Op) reduce_nonempty(I f, I l, Op op)
 template<typename I, typename Op, typename F>
     requires(Iterator(I) && BinaryOperation(Op) && 
         UnaryFunction(F) &&
-        I == Domain(F) && EOPCodomain(F) == Domain(Op))
-Domain(Op) reduce(I f, I l, Op op, F fun, const Domain(Op)& z)
+        I == EOPDomain(F) && EOPCodomain(F) == EOPDomain(Op))
+EOPDomain(Op) reduce(I f, I l, Op op, F fun, const EOPDomain(Op)& z)
 {
     // Precondition: $\property{bounded\_range}(f, l)$
     // Precondition: $\property{partially\_associative}(op)$
@@ -1711,8 +1711,8 @@ Domain(Op) reduce(I f, I l, Op op, F fun, const Domain(Op)& z)
 
 template<typename I, typename Op>
     requires(ReadableIterator(I) && BinaryOperation(Op) && 
-        EOPValueType(I) == Domain(Op))
-Domain(Op) reduce(I f, I l, Op op, const Domain(Op)& z)
+        EOPValueType(I) == EOPDomain(Op))
+EOPDomain(Op) reduce(I f, I l, Op op, const EOPDomain(Op)& z)
 {
     // Precondition: $\property{readable\_bounded\_range}(f, l)$
     // Precondition: $\property{partially\_associative}(op)$
@@ -1723,21 +1723,21 @@ Domain(Op) reduce(I f, I l, Op op, const Domain(Op)& z)
 template<typename I, typename Op, typename F>
     requires(Iterator(I) && BinaryOperation(Op) && 
         UnaryFunction(F) &&
-        I == Domain(F) && EOPCodomain(F) == Domain(Op))
-Domain(Op) reduce_nonzeroes(I f, I l,
-                            Op op, F fun, const Domain(Op)& z)
+        I == EOPDomain(F) && EOPCodomain(F) == EOPDomain(Op))
+EOPDomain(Op) reduce_nonzeroes(I f, I l,
+                            Op op, F fun, const EOPDomain(Op)& z)
 {
     // Precondition: $\property{bounded\_range}(f, l)$
     // Precondition: $\property{partially\_associative}(op)$
     // Precondition: $(\forall x \in [f, l))\,fun(x)$ is defined
-    Domain(Op) x;
+    EOPDomain(Op) x;
     do {
         if (f == l) return z;
         x = fun(f);
         f = successor(f);
     } while (x == z);
     while (f != l) {
-        Domain(Op) y = fun(f);
+        EOPDomain(Op) y = fun(f);
         if (y != z) x = op(x, y); 
         f = successor(f);
     }
@@ -1746,20 +1746,20 @@ Domain(Op) reduce_nonzeroes(I f, I l,
 
 template<typename I, typename Op>
     requires(ReadableIterator(I) && BinaryOperation(Op) && 
-        EOPValueType(I) == Domain(Op))
-Domain(Op) reduce_nonzeroes(I f, I l,
-                            Op op, const Domain(Op)& z)
+        EOPValueType(I) == EOPDomain(Op))
+EOPDomain(Op) reduce_nonzeroes(I f, I l,
+                            Op op, const EOPDomain(Op)& z)
 {
     // Precondition: $\property{readable\_bounded\_range}(f, l)$
     // Precondition: $\property{partially\_associative}(op)$
-    Domain(Op) x;
+    EOPDomain(Op) x;
     do {
         if (f == l) return z;
         x = source(f);
         f = successor(f);
     } while (x == z);
     while (f != l) {
-        Domain(Op) y = source(f);
+        EOPDomain(Op) y = source(f);
         if (y != z) x = op(x, y); 
         f = successor(f);
     }
@@ -1811,7 +1811,7 @@ pair<I, DistanceType(I)> find_n(I f, DistanceType(I) n,
 
 template<typename I, typename P>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 I find_if_unguarded(I f, P p) {
     // Precondition:
     // $(\exists l)\,\func{readable\_bounded\_range}(f, l) \wedge \func{some}(f, l, p)$
@@ -1822,7 +1822,7 @@ I find_if_unguarded(I f, P p) {
 
 template<typename I,  typename P>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && Domain(P) == EOPValueType(I))
+        UnaryPredicate(P) && EOPDomain(P) == EOPValueType(I))
 I find_if_not_unguarded(I f, P p) {
     // Let $l$ be the end of the implied range starting with $f$
     // Precondition:
@@ -1835,7 +1835,7 @@ template<typename I0, typename I1, typename R>
     requires(Readable(I0) && Iterator(I0) &&
         Readable(I1) && Iterator(I1) && Relation(R) && 
         EOPValueType(I0) == EOPValueType(I1) &&
-        EOPValueType(I0) == Domain(R))
+        EOPValueType(I0) == EOPDomain(R))
 pair<I0, I1> find_mismatch(I0 f0, I0 l0, I1 f1, I1 l1, R r)
 {
     // Precondition: $\func{readable\_bounded\_range}(f0, l0)$
@@ -1849,7 +1849,7 @@ pair<I0, I1> find_mismatch(I0 f0, I0 l0, I1 f1, I1 l1, R r)
 
 template<typename I, typename R>
     requires(Readable(I) && Iterator(I) &&
-        Relation(R) && EOPValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == EOPDomain(R))
 I find_adjacent_mismatch(I f, I l, R r)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
@@ -1865,7 +1865,7 @@ I find_adjacent_mismatch(I f, I l, R r)
 
 template<typename I, typename R>
     requires(Readable(I) && Iterator(I) &&
-        Relation(R) && EOPValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == EOPDomain(R))
 bool relation_preserving(I f, I l, R r)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
@@ -1874,7 +1874,7 @@ bool relation_preserving(I f, I l, R r)
 
 template<typename I, typename R>
     requires(Readable(I) && Iterator(I) &&
-        Relation(R) && EOPValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == EOPDomain(R))
 bool strictly_increasing_range(I f, I l, R r)
 {
     // Precondition:
@@ -1884,7 +1884,7 @@ bool strictly_increasing_range(I f, I l, R r)
 
 template<typename I, typename R>
     requires(Readable(I) && Iterator(I) &&
-        Relation(R) && EOPValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == EOPDomain(R))
 bool increasing_range(I f, I l, R r)
 {
     // Precondition:
@@ -1896,7 +1896,7 @@ bool increasing_range(I f, I l, R r)
 
 template<typename I, typename P>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 bool partitioned(I f, I l, P p)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
@@ -1909,7 +1909,7 @@ bool partitioned(I f, I l, P p)
 
 template<typename I, typename R>
     requires(Readable(I) && ForwardIterator(I) &&
-        Relation(R) && EOPValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == EOPDomain(R))
 I find_adjacent_mismatch_forward(I f, I l, R r)
 {
     // Precondition: $\func{readable\_bounded\_range}(f, l)$
@@ -1924,7 +1924,7 @@ I find_adjacent_mismatch_forward(I f, I l, R r)
 
 template<typename I, typename P>
     requires(Readable(I) && ForwardIterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 I partition_point_n(I f, DistanceType(I) n, P p)
 {
     // Precondition:
@@ -1943,7 +1943,7 @@ I partition_point_n(I f, DistanceType(I) n, P p)
 
 template<typename I,  typename P>
     requires(Readable(I) && ForwardIterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 I partition_point(I f, I l, P p)
 {
     // Precondition:
@@ -1955,7 +1955,7 @@ template<typename R>
     requires(Relation(R))
 struct lower_bound_predicate
 {
-    typedef Domain(R) T;
+    typedef EOPDomain(R) T;
     typedef T input_type_0;
     typedef bool codomain_type;
 
@@ -1966,7 +1966,7 @@ struct lower_bound_predicate
 
 template<typename R>
     requires(Relation(R))
-inline lower_bound_predicate<R> make_lower_bound_predicate(const Domain(R)& a, const R& r)
+inline lower_bound_predicate<R> make_lower_bound_predicate(const EOPDomain(R)& a, const R& r)
 {
     lower_bound_predicate<R> tmp = {a, r};
     return tmp;
@@ -1974,7 +1974,7 @@ inline lower_bound_predicate<R> make_lower_bound_predicate(const Domain(R)& a, c
 
 template<typename I, typename R>
     requires(Readable(I) && ForwardIterator(I) &&
-        Relation(R) && EOPValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == EOPDomain(R))
 I lower_bound_n(I f, DistanceType(I) n,
                 const EOPValueType(I)& a, R r)
 {
@@ -1987,7 +1987,7 @@ template<typename R>
     requires(Relation(R))
 struct upper_bound_predicate
 {
-    typedef Domain(R) T;
+    typedef EOPDomain(R) T;
     typedef T input_type_0;
     typedef bool codomain_type;
 
@@ -1998,7 +1998,7 @@ struct upper_bound_predicate
 
 template<typename R>
     requires(Relation(R))
-inline upper_bound_predicate<R> make_upper_bound_predicate(const Domain(R)& a, const R& r)
+inline upper_bound_predicate<R> make_upper_bound_predicate(const EOPDomain(R)& a, const R& r)
 {
     upper_bound_predicate<R> tmp = {a, r};
     return tmp;
@@ -2006,7 +2006,7 @@ inline upper_bound_predicate<R> make_upper_bound_predicate(const Domain(R)& a, c
 
 template<typename I, typename R>
     requires(Readable(I) && ForwardIterator(I) &&
-        Relation(R) && EOPValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == EOPDomain(R))
 I upper_bound_n(I f, DistanceType(I) n,
                 const EOPValueType(I)& a, R r)
 {
@@ -2033,7 +2033,7 @@ I operator-(I l, DistanceType(I) n)
 
 template<typename I, typename P>
     requires(Readable(I) && BidirectionalIterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 I find_backward_if(I f, I l, P p)
 {
     // Precondition: $(f, l] \text{ is a readable bounded half-open on left range}$
@@ -2044,7 +2044,7 @@ I find_backward_if(I f, I l, P p)
 
 template<typename I, typename P>
     requires(Readable(I) && BidirectionalIterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 I find_backward_if_not(I f, I l, P p) {
     // Precondition: $(f, l] \text{ is a readable bounded half-open on left range}$
     while (l != f && p(source(predecessor(l))))
@@ -2061,7 +2061,7 @@ I find_backward_if_not(I f, I l, P p) {
 
 template<typename I, typename P>
     requires(Readable(I) && BidirectionalIterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 I find_backward_if_unguarded(I l, P p)
 {
     // Precondition:
@@ -2073,7 +2073,7 @@ I find_backward_if_unguarded(I l, P p)
 
 template<typename I, typename P>
     requires(Readable(I) && BidirectionalIterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 I find_backward_if_not_unguarded(I l, P p)
 {
     // Precondition:
@@ -2301,7 +2301,7 @@ template<typename I0, typename I1, typename R>
     requires(Readable(I0) && Iterator(I0) &&
         Readable(I1) && Iterator(I1) &&
         EOPValueType(I0) == EOPValueType(I1) &&
-        Relation(R) && EOPValueType(I0) == Domain(R))
+        Relation(R) && EOPValueType(I0) == EOPDomain(R))
 bool lexicographical_equivalent(I0 f0, I0 l0, I1 f1, I1 l1, R r)
 {
     // Precondition: $\property{readable\_bounded\_range}(f0, l0)$
@@ -2356,7 +2356,7 @@ template<typename C0, typename C1, typename R>
     requires(Readable(C0) && BifurcateCoordinate(C0) &&
         Readable(C1) && BifurcateCoordinate(C1) &&
         EOPValueType(C0) == EOPValueType(C1) &&
-        Relation(R) && EOPValueType(C0) == Domain(R))
+        Relation(R) && EOPValueType(C0) == EOPDomain(R))
 bool bifurcate_equivalent_nonempty(C0 c0, C1 c1, R r)
 {
     // Precondition: $\property{readable\_tree}(c0) \wedge \property{readable\_tree}(c1)$
@@ -2386,7 +2386,7 @@ template<typename C0, typename C1, typename R>
         Readable(C1) && 
         BidirectionalBifurcateCoordinate(C1) &&
         EOPValueType(C0) == EOPValueType(C1) &&
-        Relation(R) && EOPValueType(C0) == Domain(R))
+        Relation(R) && EOPValueType(C0) == EOPDomain(R))
 bool bifurcate_equivalent(C0 c0, C1 c1, R r)
 {
     // Precondition: $\property{readable\_tree}(c0) \wedge \property{readable\_tree}(c1)$
@@ -2421,7 +2421,7 @@ template<typename I0, typename I1, typename R>
     requires(Readable(I0) && Iterator(I0) &&
         Readable(I1) && Iterator(I1) &&
         EOPValueType(I0) == EOPValueType(I1) &&
-        Relation(R) && EOPValueType(I0) == Domain(R))
+        Relation(R) && EOPValueType(I0) == EOPDomain(R))
 bool lexicographical_compare(I0 f0, I0 l0, I1 f1, I1 l1, R r)
 {
     // Precondition: $\property{readable\_bounded\_range}(f0, l0)$
@@ -2490,7 +2490,7 @@ struct lexicographical_less_k<0, I0, I1>
 
 // property(F : Comparator3Way)
 // three_way_compare : F
-//  f |- (all a,b in Domain(F)) f(a, b) in {-1, 0, 1}
+//  f |- (all a,b in EOPDomain(F)) f(a, b) in {-1, 0, 1}
 
 //  Also need axioms equivalent to weak_order : transitivity, etc.
 //  We could relax this to OrderedAdditiveGroup
@@ -2501,7 +2501,7 @@ template<typename R>
     requires(Relation(R))
 struct comparator_3_way
 {
-    typedef Domain(R) T;
+    typedef EOPDomain(R) T;
     typedef T input_type_0;
     typedef T input_type_1;
     typedef int codomain_type;
@@ -2527,7 +2527,7 @@ template<typename I0, typename I1, typename F>
     requires(Readable(I0) && Iterator(I0) &&
         Readable(I1) && Iterator(I1) &&
         EOPValueType(I0) == EOPValueType(I1) &&
-        Comparator3Way(F) && EOPValueType(I0) == Domain(F))
+        Comparator3Way(F) && EOPValueType(I0) == EOPDomain(F))
 int lexicographical_compare_3way(I0 f0, I0 l0, I1 f1, I1 l1, F comp)
 {
     // Precondition: $\property{readable\_bounded\_range}(f0, l0)$
@@ -2550,7 +2550,7 @@ template<typename C0, typename C1, typename F>
     requires(Readable(C0) && BifurcateCoordinate(C0) &&
         Readable(C1) && BifurcateCoordinate(C1) &&
         EOPValueType(C0) == EOPValueType(C1) &&
-        Comparator3Way(F) && EOPValueType(I0) == Domain(F))
+        Comparator3Way(F) && EOPValueType(I0) == EOPDomain(F))
 int bifurcate_compare_nonempty(C0 c0, C1 c1, F comp)
 {
     // Precondition: $\property{readable\_tree}(c0) \wedge \property{readable\_tree}(c1)$
@@ -2581,7 +2581,7 @@ template<typename C0, typename C1, typename R>
         Readable(C1) && 
         BidirectionalBifurcateCoordinate(C1) &&
         EOPValueType(C0) == EOPValueType(C1) &&
-        Relation(R) && EOPValueType(C0) == Domain(R))
+        Relation(R) && EOPValueType(C0) == EOPDomain(R))
 bool bifurcate_compare(C0 c0, C1 c1, R r)
 {
     // Precondition: $\property{readable\_tree}(c0) \wedge
@@ -2764,7 +2764,7 @@ I find_last(I f, I l)
 
 template<typename I, typename S, typename Pred>
     requires(ForwardLinker(S) && I == IteratorType(S) &&
-        UnaryPseudoPredicate(Pred) && I == Domain(Pred))
+        UnaryPseudoPredicate(Pred) && I == EOPDomain(Pred))
 pair< pair<I, I>, pair<I, I> >
 split_linked(I f, I l, Pred p, S set_link)
 {
@@ -2796,7 +2796,7 @@ s4: return make_pair(make_pair(h0, t0), make_pair(h1, t1));
 
 template<typename I, typename S, typename R>
     requires(ForwardLinker(S) && I == IteratorType(S) &&
-        PseudoRelation(R) && I == Domain(R))
+        PseudoRelation(R) && I == EOPDomain(R))
 triple<I, I, I>
 combine_linked_nonempty(I f0, I l0, I f1, I l1, R r, S set_link)
 {
@@ -2861,7 +2861,7 @@ I reverse_append(I f, I l, I h, S set_link)
 
 template<typename I, typename P>
     requires(Readable(I) && 
-        Predicate(P) && EOPValueType(I) == Domain(P))
+        Predicate(P) && EOPValueType(I) == EOPDomain(P))
 struct predicate_source
 {
     typedef I input_type_0;
@@ -2876,7 +2876,7 @@ struct predicate_source
 
 template<typename I, typename P>
     requires(Readable(I) && 
-        Predicate(P) && EOPValueType(I) == Domain(P))
+        Predicate(P) && EOPValueType(I) == EOPDomain(P))
 inline predicate_source<I, P> make_predicate_source(const P& p)
 {
     predicate_source<I, P> tmp = {p};
@@ -2885,7 +2885,7 @@ inline predicate_source<I, P> make_predicate_source(const P& p)
 
 template<typename I, typename S, typename P>
     requires(ForwardLinker(S) && I == IteratorType(S) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 pair< pair<I, I>, pair<I, I> >
 partition_linked(I f, I l, P p, S set_link)
 {
@@ -2897,7 +2897,7 @@ partition_linked(I f, I l, P p, S set_link)
 template<typename I0, typename I1, typename R>
     requires(Readable(I0) && Readable(I1) &&
         EOPValueType(I0) == EOPValueType(I1) &&
-        Relation(R) && EOPValueType(I0) == Domain(R))
+        Relation(R) && EOPValueType(I0) == EOPDomain(R))
 struct relation_source
 {
     typedef I0 input_type_0;
@@ -2914,7 +2914,7 @@ struct relation_source
 template<typename I0, typename I1, typename R>
     requires(Readable(I0) && Readable(I1) &&
         EOPValueType(I0) == EOPValueType(I1) &&
-        Relation(R) && EOPValueType(I0) == Domain(R))
+        Relation(R) && EOPValueType(I0) == EOPDomain(R))
 inline relation_source<I0, I1, R> make_relation_source(const R& r)
 {
     relation_source<I0, I1, R> tmp = {r};
@@ -2924,7 +2924,7 @@ inline relation_source<I0, I1, R> make_relation_source(const R& r)
 template<typename I, typename S, typename R>
     requires(Readable(I) &&
         ForwardLinker(S) && I == IteratorType(S) &&
-        Relation(R) && EOPValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == EOPDomain(R))
 pair<I, I> merge_linked_nonempty(I f0, I l0, I f1, I l1,
                                  R r, S set_link)
 {
@@ -2941,7 +2941,7 @@ pair<I, I> merge_linked_nonempty(I f0, I l0, I f1, I l1,
 template<typename I, typename S, typename R>
     requires(Readable(I) &&
         ForwardLinker(S) && I == IteratorType(S) &&
-        Relation(R) && EOPValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == EOPDomain(R))
 pair<I, I> sort_linked_nonempty_n(I f, DistanceType(I) n,
                                   R r, S set_link)
 {
@@ -3263,7 +3263,7 @@ template<typename I, typename O, typename P>
     requires(Readable(I) && Iterator(I) &&
         Writable(O) && Iterator(O) &&
         EOPValueType(I) == EOPValueType(O) &&
-        UnaryPredicate(P) && I == Domain(P))
+        UnaryPredicate(P) && I == EOPDomain(P))
 O copy_select(I f_i, I l_i, O f_t, P p)
 {
     // Precondition: $\property{not\_overlapped\_forward}(f_i, l_i, f_t, f_t+n_t)$
@@ -3278,7 +3278,7 @@ template<typename I, typename O, typename P>
     requires(Readable(I) && Iterator(I) &&
         Writable(O) && Iterator(O) &&
         EOPValueType(I) == EOPValueType(O) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 O copy_if(I f_i, I l_i, O f_t, P p)
 {
     // Precondition: same as for $\func{copy\_select}$
@@ -3292,7 +3292,7 @@ template<typename I, typename O_f, typename O_t, typename P>
         Writable(O_t) && Iterator(O_t) &&
         EOPValueType(I) == EOPValueType(O_f) &&
         EOPValueType(I) == EOPValueType(O_t) &&
-        UnaryPredicate(P) && I == Domain(P))
+        UnaryPredicate(P) && I == EOPDomain(P))
 pair<O_f, O_t> split_copy(I f_i, I l_i, O_f f_f, O_t f_t,
                           P p)
 {
@@ -3309,7 +3309,7 @@ template<typename I, typename O_f, typename O_t, typename P>
         Writable(O_t) && Iterator(O_t) &&
         EOPValueType(I) == EOPValueType(O_f) &&
         EOPValueType(I) == EOPValueType(O_t) &&
-        UnaryPredicate(P) && I == Domain(P))
+        UnaryPredicate(P) && I == EOPDomain(P))
 pair<O_f, O_t> split_copy_n(I f_i, DistanceType(I) n_i, O_f f_f, O_t f_t, P p)
 {
     // Precondition: see exercise 9.2 of Elements of Programming
@@ -3325,7 +3325,7 @@ template<typename I, typename O_f, typename O_t, typename P>
         Writable(O_t) && Iterator(O_t) &&
         EOPValueType(I) == EOPValueType(O_f) &&
         EOPValueType(I) == EOPValueType(O_t) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 pair<O_f, O_t> partition_copy(I f_i, I l_i, O_f f_f, O_t f_t,
                               P p)
 {
@@ -3340,7 +3340,7 @@ template<typename I, typename O_f, typename O_t, typename P>
         Writable(O_t) && Iterator(O_t) &&
         EOPValueType(I) == EOPValueType(O_f) &&
         EOPValueType(I) == EOPValueType(O_t) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 pair<O_f, O_t> partition_copy_n(I f_i, DistanceType(I) n,
                                 O_f f_f, O_t f_t,
                                 P p)
@@ -3456,7 +3456,7 @@ template<typename I0, typename I1, typename O, typename R>
         Relation(R) && 
         EOPValueType(I0) == EOPValueType(O) &&
         EOPValueType(I1) == EOPValueType(O) &&
-        EOPValueType(I0) == Domain(R))
+        EOPValueType(I0) == EOPDomain(R))
 O merge_copy(I0 f_i0, I0 l_i0, I1 f_i1, I1 l_i1, O f_o, R r)
 {
     // Precondition: in addition to that for $\func{combine\_copy}$:
@@ -3474,7 +3474,7 @@ template<typename I0, typename I1, typename O, typename R>
         Relation(R) && 
         EOPValueType(I0) == EOPValueType(O) &&
         EOPValueType(I1) == EOPValueType(O) &&
-        EOPValueType(I0) == Domain(R))
+        EOPValueType(I0) == EOPDomain(R))
 triple<I0, I1, O> merge_copy_n(I0 f_i0, DistanceType(I0) n_i0,
                                I1 f_i1, DistanceType(I1) n_i1,
                                O o, R r)
@@ -3491,7 +3491,7 @@ template<typename I0, typename I1, typename O, typename R>
         Relation(R) && 
         EOPValueType(I0) == EOPValueType(O) &&
         EOPValueType(I1) == EOPValueType(O) &&
-        EOPValueType(I0) == Domain(R))
+        EOPValueType(I0) == EOPDomain(R))
 O merge_copy_backward(I0 f_i0, I0 l_i0, I1 f_i1, I1 l_i1, O l_o,
                       R r)
 {
@@ -3510,7 +3510,7 @@ template<typename I0, typename I1, typename O, typename R>
         Writable(O) && BidirectionalIterator(O) &&
         Relation(R) && 
         EOPValueType(I0) == EOPValueType(O) && EOPValueType(I1) == EOPValueType(O) &&
-        EOPValueType(I0) == Domain(R))
+        EOPValueType(I0) == EOPDomain(R))
 triple<I0, I1, O> merge_copy_backward_n(I0 l_i0, DistanceType(I0) n_i0,
                            I1 l_i1, DistanceType(I1) n_i1, O l_o, R r) {
     // Precondition: see $\func{merge\_copy\_backward}$
@@ -3637,7 +3637,7 @@ pair<I0, I1> reverse_swap_ranges_n(I0 l0, I1 f1, N n)
 
 
 template<typename I, typename F>
-    requires(Mutable(I) && Transformation(F) && I == Domain(F))
+    requires(Mutable(I) && Transformation(F) && I == EOPDomain(F))
 void cycle_to(I i, F f)
 {
     // Precondition: The orbit of $i$ under $f$ is circular
@@ -3653,7 +3653,7 @@ void cycle_to(I i, F f)
 
 
 template<typename I, typename F>
-    requires(Mutable(I) && Transformation(F) && I == Domain(F))
+    requires(Mutable(I) && Transformation(F) && I == EOPDomain(F))
 void cycle_from(I i, F f)
 {
     // Precondition: The orbit of $i$ under $f$ is circular
@@ -3808,7 +3808,7 @@ struct k_rotate_from_permutation_indexed
 
 template<typename I, typename F>
     requires(Mutable(I) && IndexedIterator(I) &&
-        Transformation(F) && I == Domain(F))
+        Transformation(F) && I == EOPDomain(F))
 I rotate_cycles(I f, I m, I l, F from)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f, l) \wedge m \in [f, l]$
@@ -4127,7 +4127,7 @@ I rotate_nontrivial(I f, I m, I l, random_access_iterator_tag)
 
 template<typename I,  typename P>
     requires(Readable(I) && Iterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 bool partitioned_at_point(I f, I m, I l, P p)
 {
     // Precondition: $\property{readable\_bounded\_range}(f, l) \wedge m \in [f, l]$
@@ -4139,7 +4139,7 @@ bool partitioned_at_point(I f, I m, I l, P p)
 
 template<typename I, typename P>
     requires(Readable(I) && ForwardIterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 I potential_partition_point(I f, I l, P p)
 {
     // Precondition: $\property{readable\_bounded\_range}(f, l)$
@@ -4148,7 +4148,7 @@ I potential_partition_point(I f, I l, P p)
 
 template<typename I, typename P>
     requires(Mutable(I) && ForwardIterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 I partition_semistable(I f, I l, P p)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f, l)$
@@ -4170,7 +4170,7 @@ I partition_semistable(I f, I l, P p)
 
 template<typename I, typename P>
     requires(Mutable(I) && ForwardIterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 I remove_if(I f, I l, P p)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f, l)$
@@ -4189,7 +4189,7 @@ I remove_if(I f, I l, P p)
 
 //template<typename I, typename P>
 //    requires(Mutable(I) && ForwardIterator(I) &&
-//        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+//        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 //void partition_semistable_omit_last_predicate_evaluation(I f, I l, P p)
 //{
 //    // Precondition: $\property{mutable\_bounded\_range}(f, l)$
@@ -4198,7 +4198,7 @@ I remove_if(I f, I l, P p)
 
 template<typename I, typename P>
     requires(Mutable(I) && BidirectionalIterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 I partition_bidirectional(I f, I l, P p)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f, l)$
@@ -4214,7 +4214,7 @@ I partition_bidirectional(I f, I l, P p)
 
 template<typename I,  typename P>
     requires(Mutable(I) && ForwardIterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 I partition_forward(I f, I l, P p)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f, l)$
@@ -4232,7 +4232,7 @@ I partition_forward(I f, I l, P p)
 
 template<typename I, typename P>
     requires(Mutable(I) && BidirectionalIterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 I partition_single_cycle(I f, I l, P p)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f, l)$
@@ -4258,7 +4258,7 @@ I partition_single_cycle(I f, I l, P p)
 
 template<typename I, typename P>
     requires(Mutable(I) && BidirectionalIterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 I partition_bidirectional_unguarded(I f, I l, P p)
 {
     // Precondition:
@@ -4275,7 +4275,7 @@ I partition_bidirectional_unguarded(I f, I l, P p)
 
 template<typename I, typename P>
     requires(Mutable(I) && BidirectionalIterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 I partition_sentinel(I f, I l, P p)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f, l)$
@@ -4294,7 +4294,7 @@ I partition_sentinel(I f, I l, P p)
 
 template<typename I, typename P>
     requires(Mutable(I) && IndexedIterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 I partition_indexed(I f, I l, P p)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f, l)$
@@ -4321,7 +4321,7 @@ template<typename I, typename B, typename P>
     requires(Mutable(I) && ForwardIterator(I) &&
         Mutable(B) && ForwardIterator(B) &&
         EOPValueType(I) == EOPValueType(B) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 I partition_stable_with_buffer(I f, I l, B f_b, P p)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f, l)$
@@ -4333,7 +4333,7 @@ I partition_stable_with_buffer(I f, I l, B f_b, P p)
 
 template<typename I, typename P>
     requires(Mutable(I) && ForwardIterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 pair<I, I> partition_stable_singleton(I f, P p)
 {
     // Precondition: $\property{readable\_bounded\_range}(f, \func{successor}(f))$
@@ -4354,7 +4354,7 @@ pair<I, I> combine_ranges(const pair<I, I>& x,
 
 template<typename I, typename P>
     requires(Mutable(I) && ForwardIterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 pair<I, I> partition_stable_n_nonempty(I f, DistanceType(I) n,
                                        P p)
 {
@@ -4368,7 +4368,7 @@ pair<I, I> partition_stable_n_nonempty(I f, DistanceType(I) n,
 
 template<typename I, typename P>
     requires(Mutable(I) && ForwardIterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 pair<I, I> partition_stable_n(I f, DistanceType(I) n, P p)
 {
     // Precondition: $\property{mutable\_counted\_range}(f, n)$
@@ -4382,7 +4382,7 @@ pair<I, I> partition_stable_n(I f, DistanceType(I) n, P p)
 
 template<typename I, typename P>
    requires(Mutable(I) && ForwardIterator(I) &&
-       UnaryPredicate(P) && Domain(P) == EOPValueType(I)\)
+       UnaryPredicate(P) && EOPDomain(P) == EOPValueType(I)\)
 I partition_stable(I f, I l, P p)
 {
     // Precondition: $\property{mutable\_bounded\_range}(f, l)$
@@ -4391,7 +4391,7 @@ I partition_stable(I f, I l, P p)
 
 template<typename I, typename P>
     requires(ForwardIterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 struct partition_trivial 
 {
     typedef I input_type_0;
@@ -4406,7 +4406,7 @@ struct partition_trivial
 
 template<typename I, typename P>
     requires(ForwardIterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 inline partition_trivial<I, P> make_partition_trivial(const P& p)
 {
     partition_trivial<I, P> tmp = {p};
@@ -4415,9 +4415,9 @@ inline partition_trivial<I, P> make_partition_trivial(const P& p)
 
 template<typename I, typename Op>
     requires(Mutable(I) && ForwardIterator(I) &&
-        BinaryOperation(Op) && EOPValueType(I) == Domain(Op))
-Domain(Op) add_to_counter(I f, I l, Op op, Domain(Op) x,
-                          const Domain(Op)& z)
+        BinaryOperation(Op) && EOPValueType(I) == EOPDomain(Op))
+EOPDomain(Op) add_to_counter(I f, I l, Op op, EOPDomain(Op) x,
+                          const EOPDomain(Op)& z)
 {
     if (x == z) return z;
     while (f != l) {
@@ -4436,7 +4436,7 @@ template<typename Op>
     requires(BinaryOperation(Op))
 struct counter_machine
 {
-    typedef Domain(Op) T;
+    typedef EOPDomain(Op) T;
     typedef T input_type_0;
     typedef void codomain_type;
 
@@ -4462,7 +4462,7 @@ template<typename Op>
 struct transpose_operation
 {
     Op op;
-    typedef Domain(Op) T;
+    typedef EOPDomain(Op) T;
     typedef T input_type_0;
     typedef T input_type_1;
     typedef T codomain_type;
@@ -4504,10 +4504,10 @@ inline apply_source<I> make_apply_source()
 
 template<typename I, typename Op, typename F>
     requires(Iterator(I) && BinaryOperation(Op) && 
-        UnaryFunction(F) && I == Domain(F) &&
-        EOPCodomain(F) == Domain(Op))
-Domain(Op) reduce_balanced(I f, I l, Op op, F fun,
-                           const Domain(Op)& z)
+        UnaryFunction(F) && I == EOPDomain(F) &&
+        EOPCodomain(F) == EOPDomain(Op))
+EOPDomain(Op) reduce_balanced(I f, I l, Op op, F fun,
+                           const EOPDomain(Op)& z)
 {
     // Precondition: $\property{bounded\_range}(f, l) \wedge l - f < 2^{64}$
     // Precondition: $\property{partially\_associative}(op)$
@@ -4522,8 +4522,8 @@ Domain(Op) reduce_balanced(I f, I l, Op op, F fun,
 
 template<typename I, typename Op>
     requires(ReadableIterator(I) && BinaryOperation(Op) && 
-        EOPValueType(I) == Domain(Op))
-inline Domain(Op) reduce_balanced(I f, I l, Op op, const Domain(Op)& z)
+        EOPValueType(I) == EOPDomain(Op))
+inline EOPDomain(Op) reduce_balanced(I f, I l, Op op, const EOPDomain(Op)& z)
 {
     // Precondition: $\property{readable\_bounded\_range}(f, l) \wedge l-f < 2^{64}$
     // Precondition: $\property{partially\_associative}(op)$
@@ -4533,7 +4533,7 @@ inline Domain(Op) reduce_balanced(I f, I l, Op op, const Domain(Op)& z)
 
 template<typename I, typename P>
     requires(ForwardIterator(I) && UnaryPredicate(P) &&
-        EOPValueType(I) == Domain(P))
+        EOPValueType(I) == EOPDomain(P))
 I partition_stable_iterative(I f, I l, P p)
 {
     // Precondition: $\property{bounded\_range}(f, l) \wedge l - f < 2^{64}$
@@ -4549,7 +4549,7 @@ template<typename I, typename B, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
         Mutable(B) && ForwardIterator(B) &&
         EOPValueType(I) == EOPValueType(B) &&
-        Relation(R) && EOPValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == EOPDomain(R))
 I merge_n_with_buffer(I f0, DistanceType(I) n0,
                       I f1, DistanceType(I) n1, B f_b, R r)
 {
@@ -4563,7 +4563,7 @@ template<typename I, typename B, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
         Mutable(B) && ForwardIterator(B) &&
         EOPValueType(I) == EOPValueType(B) &&
-        Relation(R) && EOPValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == EOPDomain(R))
 I sort_n_with_buffer(I f, DistanceType(I) n, B f_b, R r)
 {
     // Property:
@@ -4578,7 +4578,7 @@ I sort_n_with_buffer(I f, DistanceType(I) n, B f_b, R r)
 
 template<typename I, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
-        Relation(R) && EOPValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == EOPDomain(R))
 void merge_n_step_0(I f0, DistanceType(I) n0,
                     I f1, DistanceType(I) n1, R r,
                     I& f0_0, DistanceType(I)& n0_0,
@@ -4600,7 +4600,7 @@ void merge_n_step_0(I f0, DistanceType(I) n0,
 
 template<typename I, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
-        Relation(R) && EOPValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == EOPDomain(R))
 void merge_n_step_1(I f0, DistanceType(I) n0,
                     I f1, DistanceType(I) n1, R r,
                     I& f0_0, DistanceType(I)& n0_0,
@@ -4624,7 +4624,7 @@ template<typename I, typename B, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
         Mutable(B) && ForwardIterator(B) &&
         EOPValueType(I) == EOPValueType(B) &&
-        Relation(R) && EOPValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == EOPDomain(R))
 I merge_n_adaptive(I f0, DistanceType(I) n0,
                    I f1, DistanceType(I) n1,
                    B f_b, DistanceType(B) n_b, R r)
@@ -4655,7 +4655,7 @@ template<typename I, typename B, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
         Mutable(B) && ForwardIterator(B) &&
         EOPValueType(I) == EOPValueType(B) &&
-        Relation(R) && EOPValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == EOPDomain(R))
 I sort_n_adaptive(I f, DistanceType(I) n,
                   B f_b, DistanceType(B) n_b, R r)
 {
@@ -4671,7 +4671,7 @@ I sort_n_adaptive(I f, DistanceType(I) n,
 
 template<typename I, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
-        Relation(R) && EOPValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == EOPDomain(R))
 I sort_n(I f, DistanceType(I) n, R r)
 {
     // Precondition:
@@ -5697,7 +5697,7 @@ void reverse(slist<T>& x)
 }
 
 template<typename T, typename P>
-    requires(Regular(T) && UnaryPredicate(P) && Domain(P) == T)
+    requires(Regular(T) && UnaryPredicate(P) && EOPDomain(P) == T)
 void partition(slist<T>& x, slist<T>& y, P p)
 {
     typedef IteratorType(slist<T>) I;
@@ -5713,7 +5713,7 @@ void partition(slist<T>& x, slist<T>& y, P p)
 }
 
 template<typename T, typename R>
-    requires(Regular(T) && Regular(R) && Domain(R) == T)
+    requires(Regular(T) && Regular(R) && EOPDomain(R) == T)
 void merge(slist<T>& x, slist<T>& y, R r)
 {
     // Precondition: $\func{weak\_ordering}(r)$
@@ -5727,7 +5727,7 @@ void merge(slist<T>& x, slist<T>& y, R r)
 }
 
 template<typename T, typename R>
-    requires(Regular(T) && Relation(R) && Domain(R) == T)
+    requires(Regular(T) && Relation(R) && EOPDomain(R) == T)
 void sort(slist<T>& x, R r)
 {
     // Precondition: $\func{weak\_ordering}(r)$
@@ -6006,7 +6006,7 @@ void reverse(list<T>& x)
 }
 
 template<typename T, typename P>
-    requires(Regular(T) && UnaryPredicate(P) && Domain(P) == T)
+    requires(Regular(T) && UnaryPredicate(P) && EOPDomain(P) == T)
 void partition(list<T>& x, list<T>& y, P p)
 {
     typedef IteratorType(list<T>) I;
@@ -6022,7 +6022,7 @@ void partition(list<T>& x, list<T>& y, P p)
 }
 
 template<typename T, typename R>
-    requires(Regular(T) && Regular(R) && Domain(R) == T)
+    requires(Regular(T) && Regular(R) && EOPDomain(R) == T)
 void merge(list<T>& x, list<T>& y, R r)
 {
     // Precondition: $\func{weak\_ordering}(r)$
@@ -6039,7 +6039,7 @@ void merge(list<T>& x, list<T>& y, R r)
 }
 
 template<typename T, typename R>
-    requires(Regular(T) && Relation(R) && Domain(R) == T)
+    requires(Regular(T) && Relation(R) && EOPDomain(R) == T)
 void sort(list<T>& x, R r)
 {
     // Precondition: $\func{weak\_ordering}(r)$
@@ -7031,7 +7031,7 @@ template<typename P>
     requires(Predicate(P))
 struct underlying_predicate
 {
-    typedef Domain(P) T;
+    typedef EOPDomain(P) T;
     typedef UnderlyingType(T) U;
     typedef U input_type_0;
     typedef bool codomain_type;
@@ -7055,7 +7055,7 @@ template<typename R>
     requires(Relation(R))
 struct underlying_relation
 {
-    typedef Domain(R) T;
+    typedef EOPDomain(R) T;
     typedef UnderlyingType(T) U;
     typedef U input_type_0;
     typedef U input_type_1;
@@ -7078,7 +7078,7 @@ inline underlying_relation<R> make_underlying_relation(const R& r)
 
 template<typename I, typename P>
     requires(Mutable(I) && ForwardIterator(I) &&
-        UnaryPredicate(P) && EOPValueType(I) == Domain(P))
+        UnaryPredicate(P) && EOPValueType(I) == EOPDomain(P))
 pair<I, I> advanced_partition_stable_n(I f, DistanceType(I) n, P p)
 {
     typedef underlying_iterator<I> U;
@@ -7089,7 +7089,7 @@ pair<I, I> advanced_partition_stable_n(I f, DistanceType(I) n, P p)
 
 template<typename I, typename R>
     requires(Mutable(I) && ForwardIterator(I) &&
-        Relation(R) && EOPValueType(I) == Domain(R))
+        Relation(R) && EOPValueType(I) == EOPDomain(R))
 I advanced_sort_n(I f, DistanceType(I) n, R r)
 {
     // Precondition: $\property{mutable\_counted\_range}(f, n) \wedge \property{weak\_ordering}(r)$
@@ -7100,7 +7100,7 @@ I advanced_sort_n(I f, DistanceType(I) n, R r)
 }
 
 template<typename T, typename R>
-    requires(Regular(T) && Relation(R) && Domain(R) == T)
+    requires(Regular(T) && Relation(R) && EOPDomain(R) == T)
 void sort(array<T>& x, R r)
 {
     // Precondition: $\func{weak\_ordering}(r)$
