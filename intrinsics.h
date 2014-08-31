@@ -24,49 +24,29 @@
 
 #include <new> // placement operator new
 
-
-// As explained in Appendix B.2, to allow the language defined in Appendix B.1
-// to compile as a valid C++ program, a few macros and structure
-// definitions are necessary.
-
-
-// Template constraints
-
-//  The requires clause is implemented with this macro (this
-//  implementation treats requirements as documentation only):
-
-#define requires(...)
-
-
-// Intrinsics
-
-//  EOPpointer(T) and addressof(x) are introduced to give us a simple
-//  linear notation and allow simple top-down parsing. They are
-//  implemented as:
-
-#define EOPpointer(T) T*
-
-template<typename T>
-EOPpointer(T) addressof(T& x)
-{
-    return &x;
-}
-
+#include "type_functions.h"
 
 // In-place construction and destruction (not in Appendix B.2)
 
+namespace impl {
+
 template<typename T>
     requires(Regular(T))
-void construct(T& p)
+inline void construct(T& p, true_type)
 {
     // Precondition: $p$ refers to raw memory, not an object
     // Postcondition: $p$ is in a default-constructed state
     new (&p) T();
 }
 
+template<typename T>
+    requires(Regular(T))
+inline void construct(T& p, false_type)
+{}
+
 template<typename T, typename U>
     requires(Regular(T) && Constructible(T, U))
-void construct(T& p, const U& initializer)
+inline void construct(T& p, const U& initializer)
 {
     // Precondition: $p$ refers to raw memory, not an object
     // Postcondition: Default makes $p = initializer$
@@ -74,18 +54,59 @@ void construct(T& p, const U& initializer)
     new (&p) T(initializer);
 }    
 
+template<typename T, typename U, ptrdiff_t N>
+    requires(Regular(T) && Constructible(T, U))
+inline void construct(T (&p)[N], const U& initializer)
+{
+    // Precondition: $p$ refers to raw memory, not an object
+    // Postcondition: Default makes $p = initializer$
+    // Override $\func{construct}$ to specialize construction of a part of a 
+    ptrdiff_t x = N;
+    T* ptr = &p[0];
+    while (x > 0) {
+        new (ptr) T(initializer);
+        ++ptr;
+        --x;
+    }
+}    
+
+template<typename T, typename U>
+    requires(Regular(T) && Constructible(T, U))
+inline void construct(T& p, const U& initializer, false_type)
+{}
+
 template<typename T>
     requires(Regular(T))
-void destroy(T& p)
+inline void destroy(T& p, true_type)
 {
     // Precondition: $p$ is in a partially-formed state
     // Postcondition: $p$ refers to raw memory, not an object
     p.~T();
 }
 
+template<typename T, ptrdiff_t N>
+    requires(Regular(T))
+inline void destroy(T (&p)[N], true_type)
+{
+    // Precondition: $p$ is in a partially-formed state
+    // Postcondition: $p$ refers to raw memory, not an object
+    ptrdiff_t x = N;
+    T* ptr = &p[0];
+    while (x > 0) {
+        ptr->~T();
+        ++ptr;
+        --x;
+    }
+}
+
+template<typename T>
+    requires(Regular(T))
+inline void destroy(T& p, false_type)
+{}
+
 template<typename T, typename U>
     requires(Regular(T))
-void destroy(T& p, U& finalizer)
+inline void destroy(T& p, U& finalizer, true_type)
 {
     // Precondition: $p$ is in a partially-formed state
     // Postcondition: $p$ refers to raw memory, not an object
@@ -93,8 +114,40 @@ void destroy(T& p, U& finalizer)
     destroy(p);
 }
 
+template<typename T, typename U>
+    requires(Regular(T))
+inline void destroy(T& p, U& finalizer, false_type)
+{}
 
-// Type functions: see type_functions.h
+} // namespace impl
+
+template<typename T>
+    requires(Regular(T))
+inline void construct(T& p)
+{
+    impl::construct(p, EOPNeedsConstruction(T)());
+}
+
+template<typename T, typename U>
+    requires(Regular(T) && Constructible(T, U))
+inline void construct(T& p, const U& initializer)
+{
+    impl::construct(p, initializer);
+}    
+
+template<typename T>
+    requires(Regular(T))
+inline void destroy(T& p)
+{
+    impl::destroy(p, EOPNeedsDestruction(T)());
+}
+
+template<typename T, typename U>
+    requires(Regular(T))
+inline void destroy(T& p, U& finalizer)
+{
+    impl::destroy(p, finalizer, EOPNeedsDestruction(T)());
+}
 
 #endif // EOP_INTRINSICS
 

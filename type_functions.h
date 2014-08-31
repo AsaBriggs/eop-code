@@ -61,6 +61,27 @@
 //     typedef T type;
 // };
 
+// Template constraints
+
+//  The requires clause is implemented with this macro (this
+//  implementation treats requirements as documentation only):
+
+#define requires(...)
+
+
+// Intrinsics
+
+//  EOPpointer(T) and addressof(x) are introduced to give us a simple
+//  linear notation and allow simple top-down parsing. They are
+//  implemented as:
+
+#define EOPpointer(T) T*
+
+template<typename T>
+EOPpointer(T) addressof(T& x)
+{
+    return &x;
+}
 
 // Chapter 1 - Foundations
 
