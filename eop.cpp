@@ -33,10 +33,10 @@
 
 struct cmd
 {
-    const EOPpointer(char) name;
+    EOPpointer(char const) name;
     void (*action)();
     cmd() { }
-    cmd(const EOPpointer(char) name, void (*action)()) : name(name), action(action) { }
+    cmd(EOPpointer(char const) name, void (*action)()) : name(name), action(action) { }
 };
 
 int main()

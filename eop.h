@@ -4758,7 +4758,7 @@ EOPpointer(T) begin(array_k<k, T>& x)
 
 template<int k, typename T>
     requires(Regular(T))
-const EOPpointer(T) begin(const array_k<k, T>& x)
+EOPpointer(T const) begin(const array_k<k, T>& x)
 {
     return addressof(x.a[0]);
 }
@@ -4772,7 +4772,7 @@ EOPpointer(T) end(array_k<k, T>& x)
 
 template<int k, typename T>
     requires(Regular(T))
-const EOPpointer(T) end(const array_k<k, T>& x)
+EOPpointer(T const) end(const array_k<k, T>& x)
 {
     return begin(x) + k;
 }

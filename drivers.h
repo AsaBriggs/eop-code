@@ -209,8 +209,8 @@ struct LCG // linear congruential generator
 
 
     T m, a, b, x0;
-    const EOPpointer(char) name;
-    LCG(T m, T a, T b, T x0, const EOPpointer(char) name) :
+    EOPpointer(char const) name;
+    LCG(T m, T a, T b, T x0, EOPpointer(char const) name) :
         m(m), a(a), b(b), x0(x0), name(name) { }
     T operator()(T x) { return (a * x + b) % m; }
 };

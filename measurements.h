@@ -38,11 +38,11 @@ struct measure_time
     typedef long int N; // EOPDistanceType(M)
     const int inverse_accuracy;
     const clock_t epsilon;
-    const EOPpointer(char) legend;
-    const EOPpointer(char) units;
+    EOPpointer(char const) legend;
+    EOPpointer(char const) units;
     N n;
     clock_t t;
-    measure_time(const EOPpointer(char) legend) :
+    measure_time(EOPpointer(char const) legend) :
         inverse_accuracy(100),
         epsilon(CLOCKS_PER_SEC / clock_t(inverse_accuracy)),
         legend(legend),
@@ -98,7 +98,7 @@ M perform()
 
 struct measure_clock
 {
-    const EOPpointer(char) legend;
+    EOPpointer(char const) legend;
     clock_t t;
     measure_clock() : legend("clock()") { }
     inline void operator()() {
@@ -108,7 +108,7 @@ struct measure_clock
 
 struct measure_gcd
 {
-    const EOPpointer(char) legend;
+    EOPpointer(char const) legend;
     typedef rational<int> Q;
     Q t;
     measure_gcd() : legend("gcd<Q, Q>(Q(250, 1000), Q(750, 1000)") { }
@@ -119,7 +119,7 @@ struct measure_gcd
 
 struct measure_reverse_bidirectional
 {
-    const EOPpointer(char) legend;
+    EOPpointer(char const) legend;
     typedef int T;
     int N;
     int REPETITIONS;
@@ -165,7 +165,7 @@ void __reverse(_RandomAccessIter __first, _RandomAccessIter __last,
 //		std::iter_swap(_First, --_Last);
 //	}
 
-const EOPpointer(char) tab = "\t";
+EOPpointer(char const) tab = "\t";
 
 template<typename T>
 void print_labels()
@@ -180,7 +180,7 @@ void print_labels()
 }
 
 template<typename T>
-void print_result(const EOPpointer(char) label, clock_t t0, clock_t t1, int N, int REPETITIONS)
+void print_result(EOPpointer(char const) label, clock_t t0, clock_t t1, int N, int REPETITIONS)
 {
     double seconds = (t1-t0) * 1.0 / CLOCKS_PER_SEC;
     print(label); print(tab);
@@ -253,7 +253,7 @@ void measure_reverse_algorithms()
 
 struct measure_sort_linked
 {
-    const EOPpointer(char) legend;
+    EOPpointer(char const) legend;
     typedef int T;
     int N;
     int REPETITIONS;
@@ -302,7 +302,7 @@ void measure_sort_n_adaptive_compares()
 
 struct measure_sort_n_adaptive
 {
-    const EOPpointer(char) legend;
+    EOPpointer(char const) legend;
     typedef int T;
     int N;
     int REPETITIONS;

@@ -3716,7 +3716,7 @@ struct partition_algorithm_tester
 {
     typedef EOPpointer(int) I;
     typedef distance_type<I>::type N;
-    const EOPpointer(char) name;
+    EOPpointer(char const) name;
     array_k<6, int> a;
     I f;
     I l;
@@ -3724,7 +3724,7 @@ struct partition_algorithm_tester
     bool (*p)(int);
     slist<int> b;
     I m_potential;
-    partition_algorithm_tester(const EOPpointer(char) name) :
+    partition_algorithm_tester(EOPpointer(char const) name) :
         name(name),
         a(),
         f(begin(a)),
@@ -3885,7 +3885,7 @@ struct equal_ignoring_case
     }
 };
 
-int size_unguarded(const EOPpointer(char) a)
+int size_unguarded(EOPpointer(char const) a)
 {
     int n(0);
     while (source(a) != char(0)) {
@@ -3895,9 +3895,9 @@ int size_unguarded(const EOPpointer(char) a)
     return n;
 }
 
-const EOPpointer(char) begin(const EOPpointer(char) a) { return a; }
+EOPpointer(char const) begin(EOPpointer(char const) a) { return a; }
 
-const EOPpointer(char) end(const EOPpointer(char) a) { return begin(a) + size_unguarded(a); }
+EOPpointer(char const) end(EOPpointer(char const) a) { return begin(a) + size_unguarded(a); }
 
 template<typename M, typename R, typename E>
     requires(WrappedMerger(M) &&
@@ -3921,9 +3921,9 @@ struct merge_case
         // Precondition: $\property{equivalence}(e)
     }
     void subcase(
-        const EOPpointer(char) a, int n_a,
-        const EOPpointer(char) b, int n_b,
-        const EOPpointer(char) c, int n_c)
+        EOPpointer(char const) a, int n_a,
+        EOPpointer(char const) b, int n_b,
+        EOPpointer(char const) c, int n_c)
     {
         array<char> tmp(n_c, n_c, char(0));
         EOPpointer(char) f_ab = begin(tmp);
