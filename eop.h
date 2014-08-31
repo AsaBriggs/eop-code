@@ -571,7 +571,7 @@ template<typename I>
 pair<I, I> fibonacci_matrix_multiply(const pair<I, I>& x,
                                      const pair<I, I>& y)
 {
-    return make_pair(
+    return make_pair<I, I>(
         x.m0 * (y.m1 + y.m0) + x.m1 * y.m0,
         x.m0 * y.m0 + x.m1 * y.m1);
 }
@@ -1318,12 +1318,12 @@ quotient_remainder_nonnegative(T a, T b)
     // Precondition: $a \geq 0 \wedge b > 0$
     typedef EOPQuotientType(T) N;
     if (a < b) return make_pair(N(0), a);
-    if (a - b < b) return make_pair(N(1), a - b);
+    if (a - b < b) return make_pair<N, T>(N(1), a - b);
     pair<N, T> q = quotient_remainder_nonnegative(a, b + b);
     N m = twice(q.m0);
     a = q.m1;
     if (a < b) return make_pair(m, a);
-    else       return make_pair(successor(m), a - b);
+    else       return make_pair<N, T>(successor(m), a - b);
 }
 
 /* The next function is due to:
@@ -2949,7 +2949,7 @@ pair<I, I> sort_linked_nonempty_n(I f, EOPDistanceType(I) n,
     //                n > 0 \wedge \func{weak\_ordering}(r)$
     typedef EOPDistanceType(I) N;
     typedef pair<I, I> P;
-    if (n == N(1)) return make_pair(f, successor(f));
+    if (n == N(1)) return make_pair<I, I>(f, successor(f));
     N h = half_nonnegative(n);
     P p0 = sort_linked_nonempty_n(f, h, r, set_link);
     P p1 = sort_linked_nonempty_n(p0.m1, n - h, r, set_link);
