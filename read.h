@@ -25,17 +25,17 @@
 #include <cstdio> // scanf
 
 
-void read(int& x)
+inline void read(int& x)
 {
     scanf("%d", &x);
 }
 
-void read(long int& x)
+inline void read(long int& x)
 {
     scanf("%ld", &x);
 }
 
-void read(long long int& x)
+inline void read(long long int& x)
 {
     scanf("%lld", &x);
 }
