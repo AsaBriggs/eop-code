@@ -4402,6 +4402,11 @@ void type_single_extent_array(S& s0, S& s1, EOPValueType(S)& x)
     erase(back< array<int> >(a));
     EOPAssert(empty(a));
     EOPAssert(full(a));
+
+    // Exercises case where an empty array has non-zero capacity.
+    // Memory used to leak.
+    array<int> b;
+    reserve(b, 1024*1024*1024);
 }
 
 void type_array()

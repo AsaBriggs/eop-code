@@ -4124,18 +4124,6 @@ void construct_all(I /*f*/, I /*l*/, false_type)
 
 template<typename I>
     requires(Writeable(I) && ForwardIterator(I))
-void destroy_all(I f, I l)
-{
-    // Precondition:
-    // $(\forall i \in [f, l)) \func{sink}(i) \text{is in a partially-formed state}$
-    // Postcondition:
-    // $(\forall i \in [f, l)) \func{sink}(i) \text{refers to raw memory, not an object}$
-    // We assume if an iterator is writeable, its value can be destroyed
-    destroy_all(f, l, EOPNeedsDestruction(EOPValueType(I))());
-}
-
-template<typename I>
-    requires(Writeable(I) && ForwardIterator(I))
 void destroy_all(I f, I l, true_type)
 {
     // Precondition: $(\forall i \in [f, l)) \func{sink}(i) \text{is in a partially-formed state}$
@@ -4157,6 +4145,55 @@ void destroy_all(I /*f*/, I /*l*/, false_type)
     // Postcondition:
     // $(\forall i \in [f, l)) \func{sink}(i) \text{is in a partially-formed state}$
 }
+
+template<typename I>
+    requires(Writeable(I) && ForwardIterator(I))
+void destroy_all(I f, I l)
+{
+    // Precondition:
+    // $(\forall i \in [f, l)) \func{sink}(i) \text{is in a partially-formed state}$
+    // Postcondition:
+    // $(\forall i \in [f, l)) \func{sink}(i) \text{refers to raw memory, not an object}$
+    // We assume if an iterator is writeable, its value can be destroyed
+    destroy_all(f, l, EOPNeedsDestruction(EOPValueType(I))());
+}
+
+template<typename I>
+    requires(Writeable(I) && BidirectionalIterator(I))
+void destroy_all_backward(I f, I l, true_type)
+{
+    // Precondition: $(\forall i \in [f, l)) \func{sink}(i) \text{is in a partially-formed state}$
+    // Postcondition: $(\forall i \in [f, l)) \func{sink}(i) \text{refers to raw memory, not an object}$
+    // We assume if an iterator is writeable, its value can be destroyed
+    while (f != l) {
+        l = predecessor(l);
+        destroy(sink(l));
+    }
+}
+
+template<typename I>
+    requires(Writeable(I) && BidirectionalIterator(I) &&
+        EOPNeedsDestruction(EOPValueType(I)) == false_type)
+void destroy_all_backward(I /*f*/, I /*l*/, false_type)
+{
+    // Precondition:
+    // $(\forall i \in [f, l)) \func{sink}(i) \text{is in a partially-formed state}$
+    // Postcondition:
+    // $(\forall i \in [f, l)) \func{sink}(i) \text{is in a partially-formed state}$
+}
+
+template<typename I>
+    requires(Writeable(I) && BidirectionalIterator(I))
+void destroy_all_backward(I f, I l)
+{
+    // Precondition:
+    // $(\forall i \in [f, l)) \func{sink}(i) \text{is in a partially-formed state}$
+    // Postcondition:
+    // $(\forall i \in [f, l)) \func{sink}(i) \text{refers to raw memory, not an object}$
+    // We assume if an iterator is writeable, its value can be destroyed
+    destroy_all_backward(f, l, EOPNeedsDestruction(EOPValueType(I))());
+}
+
 
 // EOPNeedsConstruction and EOPNeedsDestruction should be overloaded for every POD type
 
@@ -6843,7 +6880,8 @@ struct array
     }
     ~array()
     {
-        erase_all(sink(this));
+        destroy_all_backward(begin(deref(this)), end(deref(this)));
+        deallocate_array(p);
     }
 };
 
