@@ -2159,79 +2159,222 @@ bool is_right_successor(T j)
     return has_right_successor(i) && right_successor(i) == j;
 }
 
+
+template<typename S>
+    requires(DynamicSequence(S))
+struct back ;
+
+template<typename A>
+    requires(Array(A) && BidirectionalCoordinate(EOPValueType(A)))
+struct BifurcateCoordinateState
+{
+    typedef BifurcateCoordinateState type;
+    typedef EOPValueType(A) C;
+
+    visit v;
+    A     s;
+
+    friend
+    visit& state(type& x) { return x.v; }
+
+    friend
+    visit const& state(type const& x) { return x.v; }
+
+    friend
+    void push(type& s, C j) { insert(back<A>(s.s), j); }
+
+    friend
+    C top(type const& s, C j)
+    {
+        // Precondition: $\func{size}(s.s) > 0$
+        return s.s[size(s.s) - 1];
+    }
+
+    friend
+    void pop(type& s)
+    {
+        // Precondition: $\func{size}(s.s) > 0$
+        erase(back<A>(s.s));
+    }
+
+    friend
+    bool is_left_successor(type const& s, C j)
+    {
+        // Precondition: !$\func{empty}(s.s)$
+        C i = top(s, j);
+        return has_left_successor(i) && left_successor(i) == j;
+    }
+
+    friend
+    bool is_right_successor(type const& s, C j)
+    {
+        // Precondition: !$\func{empty}(s.s)$
+        C i = top(s, j);
+        return has_right_successor(i) && right_successor(i) == j;
+    }
+
+    static type make()
+    {
+        type tmp = {pre};
+        // 64 items should be long enough for practical balanced trees
+	reserve(tmp.s, 64);
+        return tmp;
+    }
+};
+
+template<typename A>
+    requires(Array(A) && BidirectionalCoordinate(EOPValueType(A)))
+struct underlying_type<BifurcateCoordinateState<A> >
+{
+    typedef struct { EOPUnderlyingType(visit) v; EOPUnderlyingType(A) s; } type;
+};
+
+template<typename Coordinate>
+    requires(BidirectionalBifurcateCoordinate(Coordinate))
+struct BidirectionalBifurcateCoordinateState
+{
+    typedef BidirectionalBifurcateCoordinateState type;
+    typedef Coordinate C;
+
+    visit v;
+
+    friend
+    visit& state(type& x) { return x.v; }
+
+    friend
+    visit const& state(type const& x) { return x.v; }
+
+    friend
+    void push(type const&, C j) {}
+
+    friend
+    C top(type const&, C j) { return predecessor(j); }
+
+    friend
+    void pop(type const&) {}
+
+    friend
+    bool is_left_successor(type const&, C j) { return is_left_successor(j); }
+
+    friend
+    bool is_right_successor(type const&, C j) { return is_right_successor(j); }
+
+    static type make()
+    {
+        type tmp = {pre};
+        return tmp;
+    }
+};
+
 template<typename C>
     requires(BidirectionalBifurcateCoordinate(C))
-int traverse_step(visit& v, C& c)
+struct underlying_type<BidirectionalBifurcateCoordinateState<C> >
+{
+    typedef struct { EOPUnderlyingType(visit) v; } type;
+};
+
+template<typename T, typename Concept>
+struct GetBifurcateCoordinateState_Impl;
+
+// Relies on array, so declared here and defined at the end.
+template<typename T>
+struct GetBifurcateCoordinateState_Impl<T, bifurcate_coordinate_tag>;
+
+template<typename T>
+struct GetBifurcateCoordinateState_Impl<T, bidirectional_bifurcate_coordinate_tag>
+{
+    typedef BidirectionalBifurcateCoordinateState<T> type;
+};
+
+template<typename T>
+struct GetBifurcateCoordinateState
+{
+    typedef typename GetBifurcateCoordinateState_Impl<T, EOPIteratorConcept(T)>::type type;
+
+    static type make()
+    {
+        return type::make();
+    }
+};
+
+template<typename State>
+    requires(CoordinateState(State))
+int traverse_step(State& s, typename State::C& c)
 {
     // Precondition: $\func{has\_predecessor}(c) \vee v \neq post$
-    switch (v) {
+    switch (state(s)) {
     case pre:
         if (has_left_successor(c))  {
-                     c = left_successor(c);  return 1;
-        }   v = in;                          return 0;
+	             push(s, c);
+                     c = left_successor(c);         return 1;
+        }   state(s) = in;                          return 0;
     case in:
         if (has_right_successor(c)) {
-            v = pre; c = right_successor(c); return 1;
-        }   v = post;                        return 0;
+	    push(s, c);
+            state(s) = pre; c = right_successor(c); return 1;
+        }   state(s) = post;                        return 0;
     case post:
-        if (is_left_successor(c))
-            v = in;
-                     c = predecessor(c);     return -1;
+        if (is_left_successor(s, c)) {
+	    state(s) = in;
+	} c = top(s, c); pop(s);                   return -1;
     }
 }
 
 template<typename C>
-    requires(BidirectionalBifurcateCoordinate(C))
+    requires(BifurcateCoordinate(C))
 bool reachable(C x, C y)
 {
     // Precondition: $\property{tree}(x)$
     if (empty(x)) return false;
     C root = x;
-    visit v = pre;
+    typedef GetBifurcateCoordinateState<C> T;
+    typename T::type v = T::make();
     do {
         if (x == y) return true;
         traverse_step(v, x);
-    } while (x != root || v != post);
+    } while (x != root || state(v) != post);
     return false;
 }
 
 template<typename C>
-    requires(BidirectionalBifurcateCoordinate(C))
+    requires(BifurcateCoordinate(C))
 EOPWeightType(C) weight(C c)
 {
     // Precondition: $\property{tree}(c)$
     typedef EOPWeightType(C) N;
     if (empty(c)) return N(0);
     C root = c;
-    visit v = pre;
+    typedef GetBifurcateCoordinateState<C> T;
+    typename T::type v = T::make();
     N n(1); // Invariant: $n$ is count of $\type{pre}$ visits so far
     do {
         traverse_step(v, c);
-        if (v == pre) n = successor(n);
-    } while (c != root || v != post);
+        if (state(v) == pre) n = successor(n);
+    } while (c != root || state(v) != post);
     return n;
 }
 
 template<typename C>
-    requires(BidirectionalBifurcateCoordinate(C))
+    requires(BifurcateCoordinate(C))
 EOPWeightType(C) height(C c)
 {
     // Precondition: $\property{tree}(c)$
     typedef EOPWeightType(C) N;
     if (empty(c)) return N(0);
     C root = c;
-    visit v = pre;
+    typedef GetBifurcateCoordinateState<C> T;
+    typename T::type v = T::make();
     N n(1); // Invariant: $n$ is max of height of $\type{pre}$ visits so far
     N m(1); // Invariant: $m$ is height of current $\type{pre}$ visit
     do {
         m = (m - N(1)) + N(traverse_step(v, c) + 1);
         n = max(n, m);
-    } while (c != root || v != post);
+    } while (c != root || state(v) != post);
     return n;
 }
 
 template<typename C, typename Proc>
-    requires(BidirectionalBifurcateCoordinate(C) &&
+    requires(BifurcateCoordinate(C) &&
         Procedure(Proc) && Arity(Proc) == 2 &&
         visit == EOPInputType(Proc, 0) &&
         C == EOPInputType(Proc, 1))
@@ -2240,12 +2383,13 @@ Proc traverse(C c, Proc proc)
     // Precondition: $\property{tree}(c)$
     if (empty(c)) return proc;
     C root = c;
-    visit v = pre;
+    typedef GetBifurcateCoordinateState<C> T;
+    typename T::type v = T::make();
     proc(pre, c);
     do {
         traverse_step(v, c);
-        proc(v, c);
-    } while (c != root || v != post);
+        proc(state(v), c);
+    } while (c != root || state(v) != post);
     return proc;
 }
 
@@ -2257,44 +2401,32 @@ Proc traverse(C c, Proc proc)
 template<typename C0, typename C1>
     requires(BifurcateCoordinate(C0) &&
         BifurcateCoordinate(C1))
-bool bifurcate_isomorphic_nonempty(C0 c0, C1 c1)
-{
-    // Precondition:
-    // $\property{tree}(c0) \wedge \property{tree}(c1) \wedge \neg \func{empty}(c0) \wedge \neg \func{empty}(c1)$
-    if (has_left_successor(c0))
-        if (has_left_successor(c1)) {
-            if (!bifurcate_isomorphic_nonempty(
-                    left_successor(c0), left_successor(c1)))
-                return false;
-        } else return false;
-    else if (has_left_successor(c1)) return false;
-    if (has_right_successor(c0))
-        if (has_right_successor(c1)) {
-            if (!bifurcate_isomorphic_nonempty(
-                    right_successor(c0), right_successor(c1)))
-                return false;
-        } else return false;
-    else if (has_right_successor(c1)) return false;
-    return true;
-}
-
-template<typename C0, typename C1>
-    requires(BidirectionalBifurcateCoordinate(C0) &&
-        BidirectionalBifurcateCoordinate(C1))
 bool bifurcate_isomorphic(C0 c0, C1 c1)
 {
     // Precondition: $\property{tree}(c0) \wedge \property{tree}(c1)$
     if (empty(c0)) return empty(c1);
     if (empty(c1)) return false;
     C0 root0 = c0;
-    visit v0 = pre;
-    visit v1 = pre;
+    typedef GetBifurcateCoordinateState<C0> T0;
+    typename T0::type v0 = T0::make();
+    typedef GetBifurcateCoordinateState<C1> T1;
+    typename T1::type v1 = T1::make();
     while (true) {
         traverse_step(v0, c0);
         traverse_step(v1, c1);
-        if (v0 != v1) return false;
-        if (c0 == root0 && v0 == post) return true;
+        if (state(v0) != state(v1)) return false;
+        if (c0 == root0 && state(v0) == post) return true;
     }
+}
+
+template<typename C0, typename C1>
+    requires(BifurcateCoordinate(C0) &&
+        BifurcateCoordinate(C1))
+bool bifurcate_isomorphic_nonempty(C0 c0, C1 c1)
+{ 
+    // Precondition:
+    // $\property{tree}(c0) \wedge \property{tree}(c1) \wedge \neg \func{empty}(c0) \wedge \neg \func{empty}(c1)$
+    return bifurcate_isomorphic(c0, c1);
 }
 
 template<typename I0, typename I1, typename R>
@@ -2353,38 +2485,10 @@ struct lexicographical_equal_k<0, I0, I1>
 };
 
 template<typename C0, typename C1, typename R>
-    requires(Readable(C0) && BifurcateCoordinate(C0) &&
-        Readable(C1) && BifurcateCoordinate(C1) &&
-        EOPValueType(C0) == EOPValueType(C1) &&
-        Relation(R) && EOPValueType(C0) == EOPDomain(R))
-bool bifurcate_equivalent_nonempty(C0 c0, C1 c1, R r)
-{
-    // Precondition: $\property{readable\_tree}(c0) \wedge \property{readable\_tree}(c1)$
-    // Precondition: $\neg \func{empty}(c0) \wedge \neg \func{empty}(c1)$
-    // Precondition: $\property{equivalence}(r)$
-    if (!r(source(c0), source(c1))) return false;
-    if (has_left_successor(c0))
-        if (has_left_successor(c1)) {
-            if (!bifurcate_equivalent_nonempty(
-                  left_successor(c0), left_successor(c1), r))
-                return false;
-        } else return false;
-    else if (has_left_successor(c1)) return false;
-    if (has_right_successor(c0))
-        if (has_right_successor(c1)) {
-            if (!bifurcate_equivalent_nonempty(
-                  right_successor(c0), right_successor(c1), r))
-                return false;
-        } else return false;
-    else if (has_right_successor(c1)) return false;
-    return true;
-}
-
-template<typename C0, typename C1, typename R>
     requires(Readable(C0) &&
-        BidirectionalBifurcateCoordinate(C0) &&
+        BifurcateCoordinate(C0) &&
         Readable(C1) && 
-        BidirectionalBifurcateCoordinate(C1) &&
+        BifurcateCoordinate(C1) &&
         EOPValueType(C0) == EOPValueType(C1) &&
         Relation(R) && EOPValueType(C0) == EOPDomain(R))
 bool bifurcate_equivalent(C0 c0, C1 c1, R r)
@@ -2394,16 +2498,32 @@ bool bifurcate_equivalent(C0 c0, C1 c1, R r)
     if (empty(c0)) return empty(c1);
     if (empty(c1)) return false;
     C0 root0 = c0;
-    visit v0 = pre;
-    visit v1 = pre;
+    typedef GetBifurcateCoordinateState<C0> T0;
+    typename T0::type v0 = T0::make();
+    typedef GetBifurcateCoordinateState<C1> T1;
+    typename T1::type v1 = T1::make();
     while (true) {
-        if (v0 == pre && !r(source(c0), source(c1)))
+        if (state(v0) == pre && !r(source(c0), source(c1)))
             return false;          
         traverse_step(v0, c0);
         traverse_step(v1, c1);
-        if (v0 != v1) return false;
-        if (c0 == root0 && v0 == post) return true;
+        if (state(v0) != state(v1)) return false;
+        if (c0 == root0 && state(v0) == post) return true;
     }
+}
+
+
+template<typename C0, typename C1, typename R>
+    requires(Readable(C0) && BifurcateCoordinate(C0) &&
+        Readable(C1) && BifurcateCoordinate(C1) &&
+        EOPValueType(C0) == EOPValueType(C1) &&
+        Relation(R) && EOPValueType(C0) == EOPDomain(R))
+bool bifurcate_equivalent_nonempty(C0 c0, C1 c1, R r)
+{
+    // Precondition: $\property{readable\_tree}(c0) \wedge \property{readable\_tree}(c1)$
+    // Precondition: $\neg \func{empty}(c0) \wedge \neg \func{empty}(c1)$
+    // Precondition: $\property{equivalence}(r)$
+    return bifurcate_equivalent(c0, c1, r);
 }
 
 template<typename C0, typename C1>
@@ -2546,40 +2666,11 @@ int lexicographical_compare_3way(I0 f0, I0 l0, I1 f1, I1 l1, F comp)
     }
 }
 
-template<typename C0, typename C1, typename F>
-    requires(Readable(C0) && BifurcateCoordinate(C0) &&
-        Readable(C1) && BifurcateCoordinate(C1) &&
-        EOPValueType(C0) == EOPValueType(C1) &&
-        Comparator3Way(F) && EOPValueType(I0) == EOPDomain(F))
-int bifurcate_compare_nonempty(C0 c0, C1 c1, F comp)
-{
-    // Precondition: $\property{readable\_tree}(c0) \wedge \property{readable\_tree}(c1)$
-    // Precondition: $\neg \func{empty}(c0) \wedge \neg \func{empty}(c1)$
-    // Precondition: $\property{three\_way\_compare}(comp)$
-    int tmp = comp(source(c0), source(c1));
-    if (tmp != 0) return tmp;
-    if (has_left_successor(c0))
-        if (has_left_successor(c1)) {
-            tmp = bifurcate_compare_nonempty(left_successor(c0), left_successor(c1),
-                                             comp);
-            if (tmp != 0) return tmp;
-        } else return -1;
-    else if (has_left_successor(c1)) return 1;
-    if (has_right_successor(c0))
-        if (has_right_successor(c1)) {
-            tmp = bifurcate_compare_nonempty(right_successor(c0), right_successor(c1),
-                                             comp);
-            if (tmp != 0) return tmp;
-        } else return -1;
-    else if (has_right_successor(c1)) return 1;
-    return 0;
-}
-
 template<typename C0, typename C1, typename R>
     requires(Readable(C0) &&
-        BidirectionalBifurcateCoordinate(C0) &&
+        BifurcateCoordinate(C0) &&
         Readable(C1) && 
-        BidirectionalBifurcateCoordinate(C1) &&
+        BifurcateCoordinate(C1) &&
         EOPValueType(C0) == EOPValueType(C1) &&
         Relation(R) && EOPValueType(C0) == EOPDomain(R))
 bool bifurcate_compare(C0 c0, C1 c1, R r)
@@ -2590,18 +2681,65 @@ bool bifurcate_compare(C0 c0, C1 c1, R r)
     if (empty(c1)) return false;
     if (empty(c0)) return true;
     C0 root0 = c0;
-    visit v0 = pre;
-    visit v1 = pre;
+    typedef GetBifurcateCoordinateState<C0> T0;
+    typename T0::type v0 = T0::make();
+    typedef GetBifurcateCoordinateState<C1> T1;
+    typename T1::type v1 = T1::make();
     while (true) {
-        if (v0 == pre) {
+        if (state(v0) == pre) {
             if (r(source(c0), source(c1))) return true;
             if (r(source(c1), source(c0))) return false;
         }
         traverse_step(v0, c0);
         traverse_step(v1, c1);
-        if (v0 != v1) return v0 > v1;
-        if (c0 == root0 && v0 == post) return false;
+        if (state(v0) != state(v1)) return state(v0) > state(v1);
+        if (c0 == root0 && state(v0) == post) return false;
     }
+}
+
+template<typename C0, typename C1, typename F>
+    requires(Readable(C0) && BifurcateCoordinate(C0) &&
+        Readable(C1) && BifurcateCoordinate(C1) &&
+        EOPValueType(C0) == EOPValueType(C1) &&
+        Comparator3Way(F) && EOPValueType(I0) == EOPDomain(F))
+int bifurcate_compare_3_way(C0 c0, C1 c1, F comp)
+{
+    // Precondition: $\property{readable\_tree}(c0) \wedge
+    //                \property{readable\_tree}(c1) \wedge
+    //                \property{weak\_ordering}(r)$
+    if (empty(c0)) {
+        if (empty(c1)) return 0;
+        return 1;
+    } else if (empty(c1)) return -1;
+
+    C0 root0 = c0;
+    typedef GetBifurcateCoordinateState<C0> T0;
+    typename T0::type v0 = T0::make();
+    typedef GetBifurcateCoordinateState<C1> T1;
+    typename T1::type v1 = T1::make();
+    while (true) {
+        if (state(v0) == pre) {
+	    int cmp = comp(source(c0), source(c1));
+            if (cmp) return cmp;
+        }
+        traverse_step(v0, c0);
+        traverse_step(v1, c1);
+        if (state(v0) != state(v1)) return state(v0) > state(v1) ? 1 : -1;
+        if (c0 == root0 && state(v0) == post) return 0;
+    }
+}
+
+template<typename C0, typename C1, typename F>
+    requires(Readable(C0) && BifurcateCoordinate(C0) &&
+        Readable(C1) && BifurcateCoordinate(C1) &&
+        EOPValueType(C0) == EOPValueType(C1) &&
+        Comparator3Way(F) && EOPValueType(I0) == EOPDomain(F))
+int bifurcate_compare_nonempty(C0 c0, C1 c1, F comp)
+{
+    // Precondition: $\property{readable\_tree}(c0) \wedge \property{readable\_tree}(c1)$
+    // Precondition: $\neg \func{empty}(c0) \wedge \neg \func{empty}(c1)$
+    // Precondition: $\property{three\_way\_compare}(comp)$
+    return bifurcate_compare_3_way(c0, c1, comp);
 }
 
 template<typename C0, typename C1>
@@ -6094,6 +6232,13 @@ struct value_type< stree_coordinate<T> >
 
 template<typename T>
     requires(Regular(T))
+struct iterator_concept< stree_coordinate<T> >
+{
+    typedef bifurcate_coordinate_tag concept;
+};
+
+template<typename T>
+    requires(Regular(T))
 struct weight_type< stree_coordinate<T> >
 {
     typedef EOPDistanceType(EOPpointer(stree_node<T>)) type;
@@ -6316,6 +6461,13 @@ struct weight_type< stree<T> >
 
 template<typename T>
     requires(Regular(T))
+struct iterator_concept< stree<T> >
+{
+    typedef bifurcate_coordinate_tag concept;
+};
+
+template<typename T>
+    requires(Regular(T))
 stree_coordinate<T> begin(const stree<T>& x) { return x.root; }
 
 template<typename T>
@@ -6389,6 +6541,13 @@ template<typename T>
 struct value_type< tree_coordinate<T> >
 {
     typedef T type;
+};
+
+template<typename T>
+    requires(Regular(T))
+struct iterator_concept< tree_coordinate<T> >
+{
+    typedef bidirectional_bifurcate_coordinate_tag concept;
 };
 
 template<typename T>
@@ -7106,5 +7265,12 @@ void sort(array<T>& x, R r)
     // Precondition: $\func{weak\_ordering}(r)$
     advanced_sort_n(begin(x), size(x), r);
 }
+
+template<typename T>
+    requires(BifurcateCoordinate(T))
+struct GetBifurcateCoordinateState_Impl<T, bifurcate_coordinate_tag>
+{
+    typedef BifurcateCoordinateState<array<T> > type;
+};
 
 #endif // EOP_EOP

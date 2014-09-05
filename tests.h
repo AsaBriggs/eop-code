@@ -2541,24 +2541,25 @@ void algorithms_bidirectional_bifurcate_coordinates()
 
     C c_r = begin(t3_45);
     C c = c_r;
-    visit v(pre);
+    typedef GetBifurcateCoordinateState<C> State;
+    typename State::type v = State::make();
     int dh;
     dh = traverse_step(v, c);
-    EOPAssert(dh == 1 && c == left_successor(c_r) && v == pre);
+    EOPAssert(dh == 1 && c == left_successor(c_r) && state(v) == pre);
     dh = traverse_step(v, c);
-    EOPAssert(dh == 0 && c == left_successor(c_r) && v == in);
+    EOPAssert(dh == 0 && c == left_successor(c_r) && state(v) == in);
     dh = traverse_step(v, c);
-    EOPAssert(dh == 0 && c == left_successor(c_r) && v == post);
+    EOPAssert(dh == 0 && c == left_successor(c_r) && state(v) == post);
     dh = traverse_step(v, c);
-    EOPAssert(dh == -1 && c == c_r && v == in);
+    EOPAssert(dh == -1 && c == c_r && state(v) == in);
     dh = traverse_step(v, c);
-    EOPAssert(dh == 1 && c == right_successor(c_r) && v == pre);
+    EOPAssert(dh == 1 && c == right_successor(c_r) && state(v) == pre);
     dh = traverse_step(v, c);
-    EOPAssert(dh == 0 && c == right_successor(c_r) && v == in);
+    EOPAssert(dh == 0 && c == right_successor(c_r) && state(v) == in);
     dh = traverse_step(v, c);
-    EOPAssert(dh == 0 && c == right_successor(c_r) && v == post);
+    EOPAssert(dh == 0 && c == right_successor(c_r) && state(v) == post);
     dh = traverse_step(v, c);
-    EOPAssert(dh == -1 && c == c_r && v == post);
+    EOPAssert(dh == -1 && c == c_r && state(v) == post);
 
     EOPAssert(reachable(root, root_l_l));
     EOPAssert(!reachable(root_l_l, root));
